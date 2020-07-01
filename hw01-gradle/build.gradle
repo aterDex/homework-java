@@ -1,0 +1,26 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+
+dependencies {
+//    implementation 'com.google.guava:guava'
+}
+
+shadowJar {
+    archiveBaseName.set('gradleHelloWorld')
+    archiveVersion.set('0.1')
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'ru.otus.homework.App'
+    }
+}
+
+application {
+    mainClass.set("ru.otus.homework.App")
+}
+
+tasks.build.dependsOn tasks.shadowJar
