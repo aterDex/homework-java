@@ -3,6 +3,5 @@
  */
 
 rootProject.name = 'homework-java'
-//include 'app-build-src'
 include 'hw01-gradle'
 
