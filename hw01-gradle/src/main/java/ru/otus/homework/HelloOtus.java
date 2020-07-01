@@ -1,6 +1,5 @@
 package ru.otus.homework;
 
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.ContiguousSet;
 
