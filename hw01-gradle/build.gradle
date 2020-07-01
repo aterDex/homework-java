@@ -5,23 +5,20 @@ plugins {
 
 sourceCompatibility = JavaVersion.VERSION_14
 targetCompatibility = JavaVersion.VERSION_14
+version = "0.9"
 
 dependencies {
     implementation 'com.google.guava:guava'
 }
 
+// main setting
 application {
     mainClassName = "ru.otus.homework.HelloOtus"
 }
 
 // Fat jar
 shadowJar {
-    archiveBaseName.set('hw01-gradle-fat')
-    archiveVersion.set('0.1')
-    archiveClassifier.set('')
-    manifest {
-        attributes 'Main-Class': 'ru.otus.homework.HelloOtus'
-    }
+    archiveClassifier.set("fat")
 }
 
 tasks.build.dependsOn tasks.shadowJar
