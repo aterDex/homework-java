@@ -2,6 +2,8 @@
 
 # Ignore Gradle GUI config
 gradle-app.setting
+# Ignore Gradle OS environment properties
+gradle.properties
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
