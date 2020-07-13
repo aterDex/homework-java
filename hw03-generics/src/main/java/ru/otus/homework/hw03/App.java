@@ -71,8 +71,8 @@ public class App {
 
         System.out.println("comparing all elements...");
         for (int i = 0; i < diyList.size(); i++) {
-            Object diyElement = diyList.get(i);
-            Object modelElement = modelList.get(i);
+            T diyElement = diyList.get(i);
+            T modelElement = modelList.get(i);
             if (!Objects.equals(diyElement, modelElement)) {
                 System.out.format("stop check in position %1$d DIY: %2$s model: %3$s", i, diyElement, modelElement)
                         .println();
