@@ -159,11 +159,17 @@ class DIYarrayListTest {
         }
 
         int snapshotList2size = list2.size();
+        Object[] snapshotList2 = list2.toArray();
         list2.addAll(10, subset2);
+        assertEquals(snapshotList2size + 10, list2.size());
         for (int i = 0; i < 10; i++) {
             assertEquals(subset2.get(i), list2.get(i + 10));
+            assertEquals(snapshotList2[i], list2.get(i));
         }
-        assertEquals(snapshotList2size + 10, list2.size());
+        for (int i = 20; i < list2.size(); i++) {
+            assertEquals(snapshotList2[i- 10], list2.get(i));
+        }
+
         assertThrows(IndexOutOfBoundsException.class, () -> list2.addAll(-1, subset2));
         assertThrows(IndexOutOfBoundsException.class, () -> list2.addAll(list2.size(), subset2));
     }

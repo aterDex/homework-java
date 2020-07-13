@@ -167,7 +167,9 @@ public final class DIYarrayList<T> implements List<T> {
             return false;
         }
         checkAndGrowCapacityIfNeed(c.size());
-        System.arraycopy(storage, index, storage, index + c.size(), c.size());
+        // освобождаем для начало место
+        System.arraycopy(storage, index, storage, index + c.size(), sizeList - index);
+        // а теперь копируем новые элементы
         System.arraycopy(c.toArray(), 0, storage, index, c.size());
         sizeList += c.size();
         modificationCounter++;
