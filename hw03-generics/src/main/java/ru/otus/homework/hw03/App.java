@@ -60,8 +60,8 @@ public class App {
     private static <T> void compareAndPrintResult(List<? extends T> diyList, List<? extends T> modelList, int generation, String description) {
         System.out.println("======= generation " + generation + " =======");
         System.out.println("description: " + (description == null ? "" : description));
-        System.out.format("size DIY: %1$d model: %2$d", diyList.size(), modelList.size());
-        System.out.println();
+        System.out.format("size DIY: %1$d model: %2$d", diyList.size(), modelList.size())
+            .println();
         if (diyList.size() != modelList.size()) {
             System.out.println("size difference!");
             System.out.println(STATUS_FAILED);
@@ -74,8 +74,8 @@ public class App {
             Object diyElement = diyList.get(i);
             Object modelElement = modelList.get(i);
             if (!Objects.equals(diyElement, modelElement)) {
-                System.out.format("stop check in position %1$d DIY: %2$s model: %3$s", i, diyElement, modelElement);
-                System.out.println();
+                System.out.format("stop check in position %1$d DIY: %2$s model: %3$s", i, diyElement, modelElement)
+                        .println();
                 System.out.println(STATUS_FAILED);
                 System.out.println();
                 return;
