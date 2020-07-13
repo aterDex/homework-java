@@ -37,10 +37,12 @@ public final class DIYarrayList<T> implements List<T> {
      * Храним элементы листа в этом массиве
      */
     private T[] storage;
+
     /**
      * Текущий размер листа
      */
     private int sizeList = 0;
+
     /**
      * счетчик модификаций листа (любые действия что приводят к изменению sizeList)
      */
@@ -384,18 +386,12 @@ public final class DIYarrayList<T> implements List<T> {
 
         @Override
         public int nextIndex() {
-            if (hasNext()) {
-                return currentPosition + 1;
-            }
-            return DIYarrayList.this.sizeList;
+            return hasNext() ? currentPosition + 1 : DIYarrayList.this.sizeList;
         }
 
         @Override
         public int previousIndex() {
-            if (hasPrevious()) {
-                return currentPosition;
-            }
-            return -1;
+            return hasPrevious() ? currentPosition : -1;
         }
 
         @Override
