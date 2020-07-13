@@ -1,18 +1,48 @@
 package ru.otus.homework.hw03;
 
 import java.util.*;
+import java.util.function.Predicate;
 
-public class DIYarrayList<T> implements List<T> {
+/**
+ * Учебная реализация массива. Массив ограничен максимальным размеров Integer.MAX_VALUE
+ * Не поддерживаются методы:
+ * <ul>
+ * <li>{@link DIYarrayList#toArray(Object[])}</li>
+ * <li>{@link DIYarrayList#retainAll(Collection)}</li>
+ * <li>{@link DIYarrayList#subList(int, int)}</li>
+ * </ul>
+ */
+public final class DIYarrayList<T> implements List<T> {
 
+    protected static final int DEFAULT_CAPACITY = 10;
+
+    /**
+     * Храним элементы листа в этом массиве
+     */
     private T[] storage;
+    /**
+     * Текущий размер листа
+     */
     private int sizeList = 0;
+    /**
+     * счетчик модификаций листа (любые действия что приводят к изменению sizeList)
+     */
+    private int modificationCounter;
 
     public DIYarrayList() {
-        this(10);
+        this(DEFAULT_CAPACITY);
     }
 
+    /**
+     * @param startCapacity начальная емкость массива, который находится в основе этого контейнера (больше или равен 0)
+     */
     public DIYarrayList(int startCapacity) {
-        reInitCapacity(startCapacity);
+        if (startCapacity == 0) {
+            initCapacity(DEFAULT_CAPACITY);
+        } else if (startCapacity < 0) {
+            throw new IllegalArgumentException("Неверный размер массива: " + startCapacity);
+        }
+        initCapacity(startCapacity);
     }
 
     @Override
@@ -38,7 +68,7 @@ public class DIYarrayList<T> implements List<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new DIYiterattor<>(storage, sizeList);
+        return new DIYiterattor<>(modificationCounter);
     }
 
     @Override
@@ -46,6 +76,9 @@ public class DIYarrayList<T> implements List<T> {
         return Arrays.copyOf(storage, sizeList);
     }
 
+    /**
+     * Unsupported Operation
+     */
     @Override
     public <T1> T1[] toArray(T1[] a) {
         throw new UnsupportedOperationException();
@@ -53,52 +86,78 @@ public class DIYarrayList<T> implements List<T> {
 
     @Override
     public boolean add(T t) {
-        checkAndResizeCapacityIfNeed(sizeList + 1);
+        checkAndGrowCapacityIfNeed(1);
         storage[sizeList++] = t;
+        modificationCounter++;
         return true;
     }
 
     @Override
+    public T remove(int index) {
+        checkIndex(index);
+        T element = storage[index];
+        System.arraycopy(storage, index + 1,
+                storage, index,
+                sizeList - index);
+        sizeList--;
+        // Мы через arrayCopy все сдвинули,
+        // но один элемент крайний сейчас продублировался очищаем его
+        storage[sizeList] = null;
+        modificationCounter++;
+        return element;
+    }
+
+    @Override
     public boolean remove(Object o) {
-        Iterator<T> it = iterator();
-        while (it.hasNext()) {
-            if (Objects.equals(o, it.next())) {
-                it.remove();
-                return true;
-            }
+        int index = indexOf(o);
+        if (index >= 0) {
+            remove(index);
+            return true;
         }
         return false;
     }
 
     @Override
+    public boolean removeAll(Collection<?> c) {
+        return c.stream().filter(this::removeAllEntry).count() > 0;
+    }
+
+    @Override
     public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        return c.parallelStream().filter(Predicate.not(this::contains)).findAny().isEmpty();
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        if (c == null) {
-            throw new NullPointerException();
-        }
+        // NullPointerException Ok
         if (c.isEmpty()) {
             return false;
         }
-        checkAndResizeCapacityIfNeed(sizeList + c.size());
+        checkAndGrowCapacityIfNeed(c.size());
         System.arraycopy(c.toArray(), 0, storage, sizeList, c.size());
-        sizeList = sizeList + c.size();
+        sizeList += c.size();
+        modificationCounter++;
         return true;
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
-        throw new UnsupportedOperationException();
+        checkIndex(index);
+        // NullPointerException Ok
+        if (c.isEmpty()) {
+            return false;
+        }
+        checkAndGrowCapacityIfNeed(c.size());
+        System.arraycopy(storage, index, storage, index + c.size(), c.size());
+        System.arraycopy(c.toArray(), 0, storage, index, c.size());
+        sizeList += c.size();
+        modificationCounter++;
+        return true;
     }
 
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
-    }
-
+    /**
+     * Unsupported Operation
+     */
     @Override
     public boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException();
@@ -107,6 +166,7 @@ public class DIYarrayList<T> implements List<T> {
     @Override
     public void clear() {
         sizeList = 0;
+        modificationCounter++;
         // Чтобы позволить GarbageCollector сделать свое черное дело
         Arrays.fill(storage, null);
     }
@@ -128,26 +188,13 @@ public class DIYarrayList<T> implements List<T> {
     @Override
     public void add(int index, T element) {
         checkIndex(index);
-        checkAndResizeCapacityIfNeed(sizeList + 1);
+        checkAndGrowCapacityIfNeed(1);
         System.arraycopy(storage, index,
                 storage, index + 1,
                 sizeList - index);
         sizeList++;
         storage[index] = element;
-    }
-
-    @Override
-    public T remove(int index) {
-        checkIndex(index);
-        T element = storage[index];
-        System.arraycopy(storage, index,
-                storage, index - 1,
-                sizeList - index);
-        sizeList--;
-        // Мы через arrayCopy все сдвинули,
-        // но один элемент крайний сейчас продублировался очищаем его
-        storage[sizeList] = null;
-        return element;
+        modificationCounter++;
     }
 
     @Override
@@ -172,39 +219,76 @@ public class DIYarrayList<T> implements List<T> {
 
     @Override
     public ListIterator<T> listIterator() {
-        return new DIYiterattor<>(storage, sizeList);
+        return new DIYiterattor<>(modificationCounter);
     }
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        throw new UnsupportedOperationException();
+        checkIndex(index);
+        return new DIYiterattor<>(modificationCounter, index);
     }
 
+    /**
+     * Unsupported Operation
+     */
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public Spliterator<T> spliterator() {
+        return Arrays.spliterator(storage, 0, sizeList);
+    }
+
+    /**
+     * Удаляем все вхождения элемента
+     *
+     * @param o объект который будет полностью удален из коллекции
+     * @return true если коллекция была изменена
+     */
+    private boolean removeAllEntry(Object o) {
+        boolean wasRemove = false;
+        Iterator<T> it = iterator();
+        while (it.hasNext()) {
+            if (Objects.equals(o, it.next())) {
+                it.remove();
+                wasRemove = true;
+            }
+        }
+        return wasRemove;
+    }
+
     /**
      * Проверяем размер внутреннего хранилище, и пересоздам его
      *
-     * @param newSize новый размер масива который будет установлен
+     * @param addQuantity количество элементов которые надо добавить
      */
-    protected void checkAndResizeCapacityIfNeed(int newSize) {
-        if (storage.length < newSize) {
-            reInitCapacity(newSize * 2);
+    private void checkAndGrowCapacityIfNeed(int addQuantity) {
+        try {
+            int newSize = Math.addExact(sizeList, addQuantity);
+            if (storage.length < newSize) {
+                if (newSize >= 1073741823) {
+                    reInitCapacity(Integer.MAX_VALUE);
+                } else {
+                    reInitCapacity(Math.multiplyExact(newSize, 2));
+                }
+            }
+        } catch (ArithmeticException e) {
+            throw new IllegalArgumentException("Элементы не могут быть добавлены. Размер коллекции не может превышать Integer.MAX_VALUE (2147483647) элементов.");
         }
     }
 
-    protected void reInitCapacity(int newCapacity) {
-        if (storage == null) {
-            storage = (T[]) new Object[newCapacity];
-        } else {
-            storage = Arrays.copyOf(storage, newCapacity);
-        }
+    @SuppressWarnings("unchecked")
+    private void initCapacity(int newCapacity) {
+        storage = (T[]) new Object[newCapacity];
     }
 
-    protected void checkIndex(int index) {
+    private void reInitCapacity(int newCapacity) {
+        storage = Arrays.copyOf(storage, newCapacity);
+    }
+
+    private void checkIndex(int index) {
         if (index < 0 || index >= sizeList) {
             throw new IndexOutOfBoundsException();
         }
@@ -212,37 +296,55 @@ public class DIYarrayList<T> implements List<T> {
 
     private class DIYiterattor<I> implements ListIterator<I> {
 
-        private int currentPosition = -1;
-        private final I[] storage;
-        private final int sizeList;
+        private int modification;
+        private boolean wasAdd = false;
+        private boolean wasRemoved = false;
+        private int currentPosition;
 
-        public DIYiterattor(I[] storage, int sizeList) {
-            this.storage = storage;
-            this.sizeList = sizeList;
+        /**
+         * @param modification фиксируем текущею модификацию листа
+         * @param startIndex   Стартовая позиция для итератора (то что вернет первый next)
+         */
+        public DIYiterattor(int modification, int startIndex) {
+            currentPosition = startIndex - 1;
+            this.modification = modification;
+        }
+
+        /**
+         * @param modification фиксируем текущею модификацию листа
+         */
+        public DIYiterattor(int modification) {
+            this(modification, 0);
         }
 
         @Override
         public boolean hasNext() {
-            return (currentPosition + 1) < sizeList;
+            return (currentPosition + 1) < DIYarrayList.this.sizeList;
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public I next() {
+            checkListModification();
             if (hasNext()) {
-                return storage[++currentPosition];
+                invalidateState();
+                return (I) DIYarrayList.this.storage[++currentPosition];
             }
             throw new NoSuchElementException();
         }
 
         @Override
         public boolean hasPrevious() {
-            return (currentPosition - 1) >= 0;
+            return currentPosition >= 0;
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public I previous() {
+            checkListModification();
             if (hasPrevious()) {
-                return storage[--currentPosition];
+                invalidateState();
+                return (I) DIYarrayList.this.storage[currentPosition--];
             }
             throw new NoSuchElementException();
         }
@@ -252,30 +354,67 @@ public class DIYarrayList<T> implements List<T> {
             if (hasNext()) {
                 return currentPosition + 1;
             }
-            return sizeList;
+            return DIYarrayList.this.sizeList;
         }
 
         @Override
         public int previousIndex() {
             if (hasPrevious()) {
-                return currentPosition - 1;
+                return currentPosition;
             }
             return -1;
         }
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException();
+            checkListModification();
+            if (wasAdd || wasRemoved || isNotLegalCurrentPosition()) {
+                throw new IllegalStateException();
+            }
+            wasRemoved = true;
+            DIYarrayList.this.remove(currentPosition--);
+            updateListModification();
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void set(I i) {
-            throw new UnsupportedOperationException();
+            checkListModification();
+            if (wasAdd || wasRemoved || isNotLegalCurrentPosition()) {
+                throw new IllegalStateException();
+            }
+            DIYarrayList.this.set(currentPosition, (T) i);
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void add(I i) {
-            throw new UnsupportedOperationException();
+            checkListModification();
+            wasAdd = true;
+            DIYarrayList.this.add(++currentPosition, (T) i);
+            updateListModification();
+        }
+
+        /**
+         * Сбрасываем состояние итератора для текущей позиции.
+         */
+        private void invalidateState() {
+            wasAdd = false;
+            wasRemoved = false;
+        }
+
+        private boolean isNotLegalCurrentPosition() {
+            return currentPosition < 0 || currentPosition >= DIYarrayList.this.sizeList;
+        }
+
+        private void checkListModification() {
+            if (modification != DIYarrayList.this.modificationCounter) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        private void updateListModification() {
+            modification = DIYarrayList.this.modificationCounter;
         }
     }
 }
