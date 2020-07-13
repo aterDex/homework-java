@@ -4,7 +4,8 @@ import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * Учебная реализация массива. Массив ограничен максимальным размеров Integer.MAX_VALUE
+ * Учебная реализация коллекции.
+ * На основе хранения в единном массиве.
  * Не поддерживаются методы:
  * <ul>
  * <li>{@link DIYarrayList#toArray(Object[])}</li>
@@ -14,7 +15,23 @@ import java.util.function.Predicate;
  */
 public final class DIYarrayList<T> implements List<T> {
 
-    protected static final int DEFAULT_CAPACITY = 10;
+    /**
+     * Начальный размер массива по умолчанию
+     */
+    private static final int DEFAULT_CAPACITY = 10;
+
+    /**
+     * Предельный размер массива, который можем создать для хранения
+     * (Нельзя выставлять отрицательно значение)
+     */
+    private static final int LIMIT_SIZE = Integer.MAX_VALUE;
+
+    /**
+     * Множетель отвечает за то на сколько вырастит массив,
+     * при его переинициализации (как минимум всегда на 1 элемент)
+     * (Нельзя выставлять отрицательно значение, или не число)
+     */
+    private static final double FACTOR_GROW = 1.5;
 
     /**
      * Храним элементы листа в этом массиве
@@ -27,7 +44,7 @@ public final class DIYarrayList<T> implements List<T> {
     /**
      * счетчик модификаций листа (любые действия что приводят к изменению sizeList)
      */
-    private int modificationCounter;
+    private int modificationCounter = 0;
 
     public DIYarrayList() {
         this(DEFAULT_CAPACITY);
@@ -266,16 +283,27 @@ public final class DIYarrayList<T> implements List<T> {
      */
     private void checkAndGrowCapacityIfNeed(int addQuantity) {
         try {
+            // Не допускаем попытки записи в массив элементов больше чем Integer.MAX_VALUE
+            // Через контроль переполнения
             int newSize = Math.addExact(sizeList, addQuantity);
+            if (newSize > LIMIT_SIZE) {
+                throw new IllegalArgumentException("Элементы не могут быть добавлены. Размер коллекции не может превышать " + LIMIT_SIZE + " элементов.");
+            }
             if (storage.length < newSize) {
-                if (newSize >= 1073741823) {
-                    reInitCapacity(Integer.MAX_VALUE);
+                // + 1 нужен, для защиты если FACTOR_GROW будет слишком маленький
+                Double newSizeAndFactorGrow = newSize * FACTOR_GROW + 1;
+                // Если случилос вдруг переполнения (выбран большой FACTOR_GROW например)
+                // То задаем максимально возможный размер массива LIMIT_SIZE
+                if (newSizeAndFactorGrow.isInfinite() ||
+                        newSizeAndFactorGrow.longValue() < 0 ||
+                        newSizeAndFactorGrow.longValue() >= LIMIT_SIZE) {
+                    reInitCapacity(LIMIT_SIZE);
                 } else {
-                    reInitCapacity(Math.multiplyExact(newSize, 2));
+                    reInitCapacity(newSizeAndFactorGrow.intValue());
                 }
             }
         } catch (ArithmeticException e) {
-            throw new IllegalArgumentException("Элементы не могут быть добавлены. Размер коллекции не может превышать Integer.MAX_VALUE (2147483647) элементов.");
+            throw new IllegalArgumentException("Элементы не могут быть добавлены. Размер коллекции не может превышать " + LIMIT_SIZE + " элементов.");
         }
     }
 
@@ -284,6 +312,11 @@ public final class DIYarrayList<T> implements List<T> {
         storage = (T[]) new Object[newCapacity];
     }
 
+    /**
+     * Переинциализируем массив где все храним, естественно с копирование предыдущих данных
+     *
+     * @param newCapacity новый размер массива
+     */
     private void reInitCapacity(int newCapacity) {
         storage = Arrays.copyOf(storage, newCapacity);
     }
