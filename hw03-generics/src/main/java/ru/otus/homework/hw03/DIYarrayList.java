@@ -333,10 +333,26 @@ public final class DIYarrayList<T> implements List<T> {
 
     private class DIYiterattor<I> implements ListIterator<I> {
 
-        private int modification;
-        private boolean wasAdd = false;
-        private boolean wasRemoved = false;
+        /**
+         * Указывает на идекс массива (последний вызванный next или previous)
+         * -1 нормальное стартовое значение если следующий next будет 0
+         */
         private int currentPosition;
+
+        /**
+         * зафиксированный сщетчик модификаций родителской коллекции
+         */
+        private int modification;
+
+        /**
+         * были вызванны методы add для текущей позиции
+         */
+        private boolean wasAdd = false;
+
+        /**
+         * был вызван метод remove для текущей позиции
+         */
+        private boolean wasRemoved = false;
 
         /**
          * @param modification фиксируем текущею модификацию листа
@@ -438,12 +454,19 @@ public final class DIYarrayList<T> implements List<T> {
             return currentPosition < 0 || currentPosition >= DIYarrayList.this.sizeList;
         }
 
+        /**
+         * Проверяем а небыло ли в листе существенных изменений, если были
+         * то ConcurrentModificationException
+         */
         private void checkListModification() {
             if (modification != DIYarrayList.this.modificationCounter) {
                 throw new ConcurrentModificationException();
             }
         }
 
+        /**
+         * Если изменения прошли в рамках итератора, то легализуем их
+         */
         private void updateListModification() {
             modification = DIYarrayList.this.modificationCounter;
         }
