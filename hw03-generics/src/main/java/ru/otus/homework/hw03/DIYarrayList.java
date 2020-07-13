@@ -58,8 +58,8 @@ public final class DIYarrayList<T> implements List<T> {
     public DIYarrayList(int startCapacity) {
         if (startCapacity == 0) {
             initCapacity(DEFAULT_CAPACITY);
-        } else if (startCapacity < 0) {
-            throw new IllegalArgumentException("Неверный размер массива: " + startCapacity);
+        } else if (startCapacity < 0 || startCapacity > LIMIT_SIZE) {
+            throw new IllegalArgumentException("Неверный размер массива: " + startCapacity + ". Размер массива может быть от 1 до " + LIMIT_SIZE);
         }
         initCapacity(startCapacity);
     }
