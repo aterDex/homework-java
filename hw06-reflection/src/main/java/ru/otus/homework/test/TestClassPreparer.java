@@ -3,7 +3,7 @@ package ru.otus.homework.test;
 /**
  * Готовим класс теста к запуску
  */
-public interface TestPreparer {
+public interface TestClassPreparer {
 
-    TestPrepared prepare(Class clazz);
+    TestClass prepare(Class clazz);
 }
