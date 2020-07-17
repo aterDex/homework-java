@@ -9,5 +9,5 @@ public interface TestPrinter {
      *
      * @param results результаты тэстов
      */
-    void print(Collection<? extends TestResult> results);
+    void print(Collection<? extends TestClassResult> results);
 }

@@ -20,11 +20,11 @@ public class TestRunnerImpl implements TestRunner {
 
     @Override
     public void run() {
-        Collection<Class> testClass = testDetective.search();
-        List<TestResult> testResult = testClass.stream()
-                .map(testExecutor::execute)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        testPrinter.print(testResult);
+//        Collection<Class> testClass = testDetective.search();
+//        List<TestResult> testResult = testClass.stream()
+//                .map(testExecutor::execute)
+//                .flatMap(Collection::stream)
+//                .collect(Collectors.toList());
+//        testPrinter.print(testResult);
     }
 }

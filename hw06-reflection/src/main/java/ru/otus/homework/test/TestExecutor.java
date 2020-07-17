@@ -2,13 +2,13 @@ package ru.otus.homework.test;
 
 import java.util.Collection;
 
-public interface TestExecutor<T extends TestResult> {
+public interface TestExecutor {
 
     /**
-     * Выполняем все тэсты в классе и возвращаем результат
+     * Выполняем все тесты в классе и возвращаем результат
      *
-     * @param aClass класс с тэстами
-     * @return Результаты тэстов
+     * @param aClass класс с тестами
+     * @return Результаты тестов
      */
-    Collection<T> execute(Class aClass);
+    TestClassResult execute(Class aClass);
 }
