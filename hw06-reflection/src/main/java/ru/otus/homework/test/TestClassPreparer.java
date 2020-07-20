@@ -5,5 +5,5 @@ package ru.otus.homework.test;
  */
 public interface TestClassPreparer {
 
-    TestClass prepare(Class clazz);
+    TestClass prepare(Class clazz) throws TestClassPreparerException;
 }

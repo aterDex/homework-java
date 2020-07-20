@@ -1,6 +1,7 @@
 package ru.otus.homework.test;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TestClass {
 
@@ -8,9 +9,9 @@ public interface TestClass {
 
     String getDescription();
 
-    void beforeAll();
+    Optional<Throwable> beforeAll();
 
-    void afterAll();
+    Optional<Throwable> afterAll();
 
     List<TestClassMethod> getTestMethods();
 }

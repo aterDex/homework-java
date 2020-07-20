@@ -1,16 +1,18 @@
 package ru.otus.homework.test;
 
+import java.util.Optional;
+
 public interface TestClassMethod {
 
     String getDescription();
 
     String getMethodName();
 
-    void init() throws Throwable;
+    Optional<Throwable> init();
 
-    void before() throws Throwable;
+    Optional<Throwable> before();
 
-    void test() throws Throwable;
+    Optional<Throwable> test();
 
-    void after() throws Throwable;
+    Optional<Throwable> after();
 }

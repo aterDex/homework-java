@@ -1,31 +1,33 @@
 package ru.otus.homework.test.impl;
 
+import ru.otus.homework.test.TestClass;
 import ru.otus.homework.test.TestClassMethod;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
-public class TestClassFromMethods implements TestClassMethod {
+public class TestClassFromMethods implements TestClass {
 
+    private final Class clazz;
     private final String description;
-    private final Method before;
-    private final Method test;
-    private final Method after;
-    private final Class calzz;
-    private Object instance;
+    private final Method beforeAll;
+    private final Method afterAll;
+    private final List<TestClassMethod> testClassMethods;
 
-    public TestClassFromMethods(Class clazz, String description, Method before, Method test, Method after) {
-        if (test == null) throw new NullPointerException("Не задан метод для тестирования");
+    public TestClassFromMethods(Class clazz, String description, Method beforeAll, Method afterAll, List<? extends TestClassMethod> testClassMethods) {
+        this.clazz = clazz;
         this.description = description;
-        this.before = before;
-        this.test = test;
-        this.after = after;
-        this.calzz = clazz;
+        this.beforeAll = beforeAll;
+        this.afterAll = afterAll;
+        this.testClassMethods = Collections.unmodifiableList(new ArrayList<>(testClassMethods));
     }
 
     @Override
-    public void init() throws Throwable {
-        instance = calzz.getDeclaredConstructor().newInstance();
+    public Class getClazz() {
+        return clazz;
     }
 
     @Override
@@ -34,28 +36,17 @@ public class TestClassFromMethods implements TestClassMethod {
     }
 
     @Override
-    public String getMethodName() {
-        return test.getName();
+    public Optional<Throwable> beforeAll() {
+        return InvokeUtil.invokeMethod(beforeAll, null);
     }
 
     @Override
-    public void before() throws Throwable {
-        if (before != null) {
-            try {
-                before.invoke(instance);
-            } catch (InvocationTargetException ite) {
-                throw ite.getCause();
-            }
-        }
+    public Optional<Throwable> afterAll() {
+        return InvokeUtil.invokeMethod(afterAll, null);
     }
 
     @Override
-    public void test() throws Throwable {
-
-    }
-
-    @Override
-    public void after() throws Throwable {
-
+    public List<TestClassMethod> getTestMethods() {
+        return testClassMethods;
     }
 }
