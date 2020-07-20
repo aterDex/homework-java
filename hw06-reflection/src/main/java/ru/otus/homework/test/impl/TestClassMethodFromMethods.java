@@ -57,4 +57,14 @@ public class TestClassMethodFromMethods implements TestClassMethod {
     public Optional<Throwable> after() {
         return InvokeUtil.invokeMethod(after, instance);
     }
+
+    @Override
+    public boolean isAfter() {
+        return after != null;
+    }
+
+    @Override
+    public boolean isBefore() {
+        return before != null;
+    }
 }

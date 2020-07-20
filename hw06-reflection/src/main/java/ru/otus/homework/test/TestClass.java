@@ -13,5 +13,9 @@ public interface TestClass {
 
     Optional<Throwable> afterAll();
 
+    boolean isBeforeAll();
+
+    boolean isAfterAll();
+
     List<TestClassMethod> getTestMethods();
 }

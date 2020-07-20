@@ -15,4 +15,8 @@ public interface TestClassMethod {
     Optional<Throwable> test();
 
     Optional<Throwable> after();
+
+    boolean isAfter();
+
+    boolean isBefore();
 }

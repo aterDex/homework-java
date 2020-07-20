@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 public class TestClassPreparerByAnnotation implements TestClassPreparer {
 
     private static final String ERROR_TEXT_TWO_ANNOTATION = "В классе теста не должно быть больше одного метод с аннотацией";
+    private static final String ERROR_TEXT_EMPTY = "В классе теста не найдены тесты";
 
     @Override
     public TestClass prepare(Class clazz) throws TestClassPreparerException {
@@ -20,6 +21,9 @@ public class TestClassPreparerByAnnotation implements TestClassPreparer {
         TestClassFromMethodsBuilder builderTestClass = new TestClassFromMethodsBuilder(clazz);
         for (Method method : methods) {
             prepare(method, builderTestClass);
+        }
+        if (builderTestClass.getTestMethodCount() == 0) {
+            throw new TestClassPreparerException(ERROR_TEXT_EMPTY, clazz);
         }
         return builderTestClass.createTestClass();
     }

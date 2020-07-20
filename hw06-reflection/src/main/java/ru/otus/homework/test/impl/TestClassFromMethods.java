@@ -49,4 +49,14 @@ public class TestClassFromMethods implements TestClass {
     public List<TestClassMethod> getTestMethods() {
         return testClassMethods;
     }
+
+    @Override
+    public boolean isBeforeAll() {
+        return beforeAll != null;
+    }
+
+    @Override
+    public boolean isAfterAll() {
+        return afterAll != null;
+    }
 }

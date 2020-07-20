@@ -74,6 +74,10 @@ public class TestClassFromMethodsBuilder {
         return new TestClassFromMethods(clazz, description, beforeAll, afterAll, createTestMethodsClass());
     }
 
+    public int getTestMethodCount() {
+        return methods.size();
+    }
+
     private List<TestClassMethod> createTestMethodsClass() {
         List<TestClassMethod> testClassMethods = new ArrayList<>(methods.size());
         for (int i = 0; i < methods.size(); i++) {
