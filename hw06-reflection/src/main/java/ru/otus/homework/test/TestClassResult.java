@@ -1,6 +1,7 @@
 package ru.otus.homework.test;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface TestClassResult {
 
@@ -27,7 +28,7 @@ public interface TestClassResult {
     /**
      * @return исключение которое вызвал тест
      */
-    Throwable getThrowable();
+    List<Throwable> getThrowable();
 
     /**
      * @return Описание проблемы

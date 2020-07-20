@@ -7,6 +7,7 @@ import ru.otus.homework.test.TestResultEnum;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public final class TestClassResultImmutable implements TestClassResult {
 
@@ -14,11 +15,11 @@ public final class TestClassResultImmutable implements TestClassResult {
     private final String name;
     private final String description;
     private final TestResultEnum result;
-    private final Throwable throwable;
+    private final List<Throwable> throwable;
     private final String problemDescription;
     private final Collection<TestMethodResult> testMethodResults;
 
-    TestClassResultImmutable(Class clazz, String name, String description, TestResultEnum result, Throwable throwable, String problemDescription, Collection<TestMethodResult> testMethodResults) {
+    TestClassResultImmutable(Class clazz, String name, String description, TestResultEnum result, List<Throwable> throwable, String problemDescription, Collection<TestMethodResult> testMethodResults) {
         this.clazz = clazz;
         this.name = name;
         this.description = description;
@@ -53,7 +54,7 @@ public final class TestClassResultImmutable implements TestClassResult {
     }
 
     @Override
-    public Throwable getThrowable() {
+    public List<Throwable> getThrowable() {
         return this.throwable;
     }
 
@@ -73,7 +74,7 @@ public final class TestClassResultImmutable implements TestClassResult {
         private String name;
         private String description;
         private TestResultEnum result;
-        private Throwable throwable;
+        private List<Throwable> throwable;
         private String problemDescription;
         private Collection<TestMethodResult> testMethodResults;
 
@@ -100,7 +101,7 @@ public final class TestClassResultImmutable implements TestClassResult {
             return this;
         }
 
-        public TestClassResultImmutable.TestClassResultImmutableBuilder throwable(Throwable throwable) {
+        public TestClassResultImmutable.TestClassResultImmutableBuilder throwable(List<Throwable> throwable) {
             this.throwable = throwable;
             return this;
         }
@@ -116,7 +117,11 @@ public final class TestClassResultImmutable implements TestClassResult {
         }
 
         public TestClassResultImmutable build() {
-            return new TestClassResultImmutable(clazz, name, description, result, throwable, problemDescription,
+            return new TestClassResultImmutable(clazz, name, description, result,
+                    throwable == null ?
+                            Collections.emptyList() :
+                            Collections.unmodifiableList(new ArrayList<>(throwable)),
+                    problemDescription,
                     testMethodResults == null ?
                             Collections.emptyList() :
                             Collections.unmodifiableCollection(new ArrayList<>(testMethodResults)));

@@ -1,116 +1,117 @@
 package ru.otus.homework.test.impl;
 
-import ru.otus.homework.test.TestClassResult;
-import ru.otus.homework.test.TestExecutor;
-import ru.otus.homework.test.TestMethodResult;
+import ru.otus.homework.test.*;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TestExecutorIntoSingleThread implements TestExecutor {
 
+    private final TestClassPreparer testClassPreparer;
+
+    public TestExecutorIntoSingleThread(TestClassPreparer testClassPreparer) {
+        this.testClassPreparer = testClassPreparer;
+    }
 
     @Override
     public TestClassResult execute(Class aClass) {
-//        TestPrepared preparedTest = testPreparer.prepare(aClass);
-//        if (!preparedTest.isValid()) {
-//            return createIllegalResult(preparedTest);
-//        }
-//        if (preparedTest.getBeforeAll() != null) {
-//            try {
-//                preparedTest.getBeforeAll().invoke(null);
-//            } catch (InvocationTargetException ite) {
-//                return createErrorResult(ite.getTargetException(), "Произошла ошибка при вызове метода @BeforeAll", preparedTest, null);
-//            } catch (Throwable e) {
-//                return createErrorResult(e, "Произошла ошибка при вызове метода @BeforeAll", preparedTest, null);
-//            }
-//        }
-//        List<TestMethodResult> results = new ArrayList<>();
-//        for (Method test : preparedTest.getTests()) {
-//            results.add(executeTest(preparedTest.getClazz(), preparedTest.getBefore(), test, preparedTest.getAfter()));
-//        }
-//        if (preparedTest.getAfterAll() != null) {
-//            try {
-//                preparedTest.getBeforeAll().invoke(null);
-//            } catch (InvocationTargetException ite) {
-//                return createErrorResult(ite.getTargetException(), "Произошла ошибка при вызове метода @AfterAll", preparedTest, null);
-//            } catch (Throwable e) {
-//                return createErrorResult(e, "Произошла ошибка при вызове метода @AfterAll", preparedTest, results);
-//            }
-//        }
-//        return createOkResult(results);
-        return null;
-    }
-
-    private TestMethodResult executeTest(Class clazz, Method before, Method test, Method after) {
-        Object instance;
+        TestClass testClass;
         try {
-            Constructor constructor = clazz.getDeclaredConstructor();
-            instance = constructor.newInstance();
+            testClass = testClassPreparer.prepare(aClass);
         } catch (Throwable t) {
-            throw new UnsupportedOperationException();
+            return createIllegalResult(t, aClass);
         }
-        if (before != null) {
-            try {
-                before.invoke(instance);
-            } catch (InvocationTargetException ite) {
-                throw new UnsupportedOperationException();
-            } catch (Throwable e) {
-                throw new UnsupportedOperationException();
+
+        List<TestMethodResult> methodsResults = new ArrayList<>(testClass.getTestMethods().size());
+        Optional<Throwable> beforeAll, afterAll;
+
+        beforeAll = testClass.beforeAll();
+        if (!beforeAll.isEmpty()) {
+            methodsResults.addAll(createAllSkipTestMethodResult(testClass));
+        } else {
+            for (TestClassMethod testMethod : testClass.getTestMethods()) {
+                Optional<Throwable> init, before, after, test;
+                init = testMethod.init();
+                before = testMethod.before();
+                test = before.isEmpty() ? testMethod.test() : Optional.empty();
+                after = testMethod.after();
+                methodsResults.add(createMethodResult(testMethod, init, before, test, after));
             }
         }
-        try {
-            test.invoke(instance);
-        } catch (InvocationTargetException ite) {
-            throw new UnsupportedOperationException();
-        } catch (Throwable e) {
-            throw new UnsupportedOperationException();
-        }
-        if (after != null) {
-            try {
-                after.invoke(instance);
-            } catch (InvocationTargetException ite) {
-                throw new UnsupportedOperationException();
-            } catch (Throwable e) {
-                throw new UnsupportedOperationException();
-            }
-        }
-        throw new UnsupportedOperationException();
+        afterAll = testClass.afterAll();
+        return createResult(beforeAll, afterAll, testClass, methodsResults);
     }
 
-//    private TestClassResult createOkResult(List<TestMethodResult> results) {
-//        return null;
-//    }
-//
-//    private TestClassResult createErrorResult(Throwable e, String description, TestPrepared preparedTest, List<TestMethodResult> results) {
-//        return TestClassResultImmutable.builder()
-//                .clazz(preparedTest.getClazz())
-//                .name(preparedTest.getClazz().getName())
-//                .description(description)
-//                .throwable(e)
-//                .result(TestResultEnum.FAILED)
-//                .testMethodResults(results == null ? createAllSkipTestMethodResult(preparedTest) : results)
-//                .build();
-//    }
-//
-//    private Collection<TestMethodResult> createAllSkipTestMethodResult(TestPrepared preparedTest) {
-//        return preparedTest.getTests().stream()
-//                .map(x -> TestMethodResultImmutable
-//                        .builder()
-//                        .methodName(x.getName())
-//                        .name(x.getName())
-//                        .result(TestResultEnum.SKIP)
-//                        .build()
-//                ).collect(Collectors.toList());
-//    }
-//
-//    private TestClassResult createIllegalResult(TestPrepared preparedTest) {
-//        return TestClassResultImmutable.builder()
-//                .clazz(preparedTest.getClazz())
-//                .name(preparedTest.getClazz().getName())
-//                .problemDescription(preparedTest.getProblemsDescription())
-//                .result(TestResultEnum.ILLEGAL)
-//                .build();
-//    }
+    private Collection<TestMethodResult> createAllSkipTestMethodResult(TestClass testClass) {
+        return testClass.getTestMethods().stream()
+                .map(x -> TestMethodResultImmutable
+                        .builder()
+                        .methodName(x.getMethodName())
+                        .description(testClass.getDescription())
+                        .result(TestResultEnum.SKIP)
+                        .build()
+                ).collect(Collectors.toList());
+    }
+
+    private TestMethodResult createMethodResult(
+            TestClassMethod testMethod,
+            Optional<Throwable> init,
+            Optional<Throwable> before,
+            Optional<Throwable> test,
+            Optional<Throwable> after) {
+
+        TestMethodResultImmutable.TestMethodResultImmutableBuilder builder = TestMethodResultImmutable.builder();
+        builder
+                .methodName(testMethod.getMethodName())
+                .description(testMethod.getDescription());
+
+        List<Throwable> listThrow = Stream.of(init, before, test, after)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        if (listThrow.isEmpty()) {
+            builder
+                    .result(TestResultEnum.OK);
+        } else {
+            builder
+                    .result(TestResultEnum.FAILED)
+                    .throwable(listThrow);
+        }
+        return builder.build();
+    }
+
+    private TestClassResult createResult(Optional<Throwable> beforeAll, Optional<Throwable> afterAll, TestClass testClass, List<TestMethodResult> results) {
+        List<Throwable> listThrow = Stream.of(beforeAll, afterAll)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        TestResultEnum result =
+                !listThrow.isEmpty() || results.stream()
+                        .filter(x -> x.getResult() == TestResultEnum.FAILED)
+                        .findAny().isPresent()
+                        ? TestResultEnum.FAILED : TestResultEnum.OK;
+
+        return TestClassResultImmutable.builder()
+                .clazz(testClass.getClazz())
+                .name(testClass.getClazz().getName())
+                .description(testClass.getDescription())
+                .result(result)
+                .testMethodResults(results == null ? createAllSkipTestMethodResult(testClass) : results)
+                .throwable(listThrow)
+                .build();
+    }
+
+    private TestClassResult createIllegalResult(Throwable throwable, Class aClass) {
+        return TestClassResultImmutable.builder()
+                .clazz(aClass)
+                .name(aClass.getName())
+                .throwable(List.of(throwable))
+                .result(TestResultEnum.ILLEGAL)
+                .build();
+    }
 }

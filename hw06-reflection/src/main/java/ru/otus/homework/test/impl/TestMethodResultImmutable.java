@@ -3,20 +3,24 @@ package ru.otus.homework.test.impl;
 import ru.otus.homework.test.TestMethodResult;
 import ru.otus.homework.test.TestResultEnum;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public final class TestMethodResultImmutable implements TestMethodResult {
 
     private final String name;
     private final String methodName;
     private final String description;
     private final TestResultEnum result;
-    private final Throwable throwable;
+    private final List<Throwable> throwable;
 
-    TestMethodResultImmutable(String name, String methodName, String description, TestResultEnum result, Throwable throwable) {
+    TestMethodResultImmutable(String name, String methodName, String description, TestResultEnum result, List<? extends Throwable> throwable) {
         this.name = name;
         this.methodName = methodName;
         this.description = description;
         this.result = result;
-        this.throwable = throwable;
+        this.throwable = throwable == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(throwable));
     }
 
     public static TestMethodResultImmutableBuilder builder() {
@@ -44,7 +48,7 @@ public final class TestMethodResultImmutable implements TestMethodResult {
     }
 
     @Override
-    public Throwable getThrowable() {
+    public List<Throwable> getThrowable() {
         return this.throwable;
     }
 
@@ -53,7 +57,7 @@ public final class TestMethodResultImmutable implements TestMethodResult {
         private String methodName;
         private String description;
         private TestResultEnum result;
-        private Throwable throwable;
+        private List<Throwable> throwable;
 
         TestMethodResultImmutableBuilder() {
         }
@@ -78,7 +82,7 @@ public final class TestMethodResultImmutable implements TestMethodResult {
             return this;
         }
 
-        public TestMethodResultImmutable.TestMethodResultImmutableBuilder throwable(Throwable throwable) {
+        public TestMethodResultImmutable.TestMethodResultImmutableBuilder throwable(List<Throwable> throwable) {
             this.throwable = throwable;
             return this;
         }

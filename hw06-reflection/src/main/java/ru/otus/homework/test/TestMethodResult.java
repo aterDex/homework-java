@@ -1,5 +1,7 @@
 package ru.otus.homework.test;
 
+import java.util.List;
+
 public interface TestMethodResult {
 
     /**
@@ -24,7 +26,7 @@ public interface TestMethodResult {
     TestResultEnum getResult();
 
     /**
-     * @return исключение которое вызвал тест
+     * @return исключения которое вызвал тест
      */
-    Throwable getThrowable();
+    List<Throwable> getThrowable();
 }
