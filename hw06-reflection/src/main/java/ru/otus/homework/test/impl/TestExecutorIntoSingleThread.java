@@ -26,7 +26,7 @@ public class TestExecutorIntoSingleThread implements TestExecutor {
             return createIllegalResult(t, aClass);
         }
 
-        List<TestMethodResult> methodsResults = new ArrayList<>(testClass.getTestMethods().size());
+        List<TestClassMethodResult> methodsResults = new ArrayList<>(testClass.getTestMethods().size());
         Optional<Throwable> beforeAll, afterAll;
 
         beforeAll = testClass.beforeAll();
@@ -46,9 +46,9 @@ public class TestExecutorIntoSingleThread implements TestExecutor {
         return createResult(beforeAll, afterAll, testClass, methodsResults);
     }
 
-    private Collection<TestMethodResult> createAllSkipTestMethodResult(TestClass testClass) {
+    private Collection<TestClassMethodResult> createAllSkipTestMethodResult(TestClass testClass) {
         return testClass.getTestMethods().stream()
-                .map(x -> TestMethodResultImmutable
+                .map(x -> TestClassMethodResultImmutable
                         .builder()
                         .methodName(x.getMethodName())
                         .description(testClass.getDescription())
@@ -57,14 +57,14 @@ public class TestExecutorIntoSingleThread implements TestExecutor {
                 ).collect(Collectors.toList());
     }
 
-    private TestMethodResult createMethodResult(
+    private TestClassMethodResult createMethodResult(
             TestClassMethod testMethod,
             Optional<Throwable> init,
             Optional<Throwable> before,
             Optional<Throwable> test,
             Optional<Throwable> after) {
 
-        TestMethodResultImmutable.TestMethodResultImmutableBuilder builder = TestMethodResultImmutable.builder();
+        TestClassMethodResultImmutable.TestMethodResultImmutableBuilder builder = TestClassMethodResultImmutable.builder();
         builder
                 .methodName(testMethod.getMethodName())
                 .description(testMethod.getDescription());
@@ -85,7 +85,7 @@ public class TestExecutorIntoSingleThread implements TestExecutor {
         return builder.build();
     }
 
-    private TestClassResult createResult(Optional<Throwable> beforeAll, Optional<Throwable> afterAll, TestClass testClass, List<TestMethodResult> results) {
+    private TestClassResult createResult(Optional<Throwable> beforeAll, Optional<Throwable> afterAll, TestClass testClass, List<TestClassMethodResult> results) {
         List<Throwable> listThrow = Stream.of(beforeAll, afterAll)
                 .filter(Optional::isPresent)
                 .map(Optional::get)

@@ -11,11 +11,6 @@ public interface TestClassResult {
     Class getClazz();
 
     /**
-     * @return Короткое имя теста
-     */
-    String getName();
-
-    /**
      * @return Описания теста
      */
     String getDescription();
@@ -33,12 +28,12 @@ public interface TestClassResult {
     /**
      * @return Описание проблемы
      */
-    String getProblemDescription();
+    String getDescriptionResult();
 
     /**
      * Результаты тестирования по методам
      *
      * @return
      */
-    Collection<TestMethodResult> getTestMethodResults();
+    Collection<TestClassMethodResult> getTestMethodResults();
 }

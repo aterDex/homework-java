@@ -71,7 +71,7 @@ class TestExecutorIntoSingleThreadTest {
         assertEquals(TestResultEnum.OK, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
-        for (TestMethodResult testMethodResult : result.getTestMethodResults()) {
+        for (TestClassMethodResult testMethodResult : result.getTestMethodResults()) {
             assertEquals(TestResultEnum.OK, testMethodResult.getResult());
             assertEquals(0, testMethodResult.getThrowable().size());
         }
@@ -111,7 +111,7 @@ class TestExecutorIntoSingleThreadTest {
         assertEquals(TestResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
-        for (TestMethodResult testMethodResult : result.getTestMethodResults()) {
+        for (TestClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
                 assertEquals(TestResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(1, testMethodResult.getThrowable().size());
@@ -156,7 +156,7 @@ class TestExecutorIntoSingleThreadTest {
         assertEquals(TestResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
-        for (TestMethodResult testMethodResult : result.getTestMethodResults()) {
+        for (TestClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
                 assertEquals(TestResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(1, testMethodResult.getThrowable().size());
@@ -201,7 +201,7 @@ class TestExecutorIntoSingleThreadTest {
         assertEquals(TestResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
-        for (TestMethodResult testMethodResult : result.getTestMethodResults()) {
+        for (TestClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
                 assertEquals(TestResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(1, testMethodResult.getThrowable().size());
@@ -247,7 +247,7 @@ class TestExecutorIntoSingleThreadTest {
         assertEquals(TestResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
-        for (TestMethodResult testMethodResult : result.getTestMethodResults()) {
+        for (TestClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
                 assertEquals(TestResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(2, testMethodResult.getThrowable().size());
@@ -292,7 +292,7 @@ class TestExecutorIntoSingleThreadTest {
         assertEquals(TestResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
-        for (TestMethodResult testMethodResult : result.getTestMethodResults()) {
+        for (TestClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
                 assertEquals(TestResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(1, testMethodResult.getThrowable().size());
@@ -332,7 +332,7 @@ class TestExecutorIntoSingleThreadTest {
         assertEquals(TestResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(1, result.getThrowable().size());
-        for (TestMethodResult testMethodResult : result.getTestMethodResults()) {
+        for (TestClassMethodResult testMethodResult : result.getTestMethodResults()) {
             assertEquals(TestResultEnum.SKIP, testMethodResult.getResult());
             assertEquals(0, testMethodResult.getThrowable().size());
         }
@@ -358,7 +358,7 @@ class TestExecutorIntoSingleThreadTest {
         assertEquals(TestResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(1, result.getThrowable().size());
-        for (TestMethodResult testMethodResult : result.getTestMethodResults()) {
+        for (TestClassMethodResult testMethodResult : result.getTestMethodResults()) {
             assertEquals(TestResultEnum.OK, testMethodResult.getResult());
             assertEquals(0, testMethodResult.getThrowable().size());
         }
@@ -397,7 +397,7 @@ class TestExecutorIntoSingleThreadTest {
         assertEquals(TestResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(2, result.getThrowable().size());
-        for (TestMethodResult testMethodResult : result.getTestMethodResults()) {
+        for (TestClassMethodResult testMethodResult : result.getTestMethodResults()) {
             assertEquals(TestResultEnum.SKIP, testMethodResult.getResult());
             assertEquals(0, testMethodResult.getThrowable().size());
         }

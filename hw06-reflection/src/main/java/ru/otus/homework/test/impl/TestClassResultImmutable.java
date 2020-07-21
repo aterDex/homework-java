@@ -1,7 +1,7 @@
 package ru.otus.homework.test.impl;
 
+import ru.otus.homework.test.TestClassMethodResult;
 import ru.otus.homework.test.TestClassResult;
-import ru.otus.homework.test.TestMethodResult;
 import ru.otus.homework.test.TestResultEnum;
 
 import java.util.ArrayList;
@@ -12,20 +12,18 @@ import java.util.List;
 public final class TestClassResultImmutable implements TestClassResult {
 
     private final Class clazz;
-    private final String name;
     private final String description;
     private final TestResultEnum result;
     private final List<Throwable> throwable;
-    private final String problemDescription;
-    private final Collection<TestMethodResult> testMethodResults;
+    private final String descriptionResult;
+    private final Collection<TestClassMethodResult> testMethodResults;
 
-    TestClassResultImmutable(Class clazz, String name, String description, TestResultEnum result, List<Throwable> throwable, String problemDescription, Collection<TestMethodResult> testMethodResults) {
+    TestClassResultImmutable(Class clazz, String description, TestResultEnum result, List<Throwable> throwable, String descriptionResult, Collection<TestClassMethodResult> testMethodResults) {
         this.clazz = clazz;
-        this.name = name;
         this.description = description;
         this.result = result;
         this.throwable = throwable;
-        this.problemDescription = problemDescription;
+        this.descriptionResult = descriptionResult;
         this.testMethodResults = testMethodResults;
     }
 
@@ -36,11 +34,6 @@ public final class TestClassResultImmutable implements TestClassResult {
     @Override
     public Class getClazz() {
         return this.clazz;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 
     @Override
@@ -59,13 +52,13 @@ public final class TestClassResultImmutable implements TestClassResult {
     }
 
     @Override
-    public String getProblemDescription() {
-        return this.problemDescription;
+    public Collection<TestClassMethodResult> getTestMethodResults() {
+        return this.testMethodResults;
     }
 
     @Override
-    public Collection<TestMethodResult> getTestMethodResults() {
-        return this.testMethodResults;
+    public String getDescriptionResult() {
+        return this.descriptionResult;
     }
 
     public static class TestClassResultImmutableBuilder {
@@ -76,7 +69,7 @@ public final class TestClassResultImmutable implements TestClassResult {
         private TestResultEnum result;
         private List<Throwable> throwable;
         private String problemDescription;
-        private Collection<TestMethodResult> testMethodResults;
+        private Collection<TestClassMethodResult> testMethodResults;
 
         TestClassResultImmutableBuilder() {
         }
@@ -111,13 +104,13 @@ public final class TestClassResultImmutable implements TestClassResult {
             return this;
         }
 
-        public TestClassResultImmutable.TestClassResultImmutableBuilder testMethodResults(Collection<TestMethodResult> testMethodResults) {
+        public TestClassResultImmutable.TestClassResultImmutableBuilder testMethodResults(Collection<TestClassMethodResult> testMethodResults) {
             this.testMethodResults = testMethodResults;
             return this;
         }
 
         public TestClassResultImmutable build() {
-            return new TestClassResultImmutable(clazz, name, description, result,
+            return new TestClassResultImmutable(clazz, description, result,
                     throwable == null ?
                             Collections.emptyList() :
                             Collections.unmodifiableList(new ArrayList<>(throwable)),

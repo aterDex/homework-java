@@ -2,15 +2,9 @@ package ru.otus.homework.test;
 
 import java.util.List;
 
-public interface TestMethodResult {
+public interface TestClassMethodResult {
 
     /**
-     * @return Короткое имя теста
-     */
-    String getName();
-
-    /**
-     *
      * @return Метод теста
      */
     String getMethodName();
@@ -29,4 +23,9 @@ public interface TestMethodResult {
      * @return исключения которое вызвал тест
      */
     List<Throwable> getThrowable();
+
+    /**
+     * @return Описание результата теста
+     */
+    String getDescriptionResult();
 }

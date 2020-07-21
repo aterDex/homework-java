@@ -1,5 +1,4 @@
 plugins {
-    id "io.freefair.lombok" version "5.1.0"
     id 'java-library'
     id 'com.github.johnrengelman.shadow'
 }
