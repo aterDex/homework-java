@@ -52,7 +52,7 @@ class ExecutorIntoSingleThreadTest {
         assertNotNull(result);
         assertEquals(1, result.getThrowable().size());
         assertEquals(0, result.getTestMethodResults().size());
-        assertEquals(ResultEnum.ILLEGAL, result.getResult());
+        assertEquals(ProvocationResultEnum.ILLEGAL, result.getResult());
         assertEquals(testClass, result.getClazz());
         assertEquals(exception, result.getThrowable().get(0).getClass());
     }
@@ -68,11 +68,11 @@ class ExecutorIntoSingleThreadTest {
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
         assertEquals(testClass, result.getClazz());
-        assertEquals(ResultEnum.OK, result.getResult());
+        assertEquals(ProvocationResultEnum.OK, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
         for (ProvokerClassMethodResult testMethodResult : result.getTestMethodResults()) {
-            assertEquals(ResultEnum.OK, testMethodResult.getResult());
+            assertEquals(ProvocationResultEnum.OK, testMethodResult.getResult());
             assertEquals(0, testMethodResult.getThrowable().size());
         }
 
@@ -108,15 +108,15 @@ class ExecutorIntoSingleThreadTest {
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
         assertEquals(testClass, result.getClazz());
-        assertEquals(ResultEnum.FAILED, result.getResult());
+        assertEquals(ProvocationResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
         for (ProvokerClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
-                assertEquals(ResultEnum.FAILED, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(1, testMethodResult.getThrowable().size());
             } else {
-                assertEquals(ResultEnum.OK, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.OK, testMethodResult.getResult());
                 assertEquals(0, testMethodResult.getThrowable().size());
             }
         }
@@ -153,15 +153,15 @@ class ExecutorIntoSingleThreadTest {
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
         assertEquals(testClass, result.getClazz());
-        assertEquals(ResultEnum.FAILED, result.getResult());
+        assertEquals(ProvocationResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
         for (ProvokerClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
-                assertEquals(ResultEnum.FAILED, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(1, testMethodResult.getThrowable().size());
             } else {
-                assertEquals(ResultEnum.OK, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.OK, testMethodResult.getResult());
                 assertEquals(0, testMethodResult.getThrowable().size());
             }
         }
@@ -198,15 +198,15 @@ class ExecutorIntoSingleThreadTest {
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
         assertEquals(testClass, result.getClazz());
-        assertEquals(ResultEnum.FAILED, result.getResult());
+        assertEquals(ProvocationResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
         for (ProvokerClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
-                assertEquals(ResultEnum.FAILED, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(1, testMethodResult.getThrowable().size());
             } else {
-                assertEquals(ResultEnum.OK, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.OK, testMethodResult.getResult());
                 assertEquals(0, testMethodResult.getThrowable().size());
             }
         }
@@ -244,15 +244,15 @@ class ExecutorIntoSingleThreadTest {
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
         assertEquals(testClass, result.getClazz());
-        assertEquals(ResultEnum.FAILED, result.getResult());
+        assertEquals(ProvocationResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
         for (ProvokerClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
-                assertEquals(ResultEnum.FAILED, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(2, testMethodResult.getThrowable().size());
             } else {
-                assertEquals(ResultEnum.OK, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.OK, testMethodResult.getResult());
                 assertEquals(0, testMethodResult.getThrowable().size());
             }
         }
@@ -289,15 +289,15 @@ class ExecutorIntoSingleThreadTest {
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
         assertEquals(testClass, result.getClazz());
-        assertEquals(ResultEnum.FAILED, result.getResult());
+        assertEquals(ProvocationResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(0, result.getThrowable().size());
         for (ProvokerClassMethodResult testMethodResult : result.getTestMethodResults()) {
             if (exceptionMethodName.equals(testMethodResult.getMethodName())) {
-                assertEquals(ResultEnum.FAILED, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.FAILED, testMethodResult.getResult());
                 assertEquals(1, testMethodResult.getThrowable().size());
             } else {
-                assertEquals(ResultEnum.OK, testMethodResult.getResult());
+                assertEquals(ProvocationResultEnum.OK, testMethodResult.getResult());
                 assertEquals(0, testMethodResult.getThrowable().size());
             }
         }
@@ -329,11 +329,11 @@ class ExecutorIntoSingleThreadTest {
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
         assertEquals(testClass, result.getClazz());
-        assertEquals(ResultEnum.FAILED, result.getResult());
+        assertEquals(ProvocationResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(1, result.getThrowable().size());
         for (ProvokerClassMethodResult testMethodResult : result.getTestMethodResults()) {
-            assertEquals(ResultEnum.SKIP, testMethodResult.getResult());
+            assertEquals(ProvocationResultEnum.SKIP, testMethodResult.getResult());
             assertEquals(0, testMethodResult.getThrowable().size());
         }
 
@@ -355,11 +355,11 @@ class ExecutorIntoSingleThreadTest {
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
         assertEquals(testClass, result.getClazz());
-        assertEquals(ResultEnum.FAILED, result.getResult());
+        assertEquals(ProvocationResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(1, result.getThrowable().size());
         for (ProvokerClassMethodResult testMethodResult : result.getTestMethodResults()) {
-            assertEquals(ResultEnum.OK, testMethodResult.getResult());
+            assertEquals(ProvocationResultEnum.OK, testMethodResult.getResult());
             assertEquals(0, testMethodResult.getThrowable().size());
         }
 
@@ -394,11 +394,11 @@ class ExecutorIntoSingleThreadTest {
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
         assertEquals(testClass, result.getClazz());
-        assertEquals(ResultEnum.FAILED, result.getResult());
+        assertEquals(ProvocationResultEnum.FAILED, result.getResult());
         assertEquals(3, result.getTestMethodResults().size());
         assertEquals(2, result.getThrowable().size());
         for (ProvokerClassMethodResult testMethodResult : result.getTestMethodResults()) {
-            assertEquals(ResultEnum.SKIP, testMethodResult.getResult());
+            assertEquals(ProvocationResultEnum.SKIP, testMethodResult.getResult());
             assertEquals(0, testMethodResult.getThrowable().size());
         }
 

@@ -18,7 +18,7 @@ public interface ProvokerClassResult {
     /**
      * @return результат теста
      */
-    ResultEnum getResult();
+    ProvocationResultEnum getResult();
 
     /**
      * @return исключение которое вызвал тест

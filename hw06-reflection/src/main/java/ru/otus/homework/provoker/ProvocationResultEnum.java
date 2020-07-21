@@ -1,6 +1,6 @@
 package ru.otus.homework.provoker;
 
-public enum ResultEnum {
+public enum ProvocationResultEnum {
 
     /**
      * Тест успешно выполнен
