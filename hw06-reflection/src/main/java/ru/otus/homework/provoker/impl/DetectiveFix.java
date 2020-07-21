@@ -11,7 +11,7 @@ import java.util.Collections;
  */
 public class DetectiveFix implements Detective {
 
-    private Collection<Class> classes;
+    private final Collection<Class> classes;
 
     public DetectiveFix(Collection<? extends Class> classes) {
         this.classes = classes == null ?
