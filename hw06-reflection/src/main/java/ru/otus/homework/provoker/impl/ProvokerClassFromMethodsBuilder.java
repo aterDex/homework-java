@@ -70,8 +70,8 @@ public class ProvokerClassFromMethodsBuilder {
         methods.add(test);
     }
 
-    public ProvokerClassFromMethods createTestClass() {
-        return new ProvokerClassFromMethods(clazz, description, beforeAll, afterAll, createTestMethodsClass());
+    public ProvokerClassFromReflectMethods createTestClass() {
+        return new ProvokerClassFromReflectMethods(clazz, description, beforeAll, afterAll, createTestMethodsClass());
     }
 
     public int getTestMethodCount() {
@@ -81,7 +81,7 @@ public class ProvokerClassFromMethodsBuilder {
     private List<ProvokerClassMethod> createTestMethodsClass() {
         List<ProvokerClassMethod> provokerClassMethods = new ArrayList<>(methods.size());
         for (int i = 0; i < methods.size(); i++) {
-            provokerClassMethods.add(new ProvokerClassMethodFromMethods(clazz, methodsDescription.get(i), before, methods.get(i), after));
+            provokerClassMethods.add(new ProvokerClassMethodFromReflectMethods(clazz, methodsDescription.get(i), before, methods.get(i), after));
         }
         return provokerClassMethods;
     }

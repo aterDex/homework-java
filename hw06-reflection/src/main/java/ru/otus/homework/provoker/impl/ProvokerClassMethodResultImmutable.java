@@ -1,7 +1,7 @@
 package ru.otus.homework.provoker.impl;
 
 import ru.otus.homework.provoker.ProvokerClassMethodResult;
-import ru.otus.homework.provoker.ResultEnum;
+import ru.otus.homework.provoker.ProvocationResultEnum;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,11 +11,11 @@ public final class ProvokerClassMethodResultImmutable implements ProvokerClassMe
 
     private final String methodName;
     private final String description;
-    private final ResultEnum result;
+    private final ProvocationResultEnum result;
     private final String descriptionResult;
     private final List<Throwable> throwable;
 
-    ProvokerClassMethodResultImmutable(String methodName, String description, ResultEnum result, List<? extends Throwable> throwable, String descriptionResult) {
+    ProvokerClassMethodResultImmutable(String methodName, String description, ProvocationResultEnum result, List<? extends Throwable> throwable, String descriptionResult) {
         this.descriptionResult = descriptionResult;
         this.methodName = methodName;
         this.description = description;
@@ -38,7 +38,7 @@ public final class ProvokerClassMethodResultImmutable implements ProvokerClassMe
     }
 
     @Override
-    public ResultEnum getResult() {
+    public ProvocationResultEnum getResult() {
         return this.result;
     }
 
@@ -57,7 +57,7 @@ public final class ProvokerClassMethodResultImmutable implements ProvokerClassMe
         private String descriptionResult;
         private String methodName;
         private String description;
-        private ResultEnum result;
+        private ProvocationResultEnum result;
         private List<Throwable> throwable;
 
         TestMethodResultImmutableBuilder() {
@@ -78,7 +78,7 @@ public final class ProvokerClassMethodResultImmutable implements ProvokerClassMe
             return this;
         }
 
-        public ProvokerClassMethodResultImmutable.TestMethodResultImmutableBuilder result(ResultEnum result) {
+        public ProvokerClassMethodResultImmutable.TestMethodResultImmutableBuilder result(ProvocationResultEnum result) {
             this.result = result;
             return this;
         }

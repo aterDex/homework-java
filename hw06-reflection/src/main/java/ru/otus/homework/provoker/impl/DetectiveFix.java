@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Фиксированный набор классов для тэстирования
+ * Фиксированный набор классов для тестирования
  */
 public class DetectiveFix implements Detective {
 

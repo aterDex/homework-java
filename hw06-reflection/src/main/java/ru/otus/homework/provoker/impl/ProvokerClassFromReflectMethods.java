@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class ProvokerClassFromMethods implements ProvokerClass {
+public class ProvokerClassFromReflectMethods implements ProvokerClass {
 
     private final Class clazz;
     private final String description;
@@ -17,7 +17,7 @@ public class ProvokerClassFromMethods implements ProvokerClass {
     private final Method afterAll;
     private final List<ProvokerClassMethod> provokerClassMethods;
 
-    public ProvokerClassFromMethods(Class clazz, String description, Method beforeAll, Method afterAll, List<? extends ProvokerClassMethod> testClassMethods) {
+    public ProvokerClassFromReflectMethods(Class clazz, String description, Method beforeAll, Method afterAll, List<? extends ProvokerClassMethod> testClassMethods) {
         this.clazz = clazz;
         this.description = description;
         this.beforeAll = beforeAll;

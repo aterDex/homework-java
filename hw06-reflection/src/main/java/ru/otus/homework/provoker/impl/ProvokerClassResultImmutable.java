@@ -2,7 +2,7 @@ package ru.otus.homework.provoker.impl;
 
 import ru.otus.homework.provoker.ProvokerClassMethodResult;
 import ru.otus.homework.provoker.ProvokerClassResult;
-import ru.otus.homework.provoker.ResultEnum;
+import ru.otus.homework.provoker.ProvocationResultEnum;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,18 +13,22 @@ public final class ProvokerClassResultImmutable implements ProvokerClassResult {
 
     private final Class clazz;
     private final String description;
-    private final ResultEnum result;
+    private final ProvocationResultEnum result;
     private final List<Throwable> throwable;
     private final String descriptionResult;
     private final Collection<ProvokerClassMethodResult> testMethodResults;
 
-    ProvokerClassResultImmutable(Class clazz, String description, ResultEnum result, List<Throwable> throwable, String descriptionResult, Collection<ProvokerClassMethodResult> testMethodResults) {
+    ProvokerClassResultImmutable(Class clazz, String description, ProvocationResultEnum result, List<Throwable> throwable, String descriptionResult, Collection<ProvokerClassMethodResult> testMethodResults) {
         this.clazz = clazz;
         this.description = description;
         this.result = result;
-        this.throwable = throwable;
+        this.throwable = throwable == null ?
+                Collections.emptyList() :
+                Collections.unmodifiableList(new ArrayList<>(throwable));
         this.descriptionResult = descriptionResult;
-        this.testMethodResults = testMethodResults;
+        this.testMethodResults = testMethodResults == null ?
+                Collections.emptyList() :
+                Collections.unmodifiableCollection(new ArrayList<>(testMethodResults));
     }
 
     public static TestClassResultImmutableBuilder builder() {
@@ -42,7 +46,7 @@ public final class ProvokerClassResultImmutable implements ProvokerClassResult {
     }
 
     @Override
-    public ResultEnum getResult() {
+    public ProvocationResultEnum getResult() {
         return this.result;
     }
 
@@ -66,7 +70,7 @@ public final class ProvokerClassResultImmutable implements ProvokerClassResult {
         private Class clazz;
         private String name;
         private String description;
-        private ResultEnum result;
+        private ProvocationResultEnum result;
         private List<Throwable> throwable;
         private String problemDescription;
         private Collection<ProvokerClassMethodResult> testMethodResults;
@@ -89,7 +93,7 @@ public final class ProvokerClassResultImmutable implements ProvokerClassResult {
             return this;
         }
 
-        public ProvokerClassResultImmutable.TestClassResultImmutableBuilder result(ResultEnum result) {
+        public ProvokerClassResultImmutable.TestClassResultImmutableBuilder result(ProvocationResultEnum result) {
             this.result = result;
             return this;
         }
@@ -111,13 +115,9 @@ public final class ProvokerClassResultImmutable implements ProvokerClassResult {
 
         public ProvokerClassResultImmutable build() {
             return new ProvokerClassResultImmutable(clazz, description, result,
-                    throwable == null ?
-                            Collections.emptyList() :
-                            Collections.unmodifiableList(new ArrayList<>(throwable)),
+                    throwable,
                     problemDescription,
-                    testMethodResults == null ?
-                            Collections.emptyList() :
-                            Collections.unmodifiableCollection(new ArrayList<>(testMethodResults)));
+                    testMethodResults);
         }
     }
 }

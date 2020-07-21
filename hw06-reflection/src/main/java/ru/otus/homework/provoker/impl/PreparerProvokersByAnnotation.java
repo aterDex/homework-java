@@ -18,28 +18,28 @@ public class PreparerProvokersByAnnotation implements PreparerProvokers {
     @Override
     public ProvokerClass prepare(Class clazz) throws PreparerProvokersException {
         Method[] methods = clazz.getDeclaredMethods();
-        ProvokerClassFromMethodsBuilder builderTestClass = new ProvokerClassFromMethodsBuilder(clazz);
+        ProvokerClassFromMethodsBuilder builderProvokerClass = new ProvokerClassFromMethodsBuilder(clazz);
         for (Method method : methods) {
-            prepare(method, builderTestClass);
+            prepare(method, builderProvokerClass);
         }
-        if (builderTestClass.getTestMethodCount() == 0) {
+        if (builderProvokerClass.getTestMethodCount() == 0) {
             throw new PreparerProvokersException(ERROR_TEXT_EMPTY, clazz);
         }
-        return builderTestClass.createTestClass();
+        return builderProvokerClass.createTestClass();
     }
 
 
-    private void prepare(Method method, ProvokerClassFromMethodsBuilder builder) {
+    private void prepare(Method method, ProvokerClassFromMethodsBuilder builderProvokerClass) {
         if (method.getDeclaredAnnotation(Test.class) != null) {
-            builder.addTestMethod("", method);
+            builderProvokerClass.addTestMethod("", method);
         } else if (method.getDeclaredAnnotation(After.class) != null) {
-            addMethods(method, builder::getAfter, builder::setAfter, After.class, builder);
+            addMethods(method, builderProvokerClass::getAfter, builderProvokerClass::setAfter, After.class, builderProvokerClass);
         } else if (method.getDeclaredAnnotation(Before.class) != null) {
-            addMethods(method, builder::getBefore, builder::setBefore, Before.class, builder);
+            addMethods(method, builderProvokerClass::getBefore, builderProvokerClass::setBefore, Before.class, builderProvokerClass);
         } else if (method.getDeclaredAnnotation(AfterAll.class) != null) {
-            addMethods(method, builder::getAfterAll, builder::setAfterAll, AfterAll.class, builder);
+            addMethods(method, builderProvokerClass::getAfterAll, builderProvokerClass::setAfterAll, AfterAll.class, builderProvokerClass);
         } else if (method.getDeclaredAnnotation(BeforeAll.class) != null) {
-            addMethods(method, builder::getBeforeAll, builder::setBeforeAll, BeforeAll.class, builder);
+            addMethods(method, builderProvokerClass::getBeforeAll, builderProvokerClass::setBeforeAll, BeforeAll.class, builderProvokerClass);
         }
     }
 

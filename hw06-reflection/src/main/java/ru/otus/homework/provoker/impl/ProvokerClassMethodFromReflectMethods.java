@@ -5,7 +5,7 @@ import ru.otus.homework.provoker.ProvokerClassMethod;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-public class ProvokerClassMethodFromMethods implements ProvokerClassMethod {
+public class ProvokerClassMethodFromReflectMethods implements ProvokerClassMethod {
 
     private final String description;
     private final Method before;
@@ -14,7 +14,7 @@ public class ProvokerClassMethodFromMethods implements ProvokerClassMethod {
     private final Class calzz;
     private Object instance;
 
-    public ProvokerClassMethodFromMethods(Class clazz, String description, Method before, Method test, Method after) {
+    public ProvokerClassMethodFromReflectMethods(Class clazz, String description, Method before, Method test, Method after) {
         if (test == null) throw new NullPointerException("Не задан метод для тестирования");
         this.description = description;
         this.before = before;

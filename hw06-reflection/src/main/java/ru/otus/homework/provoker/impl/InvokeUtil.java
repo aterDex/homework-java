@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-public final class InvokeUtil {
+final class InvokeUtil {
 
     private InvokeUtil() {
     }

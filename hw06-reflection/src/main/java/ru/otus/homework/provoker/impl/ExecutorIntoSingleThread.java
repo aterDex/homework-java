@@ -52,7 +52,7 @@ public class ExecutorIntoSingleThread implements Executor {
                         .builder()
                         .methodName(x.getMethodName())
                         .description(provokerClass.getDescription())
-                        .result(ResultEnum.SKIP)
+                        .result(ProvocationResultEnum.SKIP)
                         .build()
                 ).collect(Collectors.toList());
     }
@@ -76,10 +76,10 @@ public class ExecutorIntoSingleThread implements Executor {
 
         if (listThrow.isEmpty()) {
             builder
-                    .result(ResultEnum.OK);
+                    .result(ProvocationResultEnum.OK);
         } else {
             builder
-                    .result(ResultEnum.FAILED)
+                    .result(ProvocationResultEnum.FAILED)
                     .throwable(listThrow);
         }
         return builder.build();
@@ -90,11 +90,11 @@ public class ExecutorIntoSingleThread implements Executor {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
-        ResultEnum result =
+        ProvocationResultEnum result =
                 !listThrow.isEmpty() || results.stream()
-                        .filter(x -> x.getResult() == ResultEnum.FAILED)
+                        .filter(x -> x.getResult() == ProvocationResultEnum.FAILED)
                         .findAny().isPresent()
-                        ? ResultEnum.FAILED : ResultEnum.OK;
+                        ? ProvocationResultEnum.FAILED : ProvocationResultEnum.OK;
 
         return ProvokerClassResultImmutable.builder()
                 .clazz(provokerClass.getClazz())
@@ -111,7 +111,7 @@ public class ExecutorIntoSingleThread implements Executor {
                 .clazz(aClass)
                 .name(aClass.getName())
                 .throwable(List.of(throwable))
-                .result(ResultEnum.ILLEGAL)
+                .result(ProvocationResultEnum.ILLEGAL)
                 .build();
     }
 }
