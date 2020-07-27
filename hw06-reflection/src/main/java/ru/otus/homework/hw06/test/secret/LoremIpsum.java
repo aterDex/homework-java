@@ -6,8 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * да, это конечно нэ тестирование, но в целом чтоб показать механику атрибутов, и изолированности каждого теста...
+ * да, это конечно не тестирование (можно было и order для них реализовать),
+ * но в целом чтоб показать механику атрибутов, и изолированности каждого теста...
  */
+@Description("Let's sing")
 public class LoremIpsum {
 
     private static Iterator<String> filler;
@@ -119,6 +121,7 @@ public class LoremIpsum {
     }
 
     @Test
+    @Description("He's constantly shy")
     public void test13() {
         nextSay("test13");
     }
