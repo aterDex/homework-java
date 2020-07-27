@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class PreparerProvokersByAnnotation implements PreparerProvokers {
 
-    protected static final Collection<Class<? extends Annotation>> notMixAnnotation = List.of(Test.class, After.class, Before.class, AfterAll.class, BeforeAll.class);
+    protected static final Collection<Class<? extends Annotation>> NOT_MIX_ANNOTATION = List.of(Test.class, After.class, Before.class, AfterAll.class, BeforeAll.class);
 
     @Override
     public ProvokerClass prepare(Class clazz) throws PreparerProvokersException {
@@ -60,7 +60,7 @@ public class PreparerProvokersByAnnotation implements PreparerProvokers {
     }
 
     private void isMixAnnotation(Method method, ProvokerClassFromMethodsBuilder builder) {
-        if (notMixAnnotation.stream().filter(x -> method.getDeclaredAnnotation(x) != null).count() > 1) {
+        if (NOT_MIX_ANNOTATION.stream().filter(x -> method.getDeclaredAnnotation(x) != null).count() > 1) {
             throw new PreparerProvokersException(String.format("Метод %s не может быть принят, не смогли определить поведение метода, не совместимы аннотации.", method.getName()), builder.getClazz());
         }
     }
