@@ -1,11 +1,13 @@
 package ru.otus.homework.provoker.impl;
 
+import com.sun.source.tree.AssertTree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.otus.homework.provoker.api.ProvokerClass;
 import ru.otus.homework.provoker.api.PreparerProvokersException;
+import ru.otus.homework.provoker.api.ProvokerClassMethod;
 import ru.otus.homework.provoker.impl.mockup.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,6 +59,16 @@ class PreparerProvokersByAnnotationTest {
         assertEquals(1, provokerClass.getTestMethods().size());
         assertTrue(provokerClass.getTestMethods().get(0).isAfter());
         assertTrue(provokerClass.getTestMethods().get(0).isBefore());
+    }
+
+    @Test
+    void preparePrivate() {
+        ProvokerClass provokerClass = preparer.prepare(MockupPrivateAndProtectedTestAnnotation.class);
+        assertEquals(3, provokerClass.getTestMethods().size());
+        for (ProvokerClassMethod testMethod : provokerClass.getTestMethods()) {
+            assertTrue(testMethod.init().isEmpty());
+            assertTrue(testMethod.test().isEmpty());
+        }
     }
 
     @ParameterizedTest

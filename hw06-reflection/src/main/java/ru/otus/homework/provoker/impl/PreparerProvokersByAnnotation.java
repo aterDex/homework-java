@@ -1,8 +1,5 @@
 package ru.otus.homework.provoker.impl;
 
-import ru.otus.homework.provoker.api.ProvokerClass;
-import ru.otus.homework.provoker.api.PreparerProvokers;
-import ru.otus.homework.provoker.api.PreparerProvokersException;
 import ru.otus.homework.provoker.api.*;
 
 import java.lang.annotation.Annotation;
@@ -31,7 +28,7 @@ public class PreparerProvokersByAnnotation implements PreparerProvokers {
 
     private void prepare(Method method, ProvokerClassFromMethodsBuilder builderProvokerClass) {
         if (method.getDeclaredAnnotation(Test.class) != null) {
-            builderProvokerClass.addTestMethod("", method);
+            addMethods(method, null, method1 -> builderProvokerClass.addTestMethod("", method1), Test.class, builderProvokerClass);
         } else if (method.getDeclaredAnnotation(After.class) != null) {
             addMethods(method, builderProvokerClass::getAfter, builderProvokerClass::setAfter, After.class, builderProvokerClass);
         } else if (method.getDeclaredAnnotation(Before.class) != null) {
@@ -44,9 +41,10 @@ public class PreparerProvokersByAnnotation implements PreparerProvokers {
     }
 
     private void addMethods(Method method, Supplier<Method> supplier, Consumer<Method> consumer, Class<? extends Annotation> annotation, ProvokerClassFromMethodsBuilder builder) {
-        if (supplier.get() != null) {
+        if (supplier != null && supplier.get() != null) {
             throw new PreparerProvokersException(ERROR_TEXT_TWO_ANNOTATION + " " + annotation.getName(), builder.getClazz());
         }
+        method.setAccessible(true);
         consumer.accept(method);
     }
 }
