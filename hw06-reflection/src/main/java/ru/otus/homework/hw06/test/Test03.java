@@ -7,7 +7,7 @@ import ru.otus.homework.provoker.api.Test;
 public class Test03 {
 
     @BeforeAll
-    public void beforeAll() {
+    public static void beforeAll() {
         throw new RuntimeException("Bad before!");
     }
 
