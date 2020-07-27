@@ -48,16 +48,6 @@ public class TestLoremIpsum {
         System.out.printf("- %s say:", this).println();
     }
 
-    private void nextSay(String method) {
-        System.out.println();
-        if (filler.hasNext()) {
-            System.out.printf("\t%s\t\t%s", filler.next(), method).println();
-        } else {
-            System.out.println("Is silent in embarrassment");
-        }
-        System.out.println();
-    }
-
     @Test
     public void test00() {
         nextSay("test00");
@@ -132,5 +122,15 @@ public class TestLoremIpsum {
     @After
     public void after() {
         System.out.printf("- %s have fallen silent!", this).println();
+    }
+
+    private void nextSay(String method) {
+        System.out.println();
+        if (filler.hasNext()) {
+            System.out.printf("\t%s\t\t%s", filler.next(), method).println();
+        } else {
+            System.out.println("Is silent in embarrassment");
+        }
+        System.out.println();
     }
 }
