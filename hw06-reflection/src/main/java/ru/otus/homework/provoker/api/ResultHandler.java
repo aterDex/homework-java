@@ -1,8 +1,8 @@
-package ru.otus.homework.provoker;
+package ru.otus.homework.provoker.api;
 
 import java.util.Collection;
 
-public interface Printer {
+public interface ResultHandler {
 
     /**
      * Выводим результаты тэстов

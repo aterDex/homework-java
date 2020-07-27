@@ -1,8 +1,8 @@
 package ru.otus.homework.provoker.impl;
 
-import ru.otus.homework.provoker.ProvokerClass;
-import ru.otus.homework.provoker.PreparerProvokers;
-import ru.otus.homework.provoker.PreparerProvokersException;
+import ru.otus.homework.provoker.api.ProvokerClass;
+import ru.otus.homework.provoker.api.PreparerProvokers;
+import ru.otus.homework.provoker.api.PreparerProvokersException;
 import ru.otus.homework.provoker.api.*;
 
 import java.lang.annotation.Annotation;

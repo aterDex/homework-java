@@ -1,7 +1,7 @@
 package ru.otus.homework.provoker.impl;
 
-import ru.otus.homework.provoker.ProvokerClass;
-import ru.otus.homework.provoker.ProvokerClassMethod;
+import ru.otus.homework.provoker.api.ProvokerClass;
+import ru.otus.homework.provoker.api.ProvokerClassMethod;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package ru.otus.homework.provoker.impl;
 
-import ru.otus.homework.provoker.*;
+import ru.otus.homework.provoker.api.*;
 
 import java.util.ArrayList;
 import java.util.Collection;

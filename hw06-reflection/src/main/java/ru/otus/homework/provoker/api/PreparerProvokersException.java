@@ -1,4 +1,4 @@
-package ru.otus.homework.provoker;
+package ru.otus.homework.provoker.api;
 
 /**
  * Класс с тестом не возможно обработать...

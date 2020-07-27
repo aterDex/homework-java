@@ -1,6 +1,6 @@
 package ru.otus.homework.provoker.impl;
 
-import ru.otus.homework.provoker.*;
+import ru.otus.homework.provoker.api.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,12 +13,12 @@ public class ProvokerFrameworkRunnerBase implements ProvokerFrameworkRunner {
 
     private Detective detective;
     private Executor executor;
-    private Printer printer;
+    private ResultHandler resultHandler;
 
-    public ProvokerFrameworkRunnerBase(Detective detective, Executor executor, Printer printer) {
+    public ProvokerFrameworkRunnerBase(Detective detective, Executor executor, ResultHandler resultHandler) {
         this.detective = detective;
         this.executor = executor;
-        this.printer = printer;
+        this.resultHandler = resultHandler;
     }
 
     public Detective getDetective() {
@@ -37,12 +37,12 @@ public class ProvokerFrameworkRunnerBase implements ProvokerFrameworkRunner {
         this.executor = executor;
     }
 
-    public Printer getPrinter() {
-        return printer;
+    public ResultHandler getResultHandler() {
+        return resultHandler;
     }
 
-    public void setPrinter(Printer printer) {
-        this.printer = printer;
+    public void setResultHandler(ResultHandler resultHandler) {
+        this.resultHandler = resultHandler;
     }
 
     @Override
@@ -51,6 +51,6 @@ public class ProvokerFrameworkRunnerBase implements ProvokerFrameworkRunner {
         List<ProvokerClassResult> testsResult = findingClass.stream()
                 .map(executor::execute)
                 .collect(Collectors.toList());
-        printer.print(testsResult);
+        resultHandler.print(testsResult);
     }
 }

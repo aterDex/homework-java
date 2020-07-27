@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.otus.homework.provoker.*;
+import ru.otus.homework.provoker.api.*;
 
 import java.util.List;
 import java.util.Optional;

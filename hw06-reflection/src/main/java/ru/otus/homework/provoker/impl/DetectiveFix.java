@@ -1,6 +1,6 @@
 package ru.otus.homework.provoker.impl;
 
-import ru.otus.homework.provoker.Detective;
+import ru.otus.homework.provoker.api.Detective;
 
 import java.util.ArrayList;
 import java.util.Collection;

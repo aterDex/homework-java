@@ -1,4 +1,4 @@
-package ru.otus.homework.provoker;
+package ru.otus.homework.provoker.api;
 
 import java.util.List;
 import java.util.Optional;
