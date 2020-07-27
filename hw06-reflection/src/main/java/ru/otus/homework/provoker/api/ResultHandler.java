@@ -9,5 +9,5 @@ public interface ResultHandler {
      *
      * @param results результаты тэстов
      */
-    void print(Collection<? extends ProvokerClassResult> results);
+    void process(Collection<? extends ProvokerClassResult> results);
 }

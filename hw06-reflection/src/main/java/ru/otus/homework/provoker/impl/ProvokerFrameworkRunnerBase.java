@@ -51,6 +51,6 @@ public class ProvokerFrameworkRunnerBase implements ProvokerFrameworkRunner {
         List<ProvokerClassResult> testsResult = findingClass.stream()
                 .map(executor::execute)
                 .collect(Collectors.toList());
-        resultHandler.print(testsResult);
+        resultHandler.process(testsResult);
     }
 }
