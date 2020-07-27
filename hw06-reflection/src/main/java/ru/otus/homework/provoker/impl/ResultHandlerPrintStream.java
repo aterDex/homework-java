@@ -39,7 +39,7 @@ public class ResultHandlerPrintStream implements ResultHandler {
     @Override
     public void print(Collection<? extends ProvokerClassResult> results) {
         printStream.println();
-        if (results == null) {
+        if (results == null || results.isEmpty()) {
             printStream.println("There don't have any results test!");
             return;
         } else {

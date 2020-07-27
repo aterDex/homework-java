@@ -1,12 +1,11 @@
 package ru.otus.homework.provoker.impl;
 
-import com.sun.source.tree.AssertTree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.otus.homework.provoker.api.ProvokerClass;
 import ru.otus.homework.provoker.api.PreparerProvokersException;
+import ru.otus.homework.provoker.api.ProvokerClass;
 import ru.otus.homework.provoker.api.ProvokerClassMethod;
 import ru.otus.homework.provoker.impl.mockup.*;
 

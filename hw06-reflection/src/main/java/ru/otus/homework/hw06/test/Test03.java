@@ -1,6 +1,5 @@
 package ru.otus.homework.hw06.test;
 
-import ru.otus.homework.provoker.api.Before;
 import ru.otus.homework.provoker.api.BeforeAll;
 import ru.otus.homework.provoker.api.Test;
 

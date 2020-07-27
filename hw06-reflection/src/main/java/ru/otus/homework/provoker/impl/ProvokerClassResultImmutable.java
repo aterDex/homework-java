@@ -1,8 +1,8 @@
 package ru.otus.homework.provoker.impl;
 
+import ru.otus.homework.provoker.api.ProvocationResultEnum;
 import ru.otus.homework.provoker.api.ProvokerClassMethodResult;
 import ru.otus.homework.provoker.api.ProvokerClassResult;
-import ru.otus.homework.provoker.api.ProvocationResultEnum;
 
 import java.util.ArrayList;
 import java.util.Collection;

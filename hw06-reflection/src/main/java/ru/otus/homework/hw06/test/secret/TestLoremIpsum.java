@@ -10,7 +10,7 @@ import java.util.List;
  * но в целом чтоб показать механику атрибутов, и изолированности каждого теста...
  */
 @Description("Let's sing")
-public class LoremIpsum {
+public class TestLoremIpsum {
 
     private static Iterator<String> filler;
 

@@ -14,8 +14,8 @@ public class ProvokerClassFromMethodsBuilder {
     private Method afterAll;
     private Method before;
     private Method after;
-    private List<Method> methods = new ArrayList<>();
-    private List<String> methodsDescription = new ArrayList<>();
+    private final List<Method> methods = new ArrayList<>();
+    private final List<String> methodsDescription = new ArrayList<>();
 
     public ProvokerClassFromMethodsBuilder(Class clazz) {
         this.clazz = clazz;
