@@ -77,7 +77,13 @@ class PreparerProvokersByAnnotationTest {
             MockupSinglePublicTestAnnotationWithTwoAfter.class,
             MockupSinglePublicTestAnnotationWithTwoAfterAll.class,
             MockupSinglePublicTestAnnotationWithTwoBefore.class,
-            MockupSinglePublicTestAnnotationWithTwoBeforeAll.class
+            MockupSinglePublicTestAnnotationWithTwoBeforeAll.class,
+            MockupSinglePublicTestAnnotationWithBeforeAllNotStatic.class,
+            MockupSinglePublicTestAnnotationWithAfterAllNotStatic.class,
+            MockupSinglePublicTestAnnotationStatic.class,
+            MockupSinglePublicTestAnnotationWithArg.class,
+            MockupSinglePublicTestAnnotationWithResult.class,
+            MockupSinglePublicTestAnnotationWithAfterMix.class
     })
     void prepareTestClassPreparerException(Class clazz) {
         assertThrows(PreparerProvokersException.class, () -> preparer.prepare(clazz));

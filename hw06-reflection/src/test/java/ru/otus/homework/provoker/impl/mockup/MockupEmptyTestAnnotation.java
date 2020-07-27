@@ -8,11 +8,11 @@ import ru.otus.homework.provoker.api.BeforeAll;
 public class MockupEmptyTestAnnotation {
 
     @AfterAll
-    public void afterAll() {
+    public static void afterAll() {
     }
 
     @BeforeAll
-    public void beforeAll() {
+    public static void beforeAll() {
     }
 
     @After

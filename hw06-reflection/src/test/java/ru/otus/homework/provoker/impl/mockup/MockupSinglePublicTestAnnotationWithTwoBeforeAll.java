@@ -6,11 +6,11 @@ import ru.otus.homework.provoker.api.Test;
 public class MockupSinglePublicTestAnnotationWithTwoBeforeAll {
 
     @BeforeAll
-    public void before0() {
+    public static void before0() {
     }
 
     @BeforeAll
-    public void before1() {
+    public static void before1() {
     }
 
     @Test
