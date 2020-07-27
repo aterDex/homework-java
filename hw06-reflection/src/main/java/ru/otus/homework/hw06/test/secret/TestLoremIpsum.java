@@ -8,8 +8,10 @@ import java.util.List;
 /**
  * да, это конечно не тестирование (можно было и order для них реализовать),
  * но в целом чтоб показать механику атрибутов, и изолированности каждого теста...
+ * Явно, не потока безопасный пример.
  */
 @Description("Let's sing")
+@SingleThreadAllTime
 public class TestLoremIpsum {
 
     private static Iterator<String> filler;
@@ -37,6 +39,7 @@ public class TestLoremIpsum {
 
     @AfterAll
     public static void afterAll() {
+        filler = null;
         System.out.println("In chorus: We have said all.");
     }
 
