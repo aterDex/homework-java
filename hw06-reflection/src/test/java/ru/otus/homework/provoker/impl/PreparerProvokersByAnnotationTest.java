@@ -71,6 +71,18 @@ class PreparerProvokersByAnnotationTest {
         }
     }
 
+    @Test
+    void prepareDescription() {
+        ProvokerClass provokerClass = preparer.prepare(MockupSinglePublicTestAnnotationWithDescription.class);
+        assertEquals("test", provokerClass.getTestMethods().get(0).getDescription());
+    }
+
+    @Test
+    void prepareDescriptionClass() {
+        ProvokerClass provokerClass = preparer.prepare(MockupSinglePublicTestAnnotationWithDescriptionClass.class);
+        assertEquals("testClass", provokerClass.getDescription());
+    }
+
     @ParameterizedTest
     @ValueSource(classes = {
             MockupEmptyTestAnnotation.class,

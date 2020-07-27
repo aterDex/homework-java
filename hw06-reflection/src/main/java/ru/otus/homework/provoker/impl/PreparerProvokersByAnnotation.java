@@ -24,6 +24,8 @@ public class PreparerProvokersByAnnotation implements PreparerProvokers {
         if (builderProvokerClass.getTestMethodCount() == 0) {
             throw new PreparerProvokersException("В классе теста не найдены тесты", clazz);
         }
+        Description classDescription = (Description) clazz.getDeclaredAnnotation(Description.class);
+        builderProvokerClass.setDescription(classDescription == null || classDescription.value() == null || classDescription.value().isBlank() ? "" : classDescription.value());
         return builderProvokerClass.createTestClass();
     }
 
@@ -32,7 +34,7 @@ public class PreparerProvokersByAnnotation implements PreparerProvokers {
         if (method.getDeclaredAnnotation(Test.class) != null) {
             isNotStatic(method, Test.class, builderProvokerClass);
             isEmptyArgAndResult(method, Test.class, builderProvokerClass);
-            addMethods(method, null, method1 -> builderProvokerClass.addTestMethod("", method1), Test.class, builderProvokerClass);
+            addMethods(method, null, method1 -> builderProvokerClass.addTestMethod(getDescription(method), method1), Test.class, builderProvokerClass);
         } else if (method.getDeclaredAnnotation(After.class) != null) {
             isNotStatic(method, After.class, builderProvokerClass);
             isEmptyArgAndResult(method, After.class, builderProvokerClass);
@@ -50,6 +52,11 @@ public class PreparerProvokersByAnnotation implements PreparerProvokers {
             isEmptyArgAndResult(method, BeforeAll.class, builderProvokerClass);
             addMethods(method, builderProvokerClass::getBeforeAll, builderProvokerClass::setBeforeAll, BeforeAll.class, builderProvokerClass);
         }
+    }
+
+    private String getDescription(Method method) {
+        Description description = method.getDeclaredAnnotation(Description.class);
+        return description == null || description.value() == null || description.value().isBlank() ? "" : description.value();
     }
 
     private void isMixAnnotation(Method method, ProvokerClassFromMethodsBuilder builder) {
