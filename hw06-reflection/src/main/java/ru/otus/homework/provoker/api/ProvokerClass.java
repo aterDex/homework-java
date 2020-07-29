@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface ProvokerClass {
 
-    Class getClazz();
+    Class<?> getClazz();
 
     String getDescription();
 

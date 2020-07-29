@@ -47,7 +47,7 @@ public class ProvokerFrameworkRunnerBase implements ProvokerFrameworkRunner {
 
     @Override
     public void run() {
-        Collection<Class> findingClass = detective.search();
+        Collection<Class<?>> findingClass = detective.search();
         List<ProvokerClassResult> testsResult = findingClass.stream()
                 .map(executor::execute)
                 .collect(Collectors.toList());

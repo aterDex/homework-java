@@ -11,16 +11,16 @@ import java.util.Collections;
  */
 public class DetectiveFix implements Detective {
 
-    private final Collection<Class> classes;
+    private final Collection<Class<?>> classes;
 
-    public DetectiveFix(Collection<? extends Class> classes) {
+    public DetectiveFix(Collection<? extends Class<?>> classes) {
         this.classes = classes == null ?
                 Collections.emptyList() :
                 Collections.unmodifiableCollection(new ArrayList<>(classes));
     }
 
     @Override
-    public Collection<Class> search() {
+    public Collection<Class<?>> search() {
         return classes;
     }
 }

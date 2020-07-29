@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ProvokerClassFromMethodsBuilder {
 
-    private final Class clazz;
+    private final Class<?> clazz;
     private String description;
     private Method beforeAll;
     private Method afterAll;
@@ -17,11 +17,11 @@ public class ProvokerClassFromMethodsBuilder {
     private final List<Method> methods = new ArrayList<>();
     private final List<String> methodsDescription = new ArrayList<>();
 
-    public ProvokerClassFromMethodsBuilder(Class clazz) {
+    public ProvokerClassFromMethodsBuilder(Class<?> clazz) {
         this.clazz = clazz;
     }
 
-    public Class getClazz() {
+    public Class<?> getClazz() {
         return clazz;
     }
 

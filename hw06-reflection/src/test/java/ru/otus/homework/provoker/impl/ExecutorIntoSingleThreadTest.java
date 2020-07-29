@@ -33,7 +33,7 @@ class ExecutorIntoSingleThreadTest {
     @Mock
     private ProvokerClassMethod mockProvokerClassMethod2;
 
-    private Class testClass;
+    private Class<?> testClass;
 
     @BeforeEach
     void before() {
@@ -46,7 +46,7 @@ class ExecutorIntoSingleThreadTest {
             PreparerProvokersException.class,
             NullPointerException.class
     })
-    void executeException(Class exception) {
+    void executeException(Class<? extends Throwable> exception) {
         when(mockPreparer.prepare(testClass)).thenThrow(exception);
         ProvokerClassResult result = executor.execute(testClass);
         assertNotNull(result);
@@ -61,7 +61,7 @@ class ExecutorIntoSingleThreadTest {
     void executeAllMethodOk() {
         when(mockPreparer.prepare(testClass)).thenReturn(mockProvokerClass);
         when(mockProvokerClass.getTestMethods()).thenReturn(List.of(mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2));
-        when(mockProvokerClass.getClazz()).thenReturn(testClass);
+        when(mockProvokerClass.getClazz()).thenReturn((Class) testClass);
 
         InOrder inOrder = inOrder(mockProvokerClass, mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2);
 
@@ -101,7 +101,7 @@ class ExecutorIntoSingleThreadTest {
         when(mockProvokerClass.getTestMethods()).thenReturn(List.of(mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2));
         when(mockProvokerClassMethod1.test()).thenReturn(Optional.of(testException));
         when(mockProvokerClassMethod1.getMethodName()).thenReturn(exceptionMethodName);
-        when(mockProvokerClass.getClazz()).thenReturn(testClass);
+        when(mockProvokerClass.getClazz()).thenReturn((Class) testClass);
 
         InOrder inOrder = inOrder(mockProvokerClass, mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2);
 
@@ -146,7 +146,7 @@ class ExecutorIntoSingleThreadTest {
         when(mockProvokerClass.getTestMethods()).thenReturn(List.of(mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2));
         when(mockProvokerClassMethod1.before()).thenReturn(Optional.of(testException));
         when(mockProvokerClassMethod1.getMethodName()).thenReturn(exceptionMethodName);
-        when(mockProvokerClass.getClazz()).thenReturn(testClass);
+        when(mockProvokerClass.getClazz()).thenReturn((Class) testClass);
 
         InOrder inOrder = inOrder(mockProvokerClass, mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2);
 
@@ -191,7 +191,7 @@ class ExecutorIntoSingleThreadTest {
         when(mockProvokerClass.getTestMethods()).thenReturn(List.of(mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2));
         when(mockProvokerClassMethod1.after()).thenReturn(Optional.of(testException));
         when(mockProvokerClassMethod1.getMethodName()).thenReturn(exceptionMethodName);
-        when(mockProvokerClass.getClazz()).thenReturn(testClass);
+        when(mockProvokerClass.getClazz()).thenReturn((Class) testClass);
 
         InOrder inOrder = inOrder(mockProvokerClass, mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2);
 
@@ -237,7 +237,7 @@ class ExecutorIntoSingleThreadTest {
         when(mockProvokerClassMethod1.before()).thenReturn(Optional.of(testException));
         when(mockProvokerClassMethod1.after()).thenReturn(Optional.of(testException));
         when(mockProvokerClassMethod1.getMethodName()).thenReturn(exceptionMethodName);
-        when(mockProvokerClass.getClazz()).thenReturn(testClass);
+        when(mockProvokerClass.getClazz()).thenReturn((Class) testClass);
 
         InOrder inOrder = inOrder(mockProvokerClass, mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2);
 
@@ -282,7 +282,7 @@ class ExecutorIntoSingleThreadTest {
         when(mockProvokerClass.getTestMethods()).thenReturn(List.of(mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2));
         when(mockProvokerClassMethod1.init()).thenReturn(Optional.of(testException));
         when(mockProvokerClassMethod1.getMethodName()).thenReturn(exceptionMethodName);
-        when(mockProvokerClass.getClazz()).thenReturn(testClass);
+        when(mockProvokerClass.getClazz()).thenReturn((Class) testClass);
 
         InOrder inOrder = inOrder(mockProvokerClass, mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2);
 
@@ -322,7 +322,7 @@ class ExecutorIntoSingleThreadTest {
         when(mockPreparer.prepare(testClass)).thenReturn(mockProvokerClass);
         when(mockProvokerClass.getTestMethods()).thenReturn(List.of(mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2));
         when(mockProvokerClass.beforeAll()).thenReturn(Optional.of(testException));
-        when(mockProvokerClass.getClazz()).thenReturn(testClass);
+        when(mockProvokerClass.getClazz()).thenReturn((Class) testClass);
 
         InOrder inOrder = inOrder(mockProvokerClass, mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2);
 
@@ -348,7 +348,7 @@ class ExecutorIntoSingleThreadTest {
         when(mockPreparer.prepare(testClass)).thenReturn(mockProvokerClass);
         when(mockProvokerClass.getTestMethods()).thenReturn(List.of(mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2));
         when(mockProvokerClass.afterAll()).thenReturn(Optional.of(testException));
-        when(mockProvokerClass.getClazz()).thenReturn(testClass);
+        when(mockProvokerClass.getClazz()).thenReturn((Class) testClass);
 
         InOrder inOrder = inOrder(mockProvokerClass, mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2);
 
@@ -387,7 +387,7 @@ class ExecutorIntoSingleThreadTest {
         when(mockProvokerClass.getTestMethods()).thenReturn(List.of(mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2));
         when(mockProvokerClass.afterAll()).thenReturn(Optional.of(testException));
         when(mockProvokerClass.beforeAll()).thenReturn(Optional.of(testException));
-        when(mockProvokerClass.getClazz()).thenReturn(testClass);
+        when(mockProvokerClass.getClazz()).thenReturn((Class) testClass);
 
         InOrder inOrder = inOrder(mockProvokerClass, mockProvokerClassMethod0, mockProvokerClassMethod1, mockProvokerClassMethod2);
 

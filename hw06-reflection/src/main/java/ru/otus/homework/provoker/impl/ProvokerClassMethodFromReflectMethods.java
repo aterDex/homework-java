@@ -11,22 +11,22 @@ public class ProvokerClassMethodFromReflectMethods implements ProvokerClassMetho
     private final Method before;
     private final Method test;
     private final Method after;
-    private final Class calzz;
+    private final Class<?> clazz;
     private Object instance;
 
-    public ProvokerClassMethodFromReflectMethods(Class clazz, String description, Method before, Method test, Method after) {
+    public ProvokerClassMethodFromReflectMethods(Class<?> clazz, String description, Method before, Method test, Method after) {
         if (test == null) throw new NullPointerException("Не задан метод для тестирования");
         this.description = description;
         this.before = before;
         this.test = test;
         this.after = after;
-        this.calzz = clazz;
+        this.clazz = clazz;
     }
 
     @Override
     public Optional<Throwable> init() {
         try {
-            instance = calzz.getDeclaredConstructor().newInstance();
+            instance = clazz.getDeclaredConstructor().newInstance();
         } catch (Throwable t) {
             return Optional.of(t);
         }

@@ -5,9 +5,9 @@ package ru.otus.homework.provoker.api;
  */
 public class PreparerProvokersException extends RuntimeException {
 
-    private final Class clazz;
+    private final Class<?> clazz;
 
-    public PreparerProvokersException(String message, Class clazz) {
+    public PreparerProvokersException(String message, Class<?> clazz) {
         super(message);
         this.clazz = clazz;
     }
@@ -15,7 +15,7 @@ public class PreparerProvokersException extends RuntimeException {
     /**
      * @return Класс с тестом
      */
-    public Class getClazz() {
+    public Class<?> getClazz() {
         return clazz;
     }
 }

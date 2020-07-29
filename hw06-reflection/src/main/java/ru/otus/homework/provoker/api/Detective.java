@@ -5,9 +5,9 @@ import java.util.Collection;
 public interface Detective {
 
     /**
-     * Ищем классы тэсты
+     * Смотрим классы тэсты
      *
      * @return Классы которые тэстируем
      */
-    Collection<Class> search();
+    Collection<Class<?>> search();
 }

@@ -8,7 +8,7 @@ public interface ProvokerClassResult {
     /**
      * @return Тестируемый класс
      */
-    Class getClazz();
+    Class<?> getClazz();
 
     /**
      * @return Описания теста

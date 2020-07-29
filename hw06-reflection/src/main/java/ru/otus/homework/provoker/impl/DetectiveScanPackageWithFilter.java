@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Ищем в пакетах нужные классы
+ * Смотрим в пакетах нужные классы
  */
 public class DetectiveScanPackageWithFilter implements Detective {
 
@@ -20,9 +20,9 @@ public class DetectiveScanPackageWithFilter implements Detective {
      */
     private ClassLoader classloader;
 
-    private Predicate<Class> filter;
+    private Predicate<Class<?>> filter;
 
-    public DetectiveScanPackageWithFilter(String packageName, Predicate<Class> filter) {
+    public DetectiveScanPackageWithFilter(String packageName, Predicate<Class<?>> filter) {
         this(packageName, filter,
                 Thread.currentThread().getContextClassLoader() == null ?
                         DetectiveScanPackageWithFilter.class.getClassLoader() :
@@ -34,7 +34,7 @@ public class DetectiveScanPackageWithFilter implements Detective {
      * @param filter      фильтр, если null то пропускаем все классы
      * @param classloader в рамках какого класс лоудера ищем
      */
-    public DetectiveScanPackageWithFilter(String packageName, Predicate<Class> filter, ClassLoader classloader) {
+    public DetectiveScanPackageWithFilter(String packageName, Predicate<Class<?>> filter, ClassLoader classloader) {
         this.packageName = packageName;
         this.classloader = classloader;
         this.filter = filter;
@@ -56,20 +56,20 @@ public class DetectiveScanPackageWithFilter implements Detective {
         this.classloader = classloader;
     }
 
-    public Predicate<Class> getFilter() {
+    public Predicate<Class<?>> getFilter() {
         return filter;
     }
 
-    public void setFilter(Predicate<Class> filter) {
+    public void setFilter(Predicate<Class<?>> filter) {
         this.filter = filter;
     }
 
     @Override
-    public Collection<Class> search() {
+    public Collection<Class<?>> search() {
         try {
             ClassPath classPath = ClassPath.from(classloader);
             ImmutableSet<ClassPath.ClassInfo> classes = classPath.getTopLevelClassesRecursive(packageName);
-            List<Class> result = new ArrayList<>(classes.size());
+            List<Class<?>> result = new ArrayList<>(classes.size());
             for (ClassPath.ClassInfo classInfo : classes) {
                 Class<?> clazz = classInfo.load();
                 if (filter == null || filter.test(clazz)) {

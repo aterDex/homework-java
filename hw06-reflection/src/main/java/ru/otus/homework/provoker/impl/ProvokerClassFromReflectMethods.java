@@ -11,13 +11,13 @@ import java.util.Optional;
 
 public class ProvokerClassFromReflectMethods implements ProvokerClass {
 
-    private final Class clazz;
+    private final Class<?> clazz;
     private final String description;
     private final Method beforeAll;
     private final Method afterAll;
     private final List<ProvokerClassMethod> provokerClassMethods;
 
-    public ProvokerClassFromReflectMethods(Class clazz, String description, Method beforeAll, Method afterAll, List<? extends ProvokerClassMethod> testClassMethods) {
+    public ProvokerClassFromReflectMethods(Class<?> clazz, String description, Method beforeAll, Method afterAll, List<? extends ProvokerClassMethod> testClassMethods) {
         this.clazz = clazz;
         this.description = description;
         this.beforeAll = beforeAll;
@@ -26,7 +26,7 @@ public class ProvokerClassFromReflectMethods implements ProvokerClass {
     }
 
     @Override
-    public Class getClazz() {
+    public Class<?> getClazz() {
         return clazz;
     }
 

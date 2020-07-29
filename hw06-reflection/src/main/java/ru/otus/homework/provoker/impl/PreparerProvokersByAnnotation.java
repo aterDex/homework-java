@@ -15,7 +15,7 @@ public class PreparerProvokersByAnnotation implements PreparerProvokers {
     protected static final Collection<Class<? extends Annotation>> NOT_MIX_ANNOTATION = List.of(Test.class, After.class, Before.class, AfterAll.class, BeforeAll.class);
 
     @Override
-    public ProvokerClass prepare(Class clazz) throws PreparerProvokersException {
+    public ProvokerClass prepare(Class<?> clazz) throws PreparerProvokersException {
         Method[] methods = clazz.getDeclaredMethods();
         ProvokerClassFromMethodsBuilder builderProvokerClass = new ProvokerClassFromMethodsBuilder(clazz);
         for (Method method : methods) {
@@ -24,7 +24,7 @@ public class PreparerProvokersByAnnotation implements PreparerProvokers {
         if (builderProvokerClass.getTestMethodCount() == 0) {
             throw new PreparerProvokersException("В классе теста не найдены тесты", clazz);
         }
-        Description classDescription = (Description) clazz.getDeclaredAnnotation(Description.class);
+        Description classDescription = clazz.getDeclaredAnnotation(Description.class);
         builderProvokerClass.setDescription(classDescription == null || classDescription.value() == null || classDescription.value().isBlank() ? "" : classDescription.value());
         return builderProvokerClass.createTestClass();
     }

@@ -11,14 +11,14 @@ import java.util.List;
 
 public final class ProvokerClassResultImmutable implements ProvokerClassResult {
 
-    private final Class clazz;
+    private final Class<?> clazz;
     private final String description;
     private final ProvocationResultEnum result;
     private final List<Throwable> throwable;
     private final String descriptionResult;
     private final Collection<ProvokerClassMethodResult> testMethodResults;
 
-    ProvokerClassResultImmutable(Class clazz, String description, ProvocationResultEnum result, List<Throwable> throwable, String descriptionResult, Collection<ProvokerClassMethodResult> testMethodResults) {
+    ProvokerClassResultImmutable(Class<?> clazz, String description, ProvocationResultEnum result, List<Throwable> throwable, String descriptionResult, Collection<ProvokerClassMethodResult> testMethodResults) {
         this.clazz = clazz;
         this.description = description;
         this.result = result;
@@ -36,7 +36,7 @@ public final class ProvokerClassResultImmutable implements ProvokerClassResult {
     }
 
     @Override
-    public Class getClazz() {
+    public Class<?> getClazz() {
         return this.clazz;
     }
 
@@ -67,7 +67,7 @@ public final class ProvokerClassResultImmutable implements ProvokerClassResult {
 
     public static class TestClassResultImmutableBuilder {
 
-        private Class clazz;
+        private Class<?> clazz;
         private String name;
         private String description;
         private ProvocationResultEnum result;
@@ -78,7 +78,7 @@ public final class ProvokerClassResultImmutable implements ProvokerClassResult {
         TestClassResultImmutableBuilder() {
         }
 
-        public ProvokerClassResultImmutable.TestClassResultImmutableBuilder clazz(Class clazz) {
+        public ProvokerClassResultImmutable.TestClassResultImmutableBuilder clazz(Class<?> clazz) {
             this.clazz = clazz;
             return this;
         }

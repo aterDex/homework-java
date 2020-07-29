@@ -18,7 +18,7 @@ public class ExecutorIntoSingleThread implements Executor {
     }
 
     @Override
-    public ProvokerClassResult execute(Class aClass) {
+    public ProvokerClassResult execute(Class<?> aClass) {
         ProvokerClass provokerClass;
         try {
             provokerClass = preparerProvokers.prepare(aClass);
@@ -106,7 +106,7 @@ public class ExecutorIntoSingleThread implements Executor {
                 .build();
     }
 
-    private ProvokerClassResult createIllegalResult(Throwable throwable, Class aClass) {
+    private ProvokerClassResult createIllegalResult(Throwable throwable, Class<?> aClass) {
         return ProvokerClassResultImmutable.builder()
                 .clazz(aClass)
                 .name(aClass.getName())

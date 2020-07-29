@@ -2,7 +2,7 @@ package ru.otus.homework.provoker.impl;
 
 import java.util.function.Predicate;
 
-public class FilterForScanPackageByPrefix implements Predicate<Class> {
+public class FilterForScanPackageByPrefix implements Predicate<Class<?>> {
 
     private String prefix = null;
 
@@ -22,7 +22,7 @@ public class FilterForScanPackageByPrefix implements Predicate<Class> {
     }
 
     @Override
-    public boolean test(Class clazz) {
+    public boolean test(Class<?> clazz) {
         return prefix == null || clazz.getSimpleName().startsWith(prefix);
     }
 }

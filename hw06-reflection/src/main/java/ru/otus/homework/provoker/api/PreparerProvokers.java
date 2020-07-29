@@ -5,5 +5,5 @@ package ru.otus.homework.provoker.api;
  */
 public interface PreparerProvokers {
 
-    ProvokerClass prepare(Class clazz) throws PreparerProvokersException;
+    ProvokerClass prepare(Class<?> clazz) throws PreparerProvokersException;
 }

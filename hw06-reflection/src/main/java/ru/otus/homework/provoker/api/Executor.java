@@ -8,5 +8,5 @@ public interface Executor {
      * @param aClass класс с тестами
      * @return Результаты тестов
      */
-    ProvokerClassResult execute(Class aClass);
+    ProvokerClassResult execute(Class<?> aClass);
 }
