@@ -5,3 +5,4 @@
 rootProject.name = 'homework-java'
 include 'hw01-gradle'
 include 'hw03-generics'
+include 'hw06-reflection'
