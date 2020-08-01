@@ -11,6 +11,8 @@ version '0.1'
 final MAIN_CLASS_NAME = 'ru.otus.homework.hw10.App'
 
 dependencies {
+    implementation('org.ow2.asm:asm')
+    testImplementation('org.ow2.asm:asm-util')
     testImplementation('org.junit.jupiter:junit-jupiter')
     testImplementation('org.mockito:mockito-core')
     testImplementation('org.mockito:mockito-junit-jupiter')
