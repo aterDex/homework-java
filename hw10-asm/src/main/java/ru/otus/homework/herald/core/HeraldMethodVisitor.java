@@ -3,16 +3,19 @@ package ru.otus.homework.herald.core;
 import org.objectweb.asm.*;
 import ru.otus.homework.herald.api.Log;
 
+import java.lang.reflect.Modifier;
+
 public class HeraldMethodVisitor extends MethodVisitor {
 
     public static final String LOG_ANNOTATION = Log.class.getCanonicalName();
     public static final Type TYPE_STRING_BUILDER = Type.getType(StringBuilder.class);
 
-    private boolean codeHaveBeenVisited = false;
-    private boolean addLog = false;
+    private final int access;
     private final String methodName;
     private final String methodDescriptor;
-    private final int access;
+
+    private boolean codeHaveBeenVisited = false;
+    private boolean addLog = false;
 
     public HeraldMethodVisitor(int api, int access, String methodName, String methodDescriptor, MethodVisitor methodVisitor) {
         super(api, methodVisitor);
@@ -51,7 +54,7 @@ public class HeraldMethodVisitor extends MethodVisitor {
             super.visitInsn(Opcodes.DUP);
             super.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V", false);
             addStringBuilderFromStringConst("executed method: " + methodName + " (");
-            int idx = isStatic() ? 0 : 1;
+            int idx = Modifier.isStatic(access) ? 0 : 1;
             for (int i = 0; i < types.length; i++) {
                 Type currentType = types[i];
                 if (Type.SHORT_TYPE.equals(currentType) || Type.BYTE_TYPE.equals(currentType)) {
@@ -67,11 +70,6 @@ public class HeraldMethodVisitor extends MethodVisitor {
             addStringBuilderFromStringConst(")");
             super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V", false);
         }
-    }
-
-    // TODO прочитать что всетаки тут
-    private boolean isStatic() {
-        return access > Opcodes.ACC_STATIC;
     }
 
     private void addStringBuilderFromStringConst(String c) {
