@@ -81,7 +81,6 @@ class HeraldClassVisitorWithMetaTest {
         System.setOut(originalSystemOut);
     }
 
-
     @Test
     void testWithString() throws Exception {
         Method m = classForTest.getMethod("testWithString", String.class);

@@ -2,11 +2,8 @@ package ru.otus.homework.herald.core;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import ru.otus.homework.herald.api.Log;
-
-import java.lang.reflect.Modifier;
 
 public class HeraldDetectorMethodVisitor extends MethodVisitor {
 
