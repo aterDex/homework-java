@@ -7,6 +7,19 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.Collection;
 
+/**
+ * Добавляем в методы помечанные аннотацией Log, вывод параметров запуска.
+ * Класс может в двух режимах resolveParameterName (true/false).
+ * <p>
+ * Режим по умолчанию resolveParameterName = false.
+ * В этом режиме мы проходим по классу только раз, и если атрибут есть у метода
+ * то вставляем в начало метода вывод параметров, при этом имеена параметров будут parN где N порядковый номер параметра.
+ * <p>
+ * В режиме resolveParameterName = true, мы проходим по классу дважды,
+ * первый раз собираем информацию о аннатированных методах в частности именна переменных (если класс откомплирован с соответствующим ключом),
+ * если для переменной не найденна информации о ее имени то будет использован parN как в преведущем режиме.
+ * При втором проходе мы используем собранную информацию для формирования вывод у нужных методов.
+ */
 public class HeraldClassTransformer implements ClassFileTransformer {
 
     private static final int API = Opcodes.ASM8;
