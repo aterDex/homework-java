@@ -6,13 +6,16 @@ import java.io.PrintStream;
 import java.lang.reflect.Modifier;
 import java.util.Optional;
 
+import static org.objectweb.asm.Opcodes.*;
+
 public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
 
-    public static final Type TYPE_STRING_BUILDER = Type.getType(StringBuilder.class);
-    public static final Type TYPE_PRINT_STREAM = Type.getType(PrintStream.class);
-    public static final String TYPE_PRINT_STREAM_DESCRIPTOR = TYPE_PRINT_STREAM.getDescriptor();
-    public static final String TYPE_PRINT_STREAM_INTERNAL_NAME = TYPE_PRINT_STREAM.getInternalName();
-    public static final String TYPE_STRING_BUILDER_INTERNAL_NAME = TYPE_STRING_BUILDER.getInternalName();
+    public static final Type PRINT_STREAM = Type.getType(PrintStream.class);
+    public static final Type STRING_BUILDER = Type.getType(StringBuilder.class);
+
+    public static final String PRINT_STREAM_DESC = PRINT_STREAM.getDescriptor();
+    public static final String PRINT_STREAM_INTERNAL_NAME = PRINT_STREAM.getInternalName();
+    public static final String STRING_BUILDER_INTERNAL_NAME = STRING_BUILDER.getInternalName();
 
     private final HeraldMeta heraldMeta;
 
@@ -31,14 +34,26 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
 
     private void createLog() {
         Type[] types = Type.getArgumentTypes(methodDescriptor);
-        super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", TYPE_PRINT_STREAM_DESCRIPTOR);
         String methodText = "executed method: " + methodName;
+
+        super.visitFieldInsn(
+                GETSTATIC,
+                "java/lang/System",
+                "out",
+                PRINT_STREAM_DESC);
+
         if (types.length == 0) {
             super.visitLdcInsn(methodText + " ()");
         } else {
-            super.visitTypeInsn(Opcodes.NEW, TYPE_STRING_BUILDER_INTERNAL_NAME);
-            super.visitInsn(Opcodes.DUP);
-            super.visitMethodInsn(Opcodes.INVOKESPECIAL, TYPE_STRING_BUILDER_INTERNAL_NAME, "<init>", "()V", false);
+            super.visitTypeInsn(NEW, STRING_BUILDER_INTERNAL_NAME);
+            super.visitInsn(DUP);
+            super.visitMethodInsn(
+                    INVOKESPECIAL,
+                    STRING_BUILDER_INTERNAL_NAME,
+                    "<init>",
+                    "()V",
+                    false);
+
             addStringBuilderFromStringConst(methodText + " (");
             int idxOnStack = Modifier.isStatic(access) ? 0 : 1;
             for (int i = 0; i < types.length; i++) {
@@ -52,7 +67,13 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
             }
             addStringBuilderFromStringConst(")");
         }
-        super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, TYPE_PRINT_STREAM_INTERNAL_NAME, "println", "(Ljava/lang/Object;)V", false);
+
+        super.visitMethodInsn(
+                INVOKEVIRTUAL,
+                PRINT_STREAM_INTERNAL_NAME,
+                "println",
+                "(Ljava/lang/Object;)V",
+                false);
     }
 
     private Type correctTypeForStringBuilder(Type type) {
@@ -80,11 +101,21 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
 
     private void addStringBuilderFromStringConst(String c) {
         super.visitLdcInsn(c);
-        super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, TYPE_STRING_BUILDER_INTERNAL_NAME, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+        super.visitMethodInsn(
+                INVOKEVIRTUAL,
+                STRING_BUILDER_INTERNAL_NAME,
+                "append",
+                "(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+                false);
     }
 
     private void addStringBuilderFromVariable(int index, Type variableType) {
-        super.visitVarInsn(variableType.getOpcode(Opcodes.ILOAD), index);
-        super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, TYPE_STRING_BUILDER_INTERNAL_NAME, "append", Type.getMethodDescriptor(TYPE_STRING_BUILDER, variableType), false);
+        super.visitVarInsn(variableType.getOpcode(ILOAD), index);
+        super.visitMethodInsn(
+                INVOKEVIRTUAL,
+                STRING_BUILDER_INTERNAL_NAME,
+                "append",
+                Type.getMethodDescriptor(STRING_BUILDER, variableType),
+                false);
     }
 }
