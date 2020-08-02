@@ -1,10 +1,8 @@
 package ru.otus.homework.herald.core;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -16,14 +14,15 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.objectweb.asm.Opcodes.ASM8;
 
 class HeraldClassVisitorTest {
 
-    public static final Class<?>[] classPrimitiveTypeAndObjects = new Class[]{byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class, Object.class, String.class};
-    public static final Object[] dataPrimitiveTypeAndObjects = new Object[]{(byte) 120, (short) 44, 122232, 7435837423L, 343242.342342f, 8888888.222222, false, 'y', Arrays.asList("A", "B"), "qwerty"};
+    public static final Class<?>[] CLASS_PRIMITIVE_TYPE_AND_OBJECTS = new Class[]{byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class, Object.class, String.class};
+    public static final Object[] DATA_PRIMITIVE_TYPE_AND_OBJECTS = new Object[]{(byte) 120, (short) 44, 122232, 7435837423L, 343242.342342f, 8888888.222222, false, 'y', Arrays.asList("A", "B"), "qwerty"};
 
     private PrintStream originalSystemOut;
     private ByteArrayOutputStream systemOutContent;
@@ -54,117 +53,6 @@ class HeraldClassVisitorTest {
     }
 
     @Test
-    void testWithoutParameters() throws Exception {
-        Method m = classForTest.getMethod("testWithoutParameters");
-        assertNotNull(m);
-        m.invoke(o);
-        assertEquals("executed method: testWithoutParameters ()", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithPrimitiveByte() throws Exception {
-        Method m = classForTest.getMethod("testWithPrimitiveByte", byte.class);
-        assertNotNull(m);
-        m.invoke(o, (byte) 127);
-        assertEquals("executed method: testWithPrimitiveByte (par1: 127)", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithPrimitiveShort() throws Exception {
-        Method m = classForTest.getMethod("testWithPrimitiveShort", short.class);
-        assertNotNull(m);
-        m.invoke(o, (short) 99);
-        assertEquals("executed method: testWithPrimitiveShort (par1: 99)", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithPrimitiveInt() throws Exception {
-        Method m = classForTest.getMethod("testWithPrimitiveInt", int.class);
-        assertNotNull(m);
-        m.invoke(o, 10);
-        assertEquals("executed method: testWithPrimitiveInt (par1: 10)", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithPrimitiveLong() throws Exception {
-        Method m = classForTest.getMethod("testWithPrimitiveLong", long.class);
-        assertNotNull(m);
-        m.invoke(o, 100L);
-        assertEquals("executed method: testWithPrimitiveLong (par1: 100)", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithPrimitiveFloat() throws Exception {
-        Method m = classForTest.getMethod("testWithPrimitiveFloat", float.class);
-        assertNotNull(m);
-        m.invoke(o, 2.0f);
-        assertEquals("executed method: testWithPrimitiveFloat (par1: 2.0)", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithPrimitiveDouble() throws Exception {
-        Method m = classForTest.getMethod("testWithPrimitiveDouble", double.class);
-        assertNotNull(m);
-        m.invoke(o, 3.4);
-        assertEquals("executed method: testWithPrimitiveDouble (par1: 3.4)", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithPrimitiveBoolean() throws Exception {
-        Method m = classForTest.getMethod("testWithPrimitiveBoolean", boolean.class);
-        assertNotNull(m);
-        m.invoke(o, true);
-        assertEquals("executed method: testWithPrimitiveBoolean (par1: true)", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithPrimitiveChar() throws Exception {
-        Method m = classForTest.getMethod("testWithPrimitiveChar", char.class);
-        assertNotNull(m);
-        m.invoke(o, 't');
-        assertEquals("executed method: testWithPrimitiveChar (par1: t)", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithObject() throws Exception {
-        Method m = classForTest.getMethod("testWithObject", Object.class);
-        assertNotNull(m);
-        m.invoke(o, Arrays.asList("A", "B"));
-        assertEquals("executed method: testWithObject (par1: [A, B])", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithString() throws Exception {
-        Method m = classForTest.getMethod("testWithString", String.class);
-        assertNotNull(m);
-        m.invoke(o, "Example");
-        assertEquals("executed method: testWithString (par1: Example)", systemOutContent.toString().trim());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "testWithPrimitiveTypeAndObject",
-            "testWithPrimitiveTypeAndObjectProtected",
-            "testWithPrimitiveTypeAndObjectPrivate",
-            "testWithPrimitiveTypeAndObjectProtectedPackage"
-    })
-    void testWithPrimitiveTypeAndObject(String method) throws Exception {
-        Method m = classForTest.getDeclaredMethod(method, classPrimitiveTypeAndObjects);
-        assertNotNull(m);
-        m.setAccessible(true);
-        m.invoke(o, dataPrimitiveTypeAndObjects);
-        assertEquals("executed method: " + method + " (par1: 120, par2: 44, par3: 122232, par4: 7435837423, par5: 343242.34, par6: 8888888.222222, par7: false, par8: y, par9: [A, B], par10: qwerty)", systemOutContent.toString().trim());
-    }
-
-    @Test
-    void testWithPrimitiveTypeAndObjectStatic() throws Exception {
-        Method m = classForTest.getDeclaredMethod("testWithPrimitiveTypeAndObjectStatic", classPrimitiveTypeAndObjects);
-        assertNotNull(m);
-        m.invoke(null, dataPrimitiveTypeAndObjects);
-        assertEquals("executed method: testWithPrimitiveTypeAndObjectStatic (par1: 120, par2: 44, par3: 122232, par4: 7435837423, par5: 343242.34, par6: 8888888.222222, par7: false, par8: y, par9: [A, B], par10: qwerty)", systemOutContent.toString().trim());
-    }
-
-    @Test
     void testException() throws Exception {
         Method m = classForTest.getDeclaredMethod("testWithObject", Object.class);
         assertNotNull(m);
@@ -174,5 +62,97 @@ class HeraldClassVisitorTest {
         } catch (InvocationTargetException ite) {
             assertEquals(RuntimeException.class, ite.getCause().getClass());
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideBoxForParameters")
+    void testMethod(BoxForParameters box) throws Exception {
+        Method m = classForTest.getDeclaredMethod(box.getMethod(), box.getTypes());
+        assertNotNull(m);
+        m.setAccessible(true);
+        m.invoke(box.isTarget() ? o : null, box.getData());
+        assertEquals(box.getResult(), systemOutContent.toString().trim());
+    }
+
+    private static List<BoxForParameters> provideBoxForParameters() {
+        return List.of(
+                BoxForParameters.builder().target(true).method("testWithoutParameters")
+                        .result("executed method: testWithoutParameters ()")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveByte")
+                        .types(new Class<?>[]{byte.class})
+                        .data(new Object[]{(byte) 127})
+                        .result("executed method: testWithPrimitiveByte (par1: 127)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveShort")
+                        .types(new Class<?>[]{short.class})
+                        .data(new Object[]{(short) 99})
+                        .result("executed method: testWithPrimitiveShort (par1: 99)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveInt")
+                        .types(new Class<?>[]{int.class})
+                        .data(new Object[]{10})
+                        .result("executed method: testWithPrimitiveInt (par1: 10)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveLong")
+                        .types(new Class<?>[]{long.class})
+                        .data(new Object[]{100L})
+                        .result("executed method: testWithPrimitiveLong (par1: 100)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveFloat")
+                        .types(new Class<?>[]{float.class})
+                        .data(new Object[]{2.0f})
+                        .result("executed method: testWithPrimitiveFloat (par1: 2.0)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveDouble")
+                        .types(new Class<?>[]{double.class})
+                        .data(new Object[]{3.4})
+                        .result("executed method: testWithPrimitiveDouble (par1: 3.4)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveBoolean")
+                        .types(new Class<?>[]{boolean.class})
+                        .data(new Object[]{true})
+                        .result("executed method: testWithPrimitiveBoolean (par1: true)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveChar")
+                        .types(new Class<?>[]{char.class})
+                        .data(new Object[]{'t'})
+                        .result("executed method: testWithPrimitiveChar (par1: t)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithObject")
+                        .types(new Class<?>[]{Object.class})
+                        .data(new Object[]{Arrays.asList("A", "B")})
+                        .result("executed method: testWithObject (par1: [A, B])")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithString")
+                        .types(new Class<?>[]{String.class})
+                        .data(new Object[]{"Example"})
+                        .result("executed method: testWithString (par1: Example)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveTypeAndObject")
+                        .types(CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .data(DATA_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .result("executed method: testWithPrimitiveTypeAndObject (par1: 120, par2: 44, par3: 122232, par4: 7435837423, par5: 343242.34, par6: 8888888.222222, par7: false, par8: y, par9: [A, B], par10: qwerty)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveTypeAndObjectProtected")
+                        .types(CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .data(DATA_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .result("executed method: testWithPrimitiveTypeAndObjectProtected (par1: 120, par2: 44, par3: 122232, par4: 7435837423, par5: 343242.34, par6: 8888888.222222, par7: false, par8: y, par9: [A, B], par10: qwerty)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveTypeAndObjectPrivate")
+                        .types(CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .data(DATA_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .result("executed method: testWithPrimitiveTypeAndObjectPrivate (par1: 120, par2: 44, par3: 122232, par4: 7435837423, par5: 343242.34, par6: 8888888.222222, par7: false, par8: y, par9: [A, B], par10: qwerty)")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithPrimitiveTypeAndObjectProtectedPackage")
+                        .types(CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .data(DATA_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .result("executed method: testWithPrimitiveTypeAndObjectProtectedPackage (par1: 120, par2: 44, par3: 122232, par4: 7435837423, par5: 343242.34, par6: 8888888.222222, par7: false, par8: y, par9: [A, B], par10: qwerty)")
+                        .build(),
+                BoxForParameters.builder().target(false).method("testWithPrimitiveTypeAndObjectStatic")
+                        .types(CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .data(DATA_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .result("executed method: testWithPrimitiveTypeAndObjectStatic (par1: 120, par2: 44, par3: 122232, par4: 7435837423, par5: 343242.34, par6: 8888888.222222, par7: false, par8: y, par9: [A, B], par10: qwerty)")
+                        .build());
     }
 }

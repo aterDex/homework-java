@@ -90,9 +90,9 @@ class HeraldClassVisitorWithMetaTest {
 
     @Test
     void testWithPrimitiveTypeAndObjectStatic() throws Exception {
-        Method m0 = classForTest.getMethod("testWithPrimitiveTypeAndObjectStatic", HeraldClassVisitorTest.classPrimitiveTypeAndObjects);
+        Method m0 = classForTest.getMethod("testWithPrimitiveTypeAndObjectStatic", HeraldClassVisitorTest.CLASS_PRIMITIVE_TYPE_AND_OBJECTS);
         assertNotNull(m0);
-        m0.invoke(null, HeraldClassVisitorTest.dataPrimitiveTypeAndObjects);
+        m0.invoke(null, HeraldClassVisitorTest.DATA_PRIMITIVE_TYPE_AND_OBJECTS);
         assertEquals("executed method: testWithPrimitiveTypeAndObjectStatic (B: 120, S: 44, I: 122232, J: 7435837423, F: 343242.34, D: 8888888.222222, Z: false, par8: y, L0: [A, B], L1: qwerty)",
                 systemOutContent.toString().trim());
     }
