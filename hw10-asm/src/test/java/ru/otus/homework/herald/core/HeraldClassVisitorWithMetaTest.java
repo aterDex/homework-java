@@ -58,8 +58,6 @@ class HeraldClassVisitorWithMetaTest {
                 .localVariable(LocalVariableMeta.builder()
                         .name("Z").descriptor("Z").index(8).build())
                 .localVariable(LocalVariableMeta.builder()
-                        .name("C").descriptor("C").index(9).build())
-                .localVariable(LocalVariableMeta.builder()
                         .name("L0").descriptor("Ljava/lang/Object;").index(10).build())
                 .localVariable(LocalVariableMeta.builder()
                         .name("L1").descriptor("Ljava/lang/String;").index(11).build())
@@ -95,7 +93,7 @@ class HeraldClassVisitorWithMetaTest {
         Method m0 = classForTest.getMethod("testWithPrimitiveTypeAndObjectStatic", HeraldClassVisitorTest.classPrimitiveTypeAndObjects);
         assertNotNull(m0);
         m0.invoke(null, HeraldClassVisitorTest.dataPrimitiveTypeAndObjects);
-        assertEquals("executed method: testWithPrimitiveTypeAndObjectStatic (B: 120, S: 44, I: 122232, J: 7435837423, F: 343242.34, D: 8888888.222222, Z: false, C: y, L0: [A, B], L1: qwerty)",
+        assertEquals("executed method: testWithPrimitiveTypeAndObjectStatic (B: 120, S: 44, I: 122232, J: 7435837423, F: 343242.34, D: 8888888.222222, Z: false, par8: y, L0: [A, B], L1: qwerty)",
                 systemOutContent.toString().trim());
     }
 }
