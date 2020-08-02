@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,7 @@ class HeraldClassVisitorTest {
     private ByteArrayOutputStream systemOutContent;
     private Class<?> classForTest;
     private ClassLoaderForTest classLoader;
-    private Object o;
+    private Object targetObject;
 
     @BeforeEach
     void before() throws Exception {
@@ -43,8 +44,8 @@ class HeraldClassVisitorTest {
 
         ClassLoaderForTest classLoader = new ClassLoaderForTest();
         classForTest = classLoader.defineClass(ClassWithLogsMethods.class.getCanonicalName(), wr.toByteArray());
-        o = classForTest.getConstructor().newInstance();
-        assertNotNull(o);
+        targetObject = classForTest.getConstructor().newInstance();
+        assertNotNull(targetObject);
     }
 
     @AfterEach
@@ -56,9 +57,9 @@ class HeraldClassVisitorTest {
     void testException() throws Exception {
         Method m = classForTest.getDeclaredMethod("testWithObject", Object.class);
         assertNotNull(m);
-        assertThrows(InvocationTargetException.class, () -> m.invoke(o, new ToStringException()));
+        assertThrows(InvocationTargetException.class, () -> m.invoke(targetObject, new ToStringException()));
         try {
-            m.invoke(o, new ToStringException());
+            m.invoke(targetObject, new ToStringException());
         } catch (InvocationTargetException ite) {
             assertEquals(RuntimeException.class, ite.getCause().getClass());
         }
@@ -70,11 +71,11 @@ class HeraldClassVisitorTest {
         Method m = classForTest.getDeclaredMethod(box.getMethod(), box.getTypes());
         assertNotNull(m);
         m.setAccessible(true);
-        m.invoke(box.isTarget() ? o : null, box.getData());
+        m.invoke(box.isTarget() ? targetObject : null, box.getData());
         assertEquals(box.getResult(), systemOutContent.toString().trim());
     }
 
-    private static List<BoxForParameters> provideBoxForParameters() {
+    private static Collection<BoxForParameters> provideBoxForParameters() {
         return List.of(
                 BoxForParameters.builder().target(true).method("testWithoutParameters")
                         .result("executed method: testWithoutParameters ()")

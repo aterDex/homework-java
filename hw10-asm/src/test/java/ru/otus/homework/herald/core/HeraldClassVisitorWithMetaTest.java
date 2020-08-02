@@ -2,7 +2,8 @@ package ru.otus.homework.herald.core;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -12,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.objectweb.asm.Opcodes.ASM8;
@@ -21,7 +24,7 @@ class HeraldClassVisitorWithMetaTest {
     private PrintStream originalSystemOut;
     private ByteArrayOutputStream systemOutContent;
     private Class<?> classForTest;
-    private Object object;
+    private Object targetObject;
 
     @BeforeEach
     void before() throws Exception {
@@ -70,8 +73,8 @@ class HeraldClassVisitorWithMetaTest {
 
         ClassLoaderForTest classLoader = new ClassLoaderForTest();
         classForTest = classLoader.defineClass(ClassWithLogsMethods.class.getCanonicalName(), wr.toByteArray());
-        object = classForTest.getConstructor().newInstance();
-        assertNotNull(object);
+        targetObject = classForTest.getConstructor().newInstance();
+        assertNotNull(targetObject);
     }
 
     @AfterEach
@@ -79,21 +82,27 @@ class HeraldClassVisitorWithMetaTest {
         System.setOut(originalSystemOut);
     }
 
-    @Test
-    void testWithString() throws Exception {
-        Method m = classForTest.getMethod("testWithString", String.class);
+    @ParameterizedTest
+    @MethodSource("provideBoxForParameters")
+    void testMethod(BoxForParameters box) throws Exception {
+        Method m = classForTest.getDeclaredMethod(box.getMethod(), box.getTypes());
         assertNotNull(m);
-        m.invoke(object, "Example");
-        assertEquals("executed method: testWithString (Eny Text For Name: Example)",
-                systemOutContent.toString().trim());
+        m.setAccessible(true);
+        m.invoke(box.isTarget() ? targetObject : null, box.getData());
+        assertEquals(box.getResult(), systemOutContent.toString().trim());
     }
 
-    @Test
-    void testWithPrimitiveTypeAndObjectStatic() throws Exception {
-        Method m0 = classForTest.getMethod("testWithPrimitiveTypeAndObjectStatic", HeraldClassVisitorTest.CLASS_PRIMITIVE_TYPE_AND_OBJECTS);
-        assertNotNull(m0);
-        m0.invoke(null, HeraldClassVisitorTest.DATA_PRIMITIVE_TYPE_AND_OBJECTS);
-        assertEquals("executed method: testWithPrimitiveTypeAndObjectStatic (B: 120, S: 44, I: 122232, J: 7435837423, F: 343242.34, D: 8888888.222222, Z: false, par8: y, L0: [A, B], L1: qwerty)",
-                systemOutContent.toString().trim());
+    private static Collection<BoxForParameters> provideBoxForParameters() {
+        return List.of(
+                BoxForParameters.builder().target(true).method("testWithString")
+                        .types(new Class<?>[]{String.class})
+                        .data(new Object[]{"Example"})
+                        .result("executed method: testWithString (Eny Text For Name: Example)")
+                        .build(),
+                BoxForParameters.builder().target(false).method("testWithPrimitiveTypeAndObjectStatic")
+                        .types(HeraldClassVisitorTest.CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .data(HeraldClassVisitorTest.DATA_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .result("executed method: testWithPrimitiveTypeAndObjectStatic (B: 120, S: 44, I: 122232, J: 7435837423, F: 343242.34, D: 8888888.222222, Z: false, par8: y, L0: [A, B], L1: qwerty)")
+                        .build());
     }
 }
