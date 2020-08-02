@@ -12,5 +12,5 @@
 * **hw06-reflection** - Лекция 6. Аннотации и Reflection.
 * **hw10-asm** - Лекция 10. ClassLoader и  ASM.
     * **hw10-asm** - Реализация JavaAgent.
-    * **hw10-asm-app** - Приложение для проверки JavaAgent. Для запуска `gradle hw10-asm-app:run` или `gradle hw10-asm-app:run -PdoNotResolveParameterName` 
+    * **hw10-asm-app** - Приложение для проверки JavaAgent. 
 
