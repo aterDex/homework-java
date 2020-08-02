@@ -39,10 +39,7 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
             addStringBuilderFromStringConst(methodText + " (");
             int idxOnStack = Modifier.isStatic(access) ? 0 : 1;
             for (int i = 0; i < types.length; i++) {
-                Type currentType = types[i];
-                if (Type.SHORT_TYPE.equals(currentType) || Type.BYTE_TYPE.equals(currentType)) {
-                    currentType = Type.INT_TYPE;
-                }
+                Type currentType = correctTypeForStringBuilder(types[i]);
                 addStringBuilderFromStringConst(resolveName(i + 1, idxOnStack) + ": ");
                 addStringBuilderFromVariable(idxOnStack, currentType);
                 idxOnStack += currentType.getSize();
@@ -53,6 +50,10 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
             addStringBuilderFromStringConst(")");
         }
         super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, TYPE_PRINT_STREAM.getInternalName(), "println", "(Ljava/lang/Object;)V", false);
+    }
+
+    private Type correctTypeForStringBuilder(Type type) {
+        return Type.SHORT_TYPE.equals(type) || Type.BYTE_TYPE.equals(type) ? Type.INT_TYPE : type;
     }
 
     /**
