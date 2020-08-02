@@ -29,13 +29,14 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
     private void createLog() {
         Type[] types = Type.getArgumentTypes(methodDescriptor);
         super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", TYPE_PRINT_STREAM.getDescriptor());
+        String methodText = "executed method: " + methodName;
         if (types.length == 0) {
-            super.visitLdcInsn("executed method: " + methodName + " ()");
+            super.visitLdcInsn(methodText + " ()");
         } else {
             super.visitTypeInsn(Opcodes.NEW, TYPE_STRING_BUILDER.getInternalName());
             super.visitInsn(Opcodes.DUP);
             super.visitMethodInsn(Opcodes.INVOKESPECIAL, TYPE_STRING_BUILDER.getInternalName(), "<init>", "()V", false);
-            addStringBuilderFromStringConst("executed method: " + methodName + " (");
+            addStringBuilderFromStringConst(methodText + " (");
             int idxOnStack = Modifier.isStatic(access) ? 0 : 1;
             for (int i = 0; i < types.length; i++) {
                 Type currentType = types[i];
