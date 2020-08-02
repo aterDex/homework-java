@@ -2,9 +2,7 @@ package ru.otus.homework.herald.core.mock;
 
 import ru.otus.homework.herald.api.Log;
 
-import java.lang.invoke.StringConcatFactory;
-
-public class NormalClass {
+public class ClassWithLogsMethods {
 
     @Log
     public void testWithoutParameters() {
@@ -68,5 +66,8 @@ public class NormalClass {
 
     @Log
     public static void testWithPrimitiveTypeAndObjectStatic(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
+    }
+
+    void testMethodWithoutLog(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
     }
 }
