@@ -91,7 +91,7 @@ class HeraldClassVisitorWithMetaTest {
     }
 
     @Test
-    void test() throws Exception {
+    void testWithPrimitiveTypeAndObjectStatic() throws Exception {
         Method m0 = classForTest.getMethod("testWithPrimitiveTypeAndObjectStatic", HeraldClassVisitorTest.classPrimitiveTypeAndObjects);
         assertNotNull(m0);
         m0.invoke(null, HeraldClassVisitorTest.dataPrimitiveTypeAndObjects);

@@ -27,7 +27,7 @@ public class HeraldDetectorMethodVisitor extends MethodVisitor {
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
         if (!codeHaveBeenVisited) {
             Type t = Type.getType(descriptor);
-            herald = LOG_ANNOTATION.equals(t.getClassName());
+            herald = herald || LOG_ANNOTATION.equals(t.getClassName());
         }
         return super.visitAnnotation(descriptor, visible);
     }

@@ -1,0 +1,33 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+// Other variables
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw10.App'
+
+dependencies {
+    compileOnly project(':hw10-asm')
+}
+
+application {
+    mainClassName MAIN_CLASS_NAME
+}
+
+run {
+    dependsOn ':hw10-asm:shadowJar'
+    jvmArgs "-javaagent:${project(':hw10-asm').shadowJar.archiveFile.get()}=rpn"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    archiveClassifier.set('fat')
+    mainClassName = MAIN_CLASS_NAME
+}

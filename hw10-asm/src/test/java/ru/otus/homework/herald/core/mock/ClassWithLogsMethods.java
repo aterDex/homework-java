@@ -1,5 +1,6 @@
 package ru.otus.homework.herald.core.mock;
 
+import org.junit.jupiter.api.Disabled;
 import ru.otus.homework.herald.api.Log;
 
 public class ClassWithLogsMethods {
@@ -65,9 +66,11 @@ public class ClassWithLogsMethods {
     }
 
     @Log
+    @Log2
     public static void testWithPrimitiveTypeAndObjectStatic(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
     }
 
+    @Log2
     void testMethodWithoutLog(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
     }
 }
