@@ -20,7 +20,9 @@ application {
 
 run {
     dependsOn ':hw10-asm:shadowJar'
-    jvmArgs "-javaagent:${project(':hw10-asm').shadowJar.archiveFile.get()}${project.hasProperty('doNotResolveParameterName') ? '' : '=rpn'}"
+    if (!project.hasProperty('withoutAgent')) {
+        jvmArgs "-javaagent:${project(':hw10-asm').shadowJar.archiveFile.get()}${project.hasProperty('doNotResolveParameterName') ? '' : '=rpn'}"
+    }
 }
 
 test {
