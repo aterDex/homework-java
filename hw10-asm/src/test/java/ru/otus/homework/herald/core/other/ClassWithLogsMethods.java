@@ -76,7 +76,7 @@ public class ClassWithLogsMethods {
     void testMethodWithoutLog(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
     }
 
-    @Log
+    @Log(comment = "test", printProperty = true)
     public void testWithThreeObject(List<? extends Number> numbers, char[] text, Float adjustment) {
     }
 }

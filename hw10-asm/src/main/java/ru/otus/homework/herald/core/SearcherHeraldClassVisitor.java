@@ -1,15 +1,16 @@
 package ru.otus.homework.herald.core;
 
+import lombok.Getter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class SearcherHeraldClassVisitor extends ClassVisitor {
 
-    private List<HeraldMeta> herald = new ArrayList<>();
+    @Getter
+    private List<HeraldMeta> heralds = new ArrayList<>();
 
     public SearcherHeraldClassVisitor(int api) {
         super(api);
@@ -21,10 +22,6 @@ public class SearcherHeraldClassVisitor extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-        return new SearcherHeraldMethodVisitor(api, access, name, descriptor, super.visitMethod(access, name, descriptor, signature, exceptions), herald::add);
-    }
-
-    public Collection<HeraldMeta> getHeralds() {
-        return herald;
+        return new SearcherHeraldMethodVisitor(api, access, name, descriptor, super.visitMethod(access, name, descriptor, signature, exceptions), heralds::add);
     }
 }

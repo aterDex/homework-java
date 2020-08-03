@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 
 public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
 
-
     private final HeraldMeta heraldMeta;
     private final Supplier<Optional<HeraldInjector>> injectorForMethodFactory;
     /**
@@ -42,6 +41,8 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
                         .access(getAccess())
                         .methodName(getMethodName())
                         .methodDescriptor(getMethodDescriptor())
+                        .comment(getComment())
+                        .printProperty(isPrintProperty())
                         .build();
     }
 }

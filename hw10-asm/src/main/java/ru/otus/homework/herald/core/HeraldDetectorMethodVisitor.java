@@ -1,5 +1,6 @@
 package ru.otus.homework.herald.core;
 
+import lombok.Getter;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
@@ -9,12 +10,19 @@ public class HeraldDetectorMethodVisitor extends MethodVisitor {
 
     public static final String LOG_ANNOTATION = Log.class.getCanonicalName();
 
+    @Getter
     private final int access;
+    @Getter
     private final String methodName;
+    @Getter
     private final String methodDescriptor;
-
-    private boolean codeHaveBeenVisited = false;
+    @Getter
     private boolean herald = false;
+    @Getter
+    private boolean printProperty = true;
+    @Getter
+    private String comment = null;
+    private boolean codeHaveBeenVisited = false;
 
     public HeraldDetectorMethodVisitor(int api, int access, String methodName, String methodDescriptor, MethodVisitor methodVisitor) {
         super(api, methodVisitor);
@@ -25,11 +33,13 @@ public class HeraldDetectorMethodVisitor extends MethodVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+        AnnotationVisitor defaultVisitor = super.visitAnnotation(descriptor, visible);
         if (!codeHaveBeenVisited) {
             Type t = Type.getType(descriptor);
             herald = herald || LOG_ANNOTATION.equals(t.getClassName());
+            return new HeraldLogAnnotationVisitor(api, defaultVisitor);
         }
-        return super.visitAnnotation(descriptor, visible);
+        return defaultVisitor;
     }
 
     @Override
@@ -38,19 +48,27 @@ public class HeraldDetectorMethodVisitor extends MethodVisitor {
         codeHaveBeenVisited = true;
     }
 
-    public boolean isHerald() {
-        return herald;
-    }
+    private class HeraldLogAnnotationVisitor extends AnnotationVisitor {
 
-    public int getAccess() {
-        return access;
-    }
+        public HeraldLogAnnotationVisitor(int api, AnnotationVisitor annotationVisitor) {
+            super(api, annotationVisitor);
+        }
 
-    public String getMethodName() {
-        return methodName;
-    }
-
-    public String getMethodDescriptor() {
-        return methodDescriptor;
+        @Override
+        public void visit(String name, Object value) {
+            if (value != null) {
+                switch (name) {
+                    case "printProperty":
+                        if (value instanceof Boolean) {
+                            printProperty = (Boolean) value;
+                        }
+                        break;
+                    case "comment":
+                        comment = value.toString();
+                        break;
+                }
+            }
+            super.visit(name, value);
+        }
     }
 }

@@ -22,7 +22,9 @@ public class SearcherHeraldMethodVisitor extends HeraldDetectorMethodVisitor {
             heraldMetaBuilder = HeraldMeta.builder()
                     .access(getAccess())
                     .methodName(getMethodName())
-                    .methodDescriptor(getMethodDescriptor());
+                    .methodDescriptor(getMethodDescriptor())
+                    .comment(getComment())
+                    .printProperty(isPrintProperty());
         }
     }
 

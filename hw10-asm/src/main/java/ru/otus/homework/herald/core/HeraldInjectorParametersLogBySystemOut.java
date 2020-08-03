@@ -29,7 +29,7 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
 
         visitor.visitFieldInsn(GETSTATIC, "java/lang/System", "out", PRINT_STREAM_DESC);
 
-        if (types.length == 0) {
+        if (!heraldMeta.isPrintProperty() || types.length == 0) {
             finalDescriptor = "(Ljava/lang/String;)V";
             visitor.visitLdcInsn(methodText + " ()");
         } else {
@@ -58,6 +58,7 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
 
     /**
      * Создаем StringBuilder в памяти, на вершине стэка оставляем ссылку на StringBuilder
+     * @param visitor visitor для записи
      */
     private void initStringBuilder(MethodVisitor visitor) {
         visitor.visitTypeInsn(NEW, STRING_BUILDER_INTERNAL_NAME);
@@ -75,6 +76,7 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
      *
      * @param idx        порядковый номер переменной начиная с 1
      * @param idxOnStack номер перменной в стэке
+     * @param heraldMeta метаинформация по колонкам
      * @return имя для переменной
      */
     private String resolveName(int idx, int idxOnStack, HeraldMeta heraldMeta) {

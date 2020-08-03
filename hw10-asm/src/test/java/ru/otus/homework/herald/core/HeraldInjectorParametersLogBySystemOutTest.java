@@ -61,6 +61,7 @@ class HeraldInjectorParametersLogBySystemOutTest {
     void injectWithoutParameters(Type returnType) {
         HeraldInjectorParametersLogBySystemOut bySystemOut = new HeraldInjectorParametersLogBySystemOut();
         HeraldMeta meta = HeraldMeta.builder()
+                .printProperty(true)
                 .access(1)
                 .methodName("test")
                 .methodDescriptor(Type.getMethodDescriptor(returnType))
@@ -78,6 +79,7 @@ class HeraldInjectorParametersLogBySystemOutTest {
     void injectWithOneParameters(Type returnType) {
         HeraldInjectorParametersLogBySystemOut bySystemOut = new HeraldInjectorParametersLogBySystemOut();
         HeraldMeta meta = HeraldMeta.builder()
+                .printProperty(true)
                 .access(1)
                 .methodName("test")
                 .methodDescriptor(Type.getMethodDescriptor(returnType, Type.getType(String.class)))
@@ -102,6 +104,7 @@ class HeraldInjectorParametersLogBySystemOutTest {
     void injectWithUnknownParameters(Type returnType) {
         HeraldInjectorParametersLogBySystemOut bySystemOut = new HeraldInjectorParametersLogBySystemOut();
         HeraldMeta meta = HeraldMeta.builder()
+                .printProperty(true)
                 .access(1)
                 .methodName("test")
                 .methodDescriptor(Type.getMethodDescriptor(returnType, Type.VOID_TYPE))
@@ -126,6 +129,7 @@ class HeraldInjectorParametersLogBySystemOutTest {
     void injectWithLotOfParameter(Type returnType) {
 
         HeraldMeta meta = HeraldMeta.builder()
+                .printProperty(true)
                 .access(1)
                 .methodName("test")
                 .methodDescriptor(Type.getMethodDescriptor(returnType,
@@ -156,6 +160,7 @@ class HeraldInjectorParametersLogBySystemOutTest {
         AtomicInteger counter = new AtomicInteger(1);
         AtomicInteger counterWithShift = new AtomicInteger(1);
         HeraldMeta meta = HeraldMeta.builder()
+                .printProperty(true)
                 .access(1)
                 .methodName("test")
                 .methodDescriptor(Type.getMethodDescriptor(returnType,
