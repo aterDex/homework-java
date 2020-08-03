@@ -25,9 +25,11 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
     public void inject(HeraldMeta heraldMeta, MethodVisitor visitor) {
         Type[] types = Type.getArgumentTypes(heraldMeta.getMethodDescriptor());
         String methodText = "executed method: " + heraldMeta.getMethodName();
+        boolean haveComment = heraldMeta.getComment() != null;
         String finalDescriptor;
 
         visitor.visitFieldInsn(GETSTATIC, "java/lang/System", "out", PRINT_STREAM_DESC);
+        if (haveComment) visitor.visitInsn(DUP);
 
         if (!heraldMeta.isPrintProperty() || types.length == 0) {
             finalDescriptor = "(Ljava/lang/String;)V";
@@ -38,6 +40,13 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
             addStringBuilderFromStringConst(methodText + " (", visitor);
             addStringBuilderParameters(types, heraldMeta, visitor);
             addStringBuilderFromStringConst(")", visitor);
+        }
+
+        if (haveComment) {
+            visitor.visitMethodInsn(INVOKEVIRTUAL, PRINT_STREAM_INTERNAL_NAME,
+                    "print", finalDescriptor, false);
+            visitor.visitLdcInsn(" // " + heraldMeta.getComment());
+            finalDescriptor = "(Ljava/lang/String;)V";
         }
 
         visitor.visitMethodInsn(INVOKEVIRTUAL, PRINT_STREAM_INTERNAL_NAME,
@@ -58,6 +67,7 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
 
     /**
      * Создаем StringBuilder в памяти, на вершине стэка оставляем ссылку на StringBuilder
+     *
      * @param visitor visitor для записи
      */
     private void initStringBuilder(MethodVisitor visitor) {

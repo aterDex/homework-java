@@ -18,7 +18,7 @@ class SearcherHeraldClassVisitorTest {
         ClassReader reader = new ClassReader(ClassWithLogsMethods.class.getCanonicalName());
         reader.accept(searcher, ClassReader.EXPAND_FRAMES);
         Collection<HeraldMeta> heralds = searcher.getHeralds();
-        assertEquals(17, heralds.size());
+        assertEquals(19, heralds.size());
         boolean testWithoutParameters = false;
         boolean testWithPrimitiveTypeAndObjectPrivate = false;
         for (HeraldMeta herald : heralds) {

@@ -114,12 +114,21 @@ class HeraldClassVisitorTest {
                         .types(CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
                         .data(DATA_PRIMITIVE_TYPE_AND_OBJECTS)
                         .result("executed method: testWithPrimitiveTypeAndObjectStatic (par1: 120, par2: 44, par3: 122232, par4: 7435837423, par5: 343242.34, par6: 8888888.222222, par7: false, par8: y, par9: [A, B], par10: qwerty)")
-                        .build()
-                ,
+                        .build(),
                 BoxForParameters.builder().target(true).method("testWithThreeObject")
                         .types(new Class<?>[]{List.class, char[].class, Float.class})
                         .data(new Object[]{Arrays.asList(12, 4.5, 56L, 23.03f), new char[]{'t', 'e', 'x', 't'}, 342.391f})
-                        .result("executed method: testWithThreeObject (par1: [12, 4.5, 56, 23.03], par2: text, par3: 342.391)")
+                        .result("executed method: testWithThreeObject (par1: [12, 4.5, 56, 23.03], par2: text, par3: 342.391) // test")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithThreeObjectWithoutProperty")
+                        .types(new Class<?>[]{List.class, char[].class, Float.class})
+                        .data(new Object[]{Arrays.asList(12, 4.5, 56L, 23.03f), new char[]{'t', 'e', 'x', 't'}, 342.391f})
+                        .result("executed method: testWithThreeObjectWithoutProperty ()")
+                        .build(),
+                BoxForParameters.builder().target(true).method("testWithThreeObjectWithoutPropertyWithComment")
+                        .types(new Class<?>[]{List.class, char[].class, Float.class})
+                        .data(new Object[]{Arrays.asList(12, 4.5, 56L, 23.03f), new char[]{'t', 'e', 'x', 't'}, 342.391f})
+                        .result("executed method: testWithThreeObjectWithoutPropertyWithComment () // test222")
                         .build()
         );
 
