@@ -53,3 +53,29 @@ shadowJar {
     archiveClassifier.set('fat')
     mainClassName = MAIN_CLASS_NAME
 }
+
+task rWithSerialGC(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = MAIN_CLASS_NAME
+    jvmArgs('-XX:+UseSerialGC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-serial-%t-%p.log:tags,uptime,time,level'
+//            , '-XX:+HeapDumpOnOutOfMemoryError', '-XX:HeapDumpPath=./logs/dump'
+    )
+}
+
+task rWithParallelGC(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = MAIN_CLASS_NAME
+    jvmArgs('-XX:+UseParallelGC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-parallel-%t-%p.log:tags,uptime,time,level')
+}
+
+task rWithG1GC(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = MAIN_CLASS_NAME
+    jvmArgs('-XX:+UseG1GC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-g1-%t-%p.log:tags,uptime,time,level')
+}
+
+task rWithZGC(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = MAIN_CLASS_NAME
+    jvmArgs('-XX:+UnlockExperimentalVMOptions', '-XX:+UseZGC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-z-%t-%p.log:tags,uptime,time,level')
+}
