@@ -1,4 +1,4 @@
-package ru.otus.homework.herald.core;
+package ru.otus.homework.herald.core.other;
 
 public class ClassLoaderForTest extends ClassLoader {
 

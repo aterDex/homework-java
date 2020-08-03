@@ -1,6 +1,5 @@
-package ru.otus.homework.herald.core.mock;
+package ru.otus.homework.herald.core.other;
 
-import org.junit.jupiter.api.Disabled;
 import ru.otus.homework.herald.api.Log;
 
 public class ClassWithLogsMethods {
@@ -61,6 +60,7 @@ public class ClassWithLogsMethods {
     private void testWithPrimitiveTypeAndObjectPrivate(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
     }
 
+    @Log2
     @Log
     void testWithPrimitiveTypeAndObjectProtectedPackage(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
     }

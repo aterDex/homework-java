@@ -1,4 +1,4 @@
-package ru.otus.homework.herald.core.mock;
+package ru.otus.homework.herald.core.other;
 
 public class ToStringException {
 

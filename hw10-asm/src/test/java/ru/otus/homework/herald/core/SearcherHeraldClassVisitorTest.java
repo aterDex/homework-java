@@ -2,7 +2,7 @@ package ru.otus.homework.herald.core;
 
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
-import ru.otus.homework.herald.core.mock.ClassWithLogsMethods;
+import ru.otus.homework.herald.core.other.ClassWithLogsMethods;
 
 import java.util.Collection;
 import java.util.Iterator;

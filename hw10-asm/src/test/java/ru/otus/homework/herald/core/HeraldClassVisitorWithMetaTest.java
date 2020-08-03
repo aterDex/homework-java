@@ -7,7 +7,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import ru.otus.homework.herald.core.mock.ClassWithLogsMethods;
+import ru.otus.homework.herald.core.other.BoxForParameters;
+import ru.otus.homework.herald.core.other.ClassLoaderForTest;
+import ru.otus.homework.herald.core.other.ClassWithLogsMethods;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

@@ -6,8 +6,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import ru.otus.homework.herald.core.mock.ClassWithLogsMethods;
-import ru.otus.homework.herald.core.mock.ToStringException;
+import ru.otus.homework.herald.core.other.BoxForParameters;
+import ru.otus.homework.herald.core.other.ClassLoaderForTest;
+import ru.otus.homework.herald.core.other.ClassWithLogsMethods;
+import ru.otus.homework.herald.core.other.ToStringException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -28,7 +30,6 @@ class HeraldClassVisitorTest {
     private PrintStream originalSystemOut;
     private ByteArrayOutputStream systemOutContent;
     private Class<?> classForTest;
-    private ClassLoaderForTest classLoader;
     private Object targetObject;
 
     @BeforeEach
