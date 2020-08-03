@@ -2,7 +2,14 @@ package ru.otus.homework.herald.core.other;
 
 import ru.otus.homework.herald.api.Log;
 
+import java.util.List;
+
 public class ClassWithLogsMethods {
+
+    @Log
+    @Log2
+    public static void testWithPrimitiveTypeAndObjectStatic(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
+    }
 
     @Log
     public void testWithoutParameters() {
@@ -65,12 +72,11 @@ public class ClassWithLogsMethods {
     void testWithPrimitiveTypeAndObjectProtectedPackage(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
     }
 
-    @Log
-    @Log2
-    public static void testWithPrimitiveTypeAndObjectStatic(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
-    }
-
     @Log2
     void testMethodWithoutLog(byte by, short sh, int i, long l, float f, double d, boolean bo, char c, Object o, String st) {
+    }
+
+    @Log
+    public void testWithThreeObject(List<? extends Number> numbers, char[] text, Float adjustment) {
     }
 }

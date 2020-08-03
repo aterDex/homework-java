@@ -9,9 +9,9 @@ public class HeraldDetectorMethodVisitor extends MethodVisitor {
 
     public static final String LOG_ANNOTATION = Log.class.getCanonicalName();
 
-    protected final int access;
-    protected final String methodName;
-    protected final String methodDescriptor;
+    private final int access;
+    private final String methodName;
+    private final String methodDescriptor;
 
     private boolean codeHaveBeenVisited = false;
     private boolean herald = false;
@@ -40,5 +40,17 @@ public class HeraldDetectorMethodVisitor extends MethodVisitor {
 
     public boolean isHerald() {
         return herald;
+    }
+
+    public int getAccess() {
+        return access;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public String getMethodDescriptor() {
+        return methodDescriptor;
     }
 }

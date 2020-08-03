@@ -1,6 +1,7 @@
 package ru.otus.homework.herald.core;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
 
 import java.io.PrintStream;
 import java.lang.reflect.Modifier;
@@ -12,6 +13,8 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
 
     public static final Type PRINT_STREAM = Type.getType(PrintStream.class);
     public static final Type STRING_BUILDER = Type.getType(StringBuilder.class);
+    public static final Type OBJECT = Type.getType(Object.class);
+    public static final Type STRING = Type.getType(String.class);
 
     public static final String PRINT_STREAM_DESC = PRINT_STREAM.getDescriptor();
     public static final String PRINT_STREAM_INTERNAL_NAME = PRINT_STREAM.getInternalName();
@@ -33,51 +36,51 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
     }
 
     private void createLog() {
-        Type[] types = Type.getArgumentTypes(methodDescriptor);
-        String methodText = "executed method: " + methodName;
+        Type[] types = Type.getArgumentTypes(getMethodDescriptor());
+        String methodText = "executed method: " + getMethodName();
+        String finalDescriptor;
 
-        super.visitFieldInsn(
-                GETSTATIC,
-                "java/lang/System",
-                "out",
-                PRINT_STREAM_DESC);
+        super.visitFieldInsn(GETSTATIC, "java/lang/System", "out", PRINT_STREAM_DESC);
 
         if (types.length == 0) {
+            finalDescriptor = "(Ljava/lang/String;)V";
             super.visitLdcInsn(methodText + " ()");
         } else {
-            super.visitTypeInsn(NEW, STRING_BUILDER_INTERNAL_NAME);
-            super.visitInsn(DUP);
-            super.visitMethodInsn(
-                    INVOKESPECIAL,
-                    STRING_BUILDER_INTERNAL_NAME,
-                    "<init>",
-                    "()V",
-                    false);
-
+            finalDescriptor = "(Ljava/lang/Object;)V";
+            initStringBuilder();
             addStringBuilderFromStringConst(methodText + " (");
-            int idxOnStack = Modifier.isStatic(access) ? 0 : 1;
-            for (int i = 0; i < types.length; i++) {
-                Type currentType = correctTypeForStringBuilder(types[i]);
-                addStringBuilderFromStringConst(resolveName(i + 1, idxOnStack) + ": ");
-                addStringBuilderFromVariable(idxOnStack, currentType);
-                idxOnStack += currentType.getSize();
-                if (i < (types.length - 1)) {
-                    addStringBuilderFromStringConst(", ");
-                }
-            }
+            addStringBuilderParameters(types);
             addStringBuilderFromStringConst(")");
         }
 
-        super.visitMethodInsn(
-                INVOKEVIRTUAL,
-                PRINT_STREAM_INTERNAL_NAME,
-                "println",
-                "(Ljava/lang/Object;)V",
-                false);
+        super.visitMethodInsn(INVOKEVIRTUAL, PRINT_STREAM_INTERNAL_NAME,
+                "println", finalDescriptor, false);
     }
 
-    private Type correctTypeForStringBuilder(Type type) {
-        return Type.SHORT_TYPE.equals(type) || Type.BYTE_TYPE.equals(type) ? Type.INT_TYPE : type;
+    private void addStringBuilderParameters(Type[] types) {
+        int idxOnStack = Modifier.isStatic(getAccess()) ? 0 : 1;
+        for (int i = 0; i < types.length; i++) {
+            addStringBuilderFromStringConst(resolveName(i + 1, idxOnStack) + ": ");
+            addStringBuilderFromVariable(idxOnStack, types[i]);
+            idxOnStack += types[i].getSize();
+            if (i < (types.length - 1)) {
+                addStringBuilderFromStringConst(", ");
+            }
+        }
+    }
+
+    /**
+     * Создаем StringBuilder в памяти, на вершине стэка оставляем ссылку на StringBuilder
+     */
+    private void initStringBuilder() {
+        super.visitTypeInsn(NEW, STRING_BUILDER_INTERNAL_NAME);
+        super.visitInsn(DUP);
+        super.visitMethodInsn(
+                INVOKESPECIAL,
+                STRING_BUILDER_INTERNAL_NAME,
+                "<init>",
+                "()V",
+                false);
     }
 
     /**
@@ -110,12 +113,48 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
     }
 
     private void addStringBuilderFromVariable(int index, Type variableType) {
-        super.visitVarInsn(variableType.getOpcode(ILOAD), index);
-        super.visitMethodInsn(
-                INVOKEVIRTUAL,
-                STRING_BUILDER_INTERNAL_NAME,
-                "append",
-                Type.getMethodDescriptor(STRING_BUILDER, variableType),
-                false);
+        Type correctType = correctTypeForStringBuilder(variableType);
+        if (correctType == null) {
+            addStringBuilderFromStringConst("*unknown type*");
+        } else {
+            super.visitVarInsn(correctType.getOpcode(ILOAD), index);
+            super.visitMethodInsn(
+                    INVOKEVIRTUAL,
+                    STRING_BUILDER_INTERNAL_NAME,
+                    "append",
+                    Type.getMethodDescriptor(STRING_BUILDER, correctType),
+                    false);
+        }
+    }
+
+    private Type correctTypeForStringBuilder(Type type) {
+        switch (type.getSort()) {
+            case Type.BYTE:
+            case Type.SHORT:
+                return Type.INT_TYPE;
+            case Type.INT:
+            case Type.CHAR:
+            case Type.DOUBLE:
+            case Type.FLOAT:
+            case Type.LONG:
+            case Type.BOOLEAN:
+                return type;
+            case Type.ARRAY:
+            case Type.OBJECT:
+                return correctObjectAndArrayTypeForStringBuilder(type);
+            default:
+                return null;
+        }
+    }
+
+    private Type correctObjectAndArrayTypeForStringBuilder(Type type) {
+        if (type.getSort() == Type.ARRAY) {
+            if (type.getDimensions() == 1 && Type.CHAR_TYPE.equals(type.getElementType())) {
+                return type;
+            }
+        } else if (OBJECT.equals(type) || STRING.equals(type)) {
+            return type;
+        }
+        return OBJECT;
     }
 }

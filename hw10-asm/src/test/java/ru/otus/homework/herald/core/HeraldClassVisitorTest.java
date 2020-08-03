@@ -1,6 +1,8 @@
 package ru.otus.homework.herald.core;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.objectweb.asm.ClassReader;
@@ -31,50 +33,6 @@ class HeraldClassVisitorTest {
     private ByteArrayOutputStream systemOutContent;
     private Class<?> classForTest;
     private Object targetObject;
-
-    @BeforeEach
-    void before() throws Exception {
-        originalSystemOut = System.out;
-        systemOutContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(systemOutContent));
-
-        ClassWriter wr = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        ClassVisitor herald = new HeraldClassVisitor(ASM8, wr);
-        ClassReader reader = new ClassReader(ClassWithLogsMethods.class.getCanonicalName());
-        reader.accept(herald, ClassReader.EXPAND_FRAMES);
-
-        ClassLoaderForTest classLoader = new ClassLoaderForTest();
-        classForTest = classLoader.defineClass(ClassWithLogsMethods.class.getCanonicalName(), wr.toByteArray());
-        targetObject = classForTest.getConstructor().newInstance();
-        assertNotNull(targetObject);
-    }
-
-    @AfterEach
-    void after() {
-        System.setOut(originalSystemOut);
-    }
-
-    @Test
-    void testException() throws Exception {
-        Method m = classForTest.getDeclaredMethod("testWithObject", Object.class);
-        assertNotNull(m);
-        assertThrows(InvocationTargetException.class, () -> m.invoke(targetObject, new ToStringException()));
-        try {
-            m.invoke(targetObject, new ToStringException());
-        } catch (InvocationTargetException ite) {
-            assertEquals(RuntimeException.class, ite.getCause().getClass());
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideBoxForParameters")
-    void testMethod(BoxForParameters box) throws Exception {
-        Method m = classForTest.getDeclaredMethod(box.getMethod(), box.getTypes());
-        assertNotNull(m);
-        m.setAccessible(true);
-        m.invoke(box.isTarget() ? targetObject : null, box.getData());
-        assertEquals(box.getResult(), systemOutContent.toString().trim());
-    }
 
     private static Collection<BoxForParameters> provideBoxForParameters() {
         return List.of(
@@ -155,6 +113,58 @@ class HeraldClassVisitorTest {
                         .types(CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
                         .data(DATA_PRIMITIVE_TYPE_AND_OBJECTS)
                         .result("executed method: testWithPrimitiveTypeAndObjectStatic (par1: 120, par2: 44, par3: 122232, par4: 7435837423, par5: 343242.34, par6: 8888888.222222, par7: false, par8: y, par9: [A, B], par10: qwerty)")
-                        .build());
+                        .build()
+                ,
+                BoxForParameters.builder().target(true).method("testWithThreeObject")
+                        .types(new Class<?>[]{List.class, char[].class, Float.class})
+                        .data(new Object[]{Arrays.asList(12, 4.5, 56L, 23.03f), new char[]{'t', 'e', 'x', 't'}, 342.391f})
+                        .result("executed method: testWithThreeObject (par1: [12, 4.5, 56, 23.03], par2: text, par3: 342.391)")
+                        .build()
+        );
+
+    }
+
+    @BeforeEach
+    void before() throws Exception {
+        originalSystemOut = System.out;
+        systemOutContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(systemOutContent));
+
+        ClassWriter wr = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        ClassVisitor herald = new HeraldClassVisitor(ASM8, wr);
+        ClassReader reader = new ClassReader(ClassWithLogsMethods.class.getCanonicalName());
+        reader.accept(herald, ClassReader.EXPAND_FRAMES);
+
+        ClassLoaderForTest classLoader = new ClassLoaderForTest();
+        classForTest = classLoader.defineClass(ClassWithLogsMethods.class.getCanonicalName(), wr.toByteArray());
+        targetObject = classForTest.getConstructor().newInstance();
+        assertNotNull(targetObject);
+    }
+
+    @AfterEach
+    void after() {
+        System.setOut(originalSystemOut);
+    }
+
+    @Test
+    void testException() throws Exception {
+        Method m = classForTest.getDeclaredMethod("testWithObject", Object.class);
+        assertNotNull(m);
+        assertThrows(InvocationTargetException.class, () -> m.invoke(targetObject, new ToStringException()));
+        try {
+            m.invoke(targetObject, new ToStringException());
+        } catch (InvocationTargetException ite) {
+            assertEquals(RuntimeException.class, ite.getCause().getClass());
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideBoxForParameters")
+    void testMethod(BoxForParameters box) throws Exception {
+        Method m = classForTest.getDeclaredMethod(box.getMethod(), box.getTypes());
+        assertNotNull(m);
+        m.setAccessible(true);
+        m.invoke(box.isTarget() ? targetObject : null, box.getData());
+        assertEquals(box.getResult(), systemOutContent.toString().trim());
     }
 }

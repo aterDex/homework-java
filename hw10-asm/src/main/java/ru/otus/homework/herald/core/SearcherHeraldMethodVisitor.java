@@ -20,9 +20,9 @@ public class SearcherHeraldMethodVisitor extends HeraldDetectorMethodVisitor {
         super.visitCode();
         if (isHerald()) {
             heraldMetaBuilder = HeraldMeta.builder()
-                    .access(access)
-                    .methodName(methodName)
-                    .methodDescriptor(methodDescriptor);
+                    .access(getAccess())
+                    .methodName(getMethodName())
+                    .methodDescriptor(getMethodDescriptor());
         }
     }
 
