@@ -1,11 +1,15 @@
 package ru.otus.homework.herald.core;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Добавляем в методы помечанные аннотацией Log, вывод параметров запуска.
@@ -46,7 +50,7 @@ public class HeraldClassTransformer implements ClassFileTransformer {
 
             ClassReader reader = new ClassReader(classFileBuffer);
             ClassWriter writer = new ClassWriter(WRITE_FLAGS);
-            ClassVisitor visitor = new HeraldClassVisitor(API, writer, meta);
+            ClassVisitor visitor = new HeraldClassVisitor(API, writer, meta, () -> Optional.of(new HeraldInjectorParametersLogBySystemOut()));
             reader.accept(visitor, READ_FLAGS);
             return writer.toByteArray();
         } catch (Exception e) {

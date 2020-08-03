@@ -1,9 +1,12 @@
 package ru.otus.homework.herald.core;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Класс добавляет логирования к методам которые помечены @Log
@@ -13,14 +16,13 @@ import java.util.Optional;
 public class HeraldClassVisitor extends ClassVisitor {
 
     private final Collection<HeraldMeta> heralds;
+    private final Supplier<Optional<HeraldInjector>> injectorForMethodFactory;
 
-    public HeraldClassVisitor(int api, ClassVisitor classVisitor) {
-        this(api, classVisitor, null);
-    }
-
-    public HeraldClassVisitor(int api, ClassVisitor classVisitor, Collection<HeraldMeta> heralds) {
+    public HeraldClassVisitor(int api, ClassVisitor classVisitor, Collection<HeraldMeta> heralds, Supplier<Optional<HeraldInjector>> injectorForMethodFactory) {
         super(api, classVisitor);
+        assert Objects.nonNull(injectorForMethodFactory);
         this.heralds = heralds;
+        this.injectorForMethodFactory = injectorForMethodFactory;
     }
 
     @Override
@@ -28,10 +30,10 @@ public class HeraldClassVisitor extends ClassVisitor {
         MethodVisitor baseVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
         if (heralds == null) {
             return new HeraldMethodVisitor(
-                    api, access, name, descriptor, null, baseVisitor);
+                    api, access, name, descriptor, null, injectorForMethodFactory, baseVisitor);
         }
         return findMetaBy(access, name, descriptor)
-                .map(meta -> (MethodVisitor) new HeraldMethodVisitor(api, access, name, descriptor, meta, baseVisitor))
+                .map(meta -> (MethodVisitor) new HeraldMethodVisitor(api, access, name, descriptor, meta, injectorForMethodFactory, baseVisitor))
                 .orElse(baseVisitor);
     }
 

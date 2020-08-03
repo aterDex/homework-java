@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.objectweb.asm.Opcodes.ASM8;
@@ -131,7 +132,7 @@ class HeraldClassVisitorTest {
         System.setOut(new PrintStream(systemOutContent));
 
         ClassWriter wr = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        ClassVisitor herald = new HeraldClassVisitor(ASM8, wr);
+        ClassVisitor herald = new HeraldClassVisitor(ASM8, wr, null, () -> Optional.of(new HeraldInjectorParametersLogBySystemOut()));
         ClassReader reader = new ClassReader(ClassWithLogsMethods.class.getCanonicalName());
         reader.accept(herald, ClassReader.EXPAND_FRAMES);
 
