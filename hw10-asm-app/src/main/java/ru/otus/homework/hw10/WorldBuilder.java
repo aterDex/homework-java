@@ -7,7 +7,7 @@ public final class WorldBuilder {
     private WorldBuilder() {
     }
 
-    @Log
+    @Log(comment = "Good game")
     public static World creatMediocreWorld() {
         World buildingWorld = new World();
         buildingWorld.sayWord("Word");
