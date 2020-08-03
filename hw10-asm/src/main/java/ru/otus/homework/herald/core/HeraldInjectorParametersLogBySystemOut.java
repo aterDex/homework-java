@@ -15,6 +15,7 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
     public static final Type STRING_BUILDER = Type.getType(StringBuilder.class);
     public static final Type OBJECT = Type.getType(Object.class);
     public static final Type STRING = Type.getType(String.class);
+    public static final Type ARRAY_CHAR = Type.getType(char[].class);
 
     public static final String PRINT_STREAM_DESC = PRINT_STREAM.getDescriptor();
     public static final String PRINT_STREAM_INTERNAL_NAME = PRINT_STREAM.getInternalName();
@@ -127,20 +128,10 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
                 return type;
             case Type.ARRAY:
             case Type.OBJECT:
-                return correctObjectAndArrayTypeForStringBuilder(type);
+                if (ARRAY_CHAR.equals(type) || STRING.equals(type)) return type;
+                return OBJECT;
             default:
                 return null;
         }
-    }
-
-    private Type correctObjectAndArrayTypeForStringBuilder(Type type) {
-        if (type.getSort() == Type.ARRAY) {
-            if (type.getDimensions() == 1 && Type.CHAR_TYPE.equals(type.getElementType())) {
-                return type;
-            }
-        } else if (STRING.equals(type)) {
-            return type;
-        }
-        return OBJECT;
     }
 }
