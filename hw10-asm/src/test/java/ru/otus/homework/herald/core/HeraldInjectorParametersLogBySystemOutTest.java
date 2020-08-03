@@ -88,13 +88,9 @@ class HeraldInjectorParametersLogBySystemOutTest {
         order.verify(mockMethodVisitor, times(1)).visitFieldInsn(anyInt(), any(), any(), any());
 
         checkInit(order);
-        // const
         checkConst(order);
-        // const
         checkConst(order);
-        // var
         checkVar(order);
-        // const
         checkConst(order);
 
         order.verify(mockMethodVisitor, times(1)).visitMethodInsn(anyInt(), any(), any(), eq("(Ljava/lang/Object;)V"), eq(false));
@@ -116,13 +112,9 @@ class HeraldInjectorParametersLogBySystemOutTest {
         order.verify(mockMethodVisitor, times(1)).visitFieldInsn(anyInt(), any(), any(), any());
 
         checkInit(order);
-        // const
         checkConst(order);
-        // const
         checkConst(order);
-        // var
         checkConst(order, "*unknown type*");
-        // const
         checkConst(order);
 
         order.verify(mockMethodVisitor, times(1)).visitMethodInsn(anyInt(), any(), any(), eq("(Ljava/lang/Object;)V"), eq(false));
@@ -169,7 +161,7 @@ class HeraldInjectorParametersLogBySystemOutTest {
                 .methodDescriptor(Type.getMethodDescriptor(returnType,
                         TYPE_FOR_CHECK.stream().map(x -> x[0]).toArray(Type[]::new)))
                 .localVariables(TYPE_FOR_CHECK.stream().map(x -> LocalVariableMeta.builder()
-                        .name("name" + counter.getAndIncrement())
+                        .name("nameZZZy" + counter.getAndIncrement())
                         .index(counterWithShift.getAndAdd(x[0].getSize()))
                         .build()).collect(Collectors.toList()))
                 .build();
@@ -183,7 +175,7 @@ class HeraldInjectorParametersLogBySystemOutTest {
         checkInit(order);
         checkConst(order);
         for (int i = 0; i < TYPE_FOR_CHECK.size(); i++) {
-            checkConst(order, "name" + (i + 1) + ": ");
+            checkConst(order, "nameZZZy" + (i + 1) + ": ");
             Type[] tp = TYPE_FOR_CHECK.get(i);
             checkVar(order, Type.getMethodDescriptor(STRING_BUILDER, tp[tp.length - 1]));
             checkConst(order);
