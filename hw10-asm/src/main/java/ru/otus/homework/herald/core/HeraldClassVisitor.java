@@ -4,9 +4,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * Класс добавляет логирования к методам которые помечены @Log
@@ -15,17 +13,17 @@ import java.util.function.Supplier;
  */
 public class HeraldClassVisitor extends ClassVisitor {
 
-    private final Collection<HeraldMeta> heralds;
+    private final Collection<HeraldMeta> metaInfoForLogMethods;
 
-    public HeraldClassVisitor(int api, ClassVisitor classVisitor, Collection<HeraldMeta> heralds) {
+    public HeraldClassVisitor(int api, ClassVisitor classVisitor, Collection<HeraldMeta> metaInfoForLogMethods) {
         super(api, classVisitor);
-        this.heralds = heralds;
+        this.metaInfoForLogMethods = metaInfoForLogMethods;
     }
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor baseVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
-        if (heralds == null) {
+        if (metaInfoForLogMethods == null) {
             return new HeraldMethodVisitor(
                     api, access, name, descriptor, null, baseVisitor);
         }
@@ -35,8 +33,8 @@ public class HeraldClassVisitor extends ClassVisitor {
     }
 
     private Optional<HeraldMeta> findMetaBy(int access, String name, String descriptor) {
-        if (heralds == null || heralds.isEmpty()) return Optional.empty();
-        return heralds.stream()
+        if (metaInfoForLogMethods == null || metaInfoForLogMethods.isEmpty()) return Optional.empty();
+        return metaInfoForLogMethods.stream()
                 .filter(x -> x.getAccess() == access)
                 .filter(x -> name.equals(x.getMethodName()))
                 .filter(x -> descriptor.equals(x.getMethodDescriptor()))
