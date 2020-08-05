@@ -63,6 +63,8 @@ public class HeraldDetectorMethodVisitor extends MethodVisitor {
                     case "printProperty":
                         if (value instanceof Boolean) {
                             printProperty = (Boolean) value;
+                        } else {
+                            throw new UnsupportedOperationException("Переменная " + name + " не поддерживает тип " + value.getClass().getCanonicalName() + " для аннотации " + LOG_ANNOTATION);
                         }
                         break;
                     case "comment":
