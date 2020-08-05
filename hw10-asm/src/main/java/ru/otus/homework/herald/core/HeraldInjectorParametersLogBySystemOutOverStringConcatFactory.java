@@ -9,6 +9,9 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class HeraldInjectorParametersLogBySystemOutOverStringConcatFactory implements HeraldInjector {
 
@@ -45,17 +48,11 @@ public class HeraldInjectorParametersLogBySystemOutOverStringConcatFactory imple
     }
 
     private String createPattern(Type[] types, HeraldMeta heraldMeta, String prefix, String comment) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(prefix + " (");
-        int idxOnStack = Modifier.isStatic(heraldMeta.getAccess()) ? 0 : 1;
-        for (int i = 1; i < types.length; i++) {
-            sb.append(HeraldUtils.resolveName(i, idxOnStack, heraldMeta) + ": \u0001, ");
-            idxOnStack += types[i - 1].getSize();
-        }
-        sb.append(HeraldUtils.resolveName(types.length, idxOnStack, heraldMeta) + ": \u0001)");
-        if (comment != null) {
-            sb.append(" // " + comment);
-        }
-        return sb.toString();
+        AtomicInteger idxOnStack = new AtomicInteger(Modifier.isStatic(heraldMeta.getAccess()) ? 0 : 1);
+        AtomicInteger idx = new AtomicInteger(1);
+        String body = Arrays.stream(types)
+                .map(x -> HeraldUtils.resolveName(idx.getAndIncrement(), idxOnStack.getAndAdd(x.getSize()), heraldMeta) + ": \u0001")
+                .collect(Collectors.joining(", "));
+        return prefix + " (" + body + ")" + (comment != null ? " // " + comment : "");
     }
 }
