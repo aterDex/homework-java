@@ -68,6 +68,8 @@ public class HeraldDetectorMethodVisitor extends MethodVisitor {
                     case "comment":
                         comment = value.toString();
                         break;
+                    default:
+                        throw new UnsupportedOperationException("Переменная " + name + " не поддерживается для аннотации " + LOG_ANNOTATION);
                 }
             }
             super.visit(name, value);
