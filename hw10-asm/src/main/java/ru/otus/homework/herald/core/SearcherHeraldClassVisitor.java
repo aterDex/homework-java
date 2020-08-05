@@ -10,7 +10,7 @@ import java.util.List;
 public class SearcherHeraldClassVisitor extends ClassVisitor {
 
     @Getter
-    private List<HeraldMeta> heralds = new ArrayList<>();
+    private final List<HeraldMeta> heralds = new ArrayList<>();
 
     private String internalClassName;
 
