@@ -50,7 +50,7 @@ public class HeraldClassTransformer implements ClassFileTransformer {
 
             ClassReader reader = new ClassReader(classFileBuffer);
             ClassWriter writer = new ClassWriter(WRITE_FLAGS);
-            ClassVisitor visitor = new HeraldClassVisitor(API, writer, meta, () -> Optional.of(new HeraldInjectorParametersLogBySystemOut()));
+            ClassVisitor visitor = new HeraldClassVisitor(API, writer, meta);
             reader.accept(visitor, READ_FLAGS);
             return writer.toByteArray();
         } catch (Exception e) {

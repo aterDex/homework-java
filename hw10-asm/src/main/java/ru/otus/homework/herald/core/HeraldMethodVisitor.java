@@ -2,24 +2,18 @@ package ru.otus.homework.herald.core;
 
 import org.objectweb.asm.MethodVisitor;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
 public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
 
     private final HeraldMeta heraldMeta;
-    private final Supplier<Optional<HeraldInjector>> injectorForMethodFactory;
     /**
      * Так как в обработку может передастся этот класс, вызов visitCode(вызываеть его быссмысленно но на всякий случий)
      * внутри может привести к циклу, для этого делаем барьер.
      */
     private boolean visitCodeBarrier = false;
 
-    public HeraldMethodVisitor(int api, int access, String methodName, String methodDescriptor, HeraldMeta heraldMeta, Supplier<Optional<HeraldInjector>> injectorForMethodFactory, MethodVisitor methodVisitor) {
+    public HeraldMethodVisitor(int api, int access, String methodName, String methodDescriptor, HeraldMeta heraldMeta, MethodVisitor methodVisitor) {
         super(api, access, methodName, methodDescriptor, methodVisitor);
-        assert injectorForMethodFactory != null;
         this.heraldMeta = heraldMeta;
-        this.injectorForMethodFactory = injectorForMethodFactory;
     }
 
     @Override
@@ -28,7 +22,7 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
         try {
             if (!visitCodeBarrier && (heraldMeta != null || isHerald())) {
                 visitCodeBarrier = true;
-                injectorForMethodFactory.get().ifPresent(x -> x.inject(resolveHeraldMeta(), this));
+                new HeraldInjectorParametersLogBySystemOut().inject(resolveHeraldMeta(), this);
             }
         } finally {
             visitCodeBarrier = false;

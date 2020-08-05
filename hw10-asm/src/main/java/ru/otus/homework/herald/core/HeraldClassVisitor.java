@@ -16,13 +16,10 @@ import java.util.function.Supplier;
 public class HeraldClassVisitor extends ClassVisitor {
 
     private final Collection<HeraldMeta> heralds;
-    private final Supplier<Optional<HeraldInjector>> injectorForMethodFactory;
 
-    public HeraldClassVisitor(int api, ClassVisitor classVisitor, Collection<HeraldMeta> heralds, Supplier<Optional<HeraldInjector>> injectorForMethodFactory) {
+    public HeraldClassVisitor(int api, ClassVisitor classVisitor, Collection<HeraldMeta> heralds) {
         super(api, classVisitor);
-        assert Objects.nonNull(injectorForMethodFactory);
         this.heralds = heralds;
-        this.injectorForMethodFactory = injectorForMethodFactory;
     }
 
     @Override
@@ -30,10 +27,10 @@ public class HeraldClassVisitor extends ClassVisitor {
         MethodVisitor baseVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
         if (heralds == null) {
             return new HeraldMethodVisitor(
-                    api, access, name, descriptor, null, injectorForMethodFactory, baseVisitor);
+                    api, access, name, descriptor, null, baseVisitor);
         }
         return findMetaBy(access, name, descriptor)
-                .map(meta -> (MethodVisitor) new HeraldMethodVisitor(api, access, name, descriptor, meta, injectorForMethodFactory, baseVisitor))
+                .map(meta -> (MethodVisitor) new HeraldMethodVisitor(api, access, name, descriptor, meta, baseVisitor))
                 .orElse(baseVisitor);
     }
 

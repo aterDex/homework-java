@@ -72,7 +72,7 @@ class HeraldClassVisitorWithMetaTest {
                 .build();
 
         ClassWriter wr = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        ClassVisitor herald = new HeraldClassVisitor(ASM8, wr, Arrays.asList(heraldMeta0, heraldMeta1), () -> Optional.of(new HeraldInjectorParametersLogBySystemOut()));
+        ClassVisitor herald = new HeraldClassVisitor(ASM8, wr, Arrays.asList(heraldMeta0, heraldMeta1));
         ClassReader reader = new ClassReader(ClassWithLogsMethods.class.getCanonicalName());
         reader.accept(herald, ClassReader.EXPAND_FRAMES);
 

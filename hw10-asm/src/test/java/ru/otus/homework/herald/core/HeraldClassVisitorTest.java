@@ -141,7 +141,7 @@ class HeraldClassVisitorTest {
         System.setOut(new PrintStream(systemOutContent));
 
         ClassWriter wr = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        ClassVisitor herald = new HeraldClassVisitor(ASM8, wr, null, () -> Optional.of(new HeraldInjectorParametersLogBySystemOut()));
+        ClassVisitor herald = new HeraldClassVisitor(ASM8, wr, null);
         ClassReader reader = new ClassReader(ClassWithLogsMethods.class.getCanonicalName());
         reader.accept(herald, ClassReader.EXPAND_FRAMES);
 
