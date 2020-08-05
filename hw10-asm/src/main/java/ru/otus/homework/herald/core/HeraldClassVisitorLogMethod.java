@@ -60,11 +60,7 @@ public class HeraldClassVisitorLogMethod extends ClassVisitor {
 
     private void createInvokeLogMethod(int access, String name, String descriptor, MethodVisitor visitor) {
         Type[] types = Type.getArgumentTypes(descriptor);
-        int idxOnStack = Modifier.isStatic(access) ? 0 : 1;
-        for (int i = 0; i < types.length; i++) {
-            visitor.visitVarInsn(types[i].getOpcode(Opcodes.ILOAD), idxOnStack);
-            idxOnStack += types[i].getSize();
-        }
+        HeraldUtils.setupILoadIntoStack(access, types, visitor);
         visitor.visitMethodInsn(Opcodes.INVOKESTATIC, internalClassName, createNameForLogMethod(name), createDescriptorForLogMethod(descriptor), false);
     }
 

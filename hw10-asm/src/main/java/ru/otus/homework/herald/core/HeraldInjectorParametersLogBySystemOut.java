@@ -55,7 +55,7 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
     private void addStringBuilderParameters(Type[] types, HeraldMeta heraldMeta, MethodVisitor visitor) {
         int idxOnStack = Modifier.isStatic(heraldMeta.getAccess()) ? 0 : 1;
         for (int i = 0; i < types.length; i++) {
-            addStringBuilderFromStringConst(resolveName(i + 1, idxOnStack, heraldMeta) + ": ", visitor);
+            addStringBuilderFromStringConst(HeraldUtils.resolveName(i + 1, idxOnStack, heraldMeta) + ": ", visitor);
             addStringBuilderFromVariable(idxOnStack, types[i], visitor);
             idxOnStack += types[i].getSize();
             if (i < (types.length - 1)) {
@@ -78,25 +78,6 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
                 "<init>",
                 "()V",
                 false);
-    }
-
-    /**
-     * Резолвим имя переменной
-     *
-     * @param idx        порядковый номер переменной начиная с 1
-     * @param idxOnStack номер перменной в стэке
-     * @param heraldMeta метаинформация по колонкам
-     * @return имя для переменной
-     */
-    private String resolveName(int idx, int idxOnStack, HeraldMeta heraldMeta) {
-        if (heraldMeta != null) {
-            return heraldMeta.getLocalVariables().stream()
-                    .filter(x -> x.getIndex() == idxOnStack)
-                    .findAny()
-                    .map(x -> x.getName())
-                    .orElse("par" + idx);
-        }
-        return "par" + idx;
     }
 
     private void addStringBuilderFromStringConst(String text, MethodVisitor visitor) {
