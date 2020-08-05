@@ -33,3 +33,9 @@ shadowJar {
     archiveClassifier.set('fat')
     mainClassName = MAIN_CLASS_NAME
 }
+
+compileJava {
+    if (!project.hasProperty('disableParameters')) {
+        options.compilerArgs << '-parameters'
+    }
+}

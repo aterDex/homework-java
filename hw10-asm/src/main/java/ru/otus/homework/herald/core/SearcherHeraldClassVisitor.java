@@ -12,6 +12,8 @@ public class SearcherHeraldClassVisitor extends ClassVisitor {
     @Getter
     private List<HeraldMeta> heralds = new ArrayList<>();
 
+    private String internalClassName;
+
     public SearcherHeraldClassVisitor(int api) {
         super(api);
     }
@@ -21,7 +23,20 @@ public class SearcherHeraldClassVisitor extends ClassVisitor {
     }
 
     @Override
+    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        this.internalClassName = name;
+        super.visit(version, access, name, signature, superName, interfaces);
+    }
+
+    @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-        return new SearcherHeraldMethodVisitor(api, access, name, descriptor, super.visitMethod(access, name, descriptor, signature, exceptions), heralds::add);
+        return new SearcherHeraldMethodVisitor(
+                api,
+                access,
+                name,
+                descriptor,
+                internalClassName,
+                super.visitMethod(access, name, descriptor, signature, exceptions),
+                visitor -> heralds.add(visitor.getHeraldMeta()));
     }
 }

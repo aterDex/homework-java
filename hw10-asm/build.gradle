@@ -27,3 +27,7 @@ shadowJar {
                 'Can-Retransform-Classes': 'true')
     }
 }
+
+compileTestJava {
+//    options.compilerArgs << '-parameters'
+}
