@@ -5,7 +5,6 @@ import org.objectweb.asm.Type;
 
 import java.io.PrintStream;
 import java.lang.reflect.Modifier;
-import java.util.Optional;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -90,13 +89,12 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
      * @return имя для переменной
      */
     private String resolveName(int idx, int idxOnStack, HeraldMeta heraldMeta) {
-        if (heraldMeta != null && !heraldMeta.getLocalVariables().isEmpty()) {
-            Optional<LocalVariableMeta> localVar = heraldMeta.getLocalVariables().stream()
+        if (heraldMeta != null) {
+            return heraldMeta.getLocalVariables().stream()
                     .filter(x -> x.getIndex() == idxOnStack)
-                    .findAny();
-            if (localVar.isPresent()) {
-                return localVar.get().getName();
-            }
+                    .findAny()
+                    .map(x -> x.getName())
+                    .orElse("par" + idx);
         }
         return "par" + idx;
     }
