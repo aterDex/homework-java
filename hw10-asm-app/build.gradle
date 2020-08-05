@@ -21,7 +21,7 @@ application {
 run {
     if (!project.hasProperty('withoutAgent')) {
         dependsOn ':hw10-asm:shadowJar'
-        jvmArgs "-javaagent:${project(':hw10-asm').shadowJar.archiveFile.get()}${project.hasProperty('doNotResolveParameterName') ? '' : '=rpn'}"
+        jvmArgs "-javaagent:${project(':hw10-asm').shadowJar.archiveFile.get()}"
     }
 }
 

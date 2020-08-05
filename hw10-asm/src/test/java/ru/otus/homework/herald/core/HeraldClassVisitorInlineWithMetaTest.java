@@ -17,12 +17,11 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.objectweb.asm.Opcodes.ASM8;
 
-class HeraldClassVisitorWithMetaTest {
+class HeraldClassVisitorInlineWithMetaTest {
 
     private PrintStream originalSystemOut;
     private ByteArrayOutputStream systemOutContent;
@@ -72,7 +71,7 @@ class HeraldClassVisitorWithMetaTest {
                 .build();
 
         ClassWriter wr = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        ClassVisitor herald = new HeraldClassVisitor(ASM8, wr, Arrays.asList(heraldMeta0, heraldMeta1));
+        ClassVisitor herald = new HeraldClassVisitorInline(ASM8, wr, Arrays.asList(heraldMeta0, heraldMeta1));
         ClassReader reader = new ClassReader(ClassWithLogsMethods.class.getCanonicalName());
         reader.accept(herald, ClassReader.EXPAND_FRAMES);
 
@@ -105,8 +104,8 @@ class HeraldClassVisitorWithMetaTest {
                         .result("executed method: testWithString (Eny Text For Name: Example)")
                         .build(),
                 BoxForParameters.builder().target(false).method("testWithPrimitiveTypeAndObjectStatic")
-                        .types(HeraldClassVisitorTest.CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
-                        .data(HeraldClassVisitorTest.DATA_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .types(HeraldClassVisitorInlineTest.CLASS_PRIMITIVE_TYPE_AND_OBJECTS)
+                        .data(HeraldClassVisitorInlineTest.DATA_PRIMITIVE_TYPE_AND_OBJECTS)
                         .result("executed method: testWithPrimitiveTypeAndObjectStatic (B: 120, S: 44, I: 122232, J: 7435837423, F: 343242.34, D: 8888888.222222, Z: false, par8: y, L0: [A, B], L1: qwerty)")
                         .build());
     }

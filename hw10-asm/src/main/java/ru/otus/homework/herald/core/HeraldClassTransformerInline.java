@@ -9,7 +9,6 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Добавляем в методы помечанные аннотацией Log, вывод параметров запуска.
@@ -24,7 +23,7 @@ import java.util.Optional;
  * если для переменной не найденна информации о ее имени то будет использован parN как в преведущем режиме.
  * При втором проходе мы используем собранную информацию для формирования вывод у нужных методов.
  */
-public class HeraldClassTransformer implements ClassFileTransformer {
+public class HeraldClassTransformerInline implements ClassFileTransformer {
 
     private static final int API = Opcodes.ASM8;
     private static final int READ_FLAGS = ClassReader.EXPAND_FRAMES;
@@ -32,10 +31,10 @@ public class HeraldClassTransformer implements ClassFileTransformer {
 
     private boolean resolveParameterName = false;
 
-    public HeraldClassTransformer() {
+    public HeraldClassTransformerInline() {
     }
 
-    public HeraldClassTransformer(boolean resolveParameterName) {
+    public HeraldClassTransformerInline(boolean resolveParameterName) {
         this.resolveParameterName = resolveParameterName;
     }
 
@@ -50,7 +49,7 @@ public class HeraldClassTransformer implements ClassFileTransformer {
 
             ClassReader reader = new ClassReader(classFileBuffer);
             ClassWriter writer = new ClassWriter(WRITE_FLAGS);
-            ClassVisitor visitor = new HeraldClassVisitor(API, writer, meta);
+            ClassVisitor visitor = new HeraldClassVisitorInline(API, writer, meta);
             reader.accept(visitor, READ_FLAGS);
             return writer.toByteArray();
         } catch (Exception e) {

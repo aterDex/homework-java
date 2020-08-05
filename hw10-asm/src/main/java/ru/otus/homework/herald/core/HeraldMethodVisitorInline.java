@@ -2,7 +2,7 @@ package ru.otus.homework.herald.core;
 
 import org.objectweb.asm.MethodVisitor;
 
-public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
+public class HeraldMethodVisitorInline extends HeraldDetectorMethodVisitor {
 
     private final HeraldMeta heraldMeta;
     /**
@@ -11,7 +11,7 @@ public class HeraldMethodVisitor extends HeraldDetectorMethodVisitor {
      */
     private boolean visitCodeBarrier = false;
 
-    public HeraldMethodVisitor(int api, int access, String methodName, String methodDescriptor, HeraldMeta heraldMeta, MethodVisitor methodVisitor) {
+    public HeraldMethodVisitorInline(int api, int access, String methodName, String methodDescriptor, HeraldMeta heraldMeta, MethodVisitor methodVisitor) {
         super(api, access, methodName, methodDescriptor, methodVisitor);
         this.heraldMeta = heraldMeta;
     }

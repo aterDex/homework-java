@@ -7,15 +7,16 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Класс добавляет логирования к методам которые помечены @Log
+ * Класс добавляет логирования к методам которые помечены @Log.
+ * Добавление происходит в сам метод, в его начало.
  * Если указан мета информация heralds, то добавляем логирование только в те методы по которым эта мета информация есть.
  * Если мета информации нет, то проверяем все методы, именя переменных при логировании при этом не будут настоящими.
  */
-public class HeraldClassVisitor extends ClassVisitor {
+public class HeraldClassVisitorInline extends ClassVisitor {
 
     private final Collection<HeraldMeta> metaInfoForLogMethods;
 
-    public HeraldClassVisitor(int api, ClassVisitor classVisitor, Collection<HeraldMeta> metaInfoForLogMethods) {
+    public HeraldClassVisitorInline(int api, ClassVisitor classVisitor, Collection<HeraldMeta> metaInfoForLogMethods) {
         super(api, classVisitor);
         this.metaInfoForLogMethods = metaInfoForLogMethods;
     }
@@ -24,11 +25,11 @@ public class HeraldClassVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor baseVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
         if (metaInfoForLogMethods == null) {
-            return new HeraldMethodVisitor(
+            return new HeraldMethodVisitorInline(
                     api, access, name, descriptor, null, baseVisitor);
         }
         return findMetaBy(access, name, descriptor)
-                .map(meta -> (MethodVisitor) new HeraldMethodVisitor(api, access, name, descriptor, meta, baseVisitor))
+                .map(meta -> (MethodVisitor) new HeraldMethodVisitorInline(api, access, name, descriptor, meta, baseVisitor))
                 .orElse(baseVisitor);
     }
 

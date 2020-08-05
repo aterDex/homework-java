@@ -23,7 +23,7 @@ test {
 shadowJar {
     archiveClassifier.set('uber')
     manifest {
-        attributes('PreMain-Class': 'ru.otus.homework.hw10.Agent',
+        attributes('PreMain-Class': 'ru.otus.homework.hw10.AgentLogMethod',
                 'Can-Retransform-Classes': 'true')
     }
 }
