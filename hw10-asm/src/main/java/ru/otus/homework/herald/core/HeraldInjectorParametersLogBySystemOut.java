@@ -91,7 +91,7 @@ public class HeraldInjectorParametersLogBySystemOut implements HeraldInjector {
      */
     private String resolveName(int idx, int idxOnStack, HeraldMeta heraldMeta) {
         if (heraldMeta != null && !heraldMeta.getLocalVariables().isEmpty()) {
-            Optional<LocalVariableMeta> localVar = heraldMeta.getLocalVariables().parallelStream()
+            Optional<LocalVariableMeta> localVar = heraldMeta.getLocalVariables().stream()
                     .filter(x -> x.getIndex() == idxOnStack)
                     .findAny();
             if (localVar.isPresent()) {

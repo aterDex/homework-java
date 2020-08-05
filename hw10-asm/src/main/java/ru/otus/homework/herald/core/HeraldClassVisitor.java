@@ -36,7 +36,7 @@ public class HeraldClassVisitor extends ClassVisitor {
 
     private Optional<HeraldMeta> findMetaBy(int access, String name, String descriptor) {
         if (heralds == null || heralds.isEmpty()) return Optional.empty();
-        return heralds.parallelStream()
+        return heralds.stream()
                 .filter(x -> x.getAccess() == access)
                 .filter(x -> name.equals(x.getMethodName()))
                 .filter(x -> descriptor.equals(x.getMethodDescriptor()))
