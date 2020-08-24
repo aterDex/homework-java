@@ -17,9 +17,9 @@ public class ATMWithCellsAndManagers implements ATM {
         if (cells == null)
             throw new IllegalArgumentException("Cells mustn't be null.");
         if (cashOutManager == null)
-            throw new IllegalArgumentException("Cells mustn't be null.");
+            throw new IllegalArgumentException("CashOutManager mustn't be null.");
         if (putManager == null)
-            throw new IllegalArgumentException("Cells mustn't be null.");
+            throw new IllegalArgumentException("PutManager mustn't be null.");
 
         this.cells = Collections.unmodifiableList(new ArrayList<>(cells));
         this.cashOutManager = cashOutManager;
