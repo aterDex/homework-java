@@ -42,7 +42,7 @@ class ATMWithCellsAndManagersTest {
     void testCashOut() {
         var mockCashOut = Mockito.mock(CashOutManager.class);
         var mockPut = Mockito.mock(PutManager.class);
-        ATMWithCellsAndManagers atm = new ATMWithCellsAndManagers(
+        var atm = new ATMWithCellsAndManagers(
                 List.of(), mockCashOut, mockPut);
         atm.cashOut(100L);
         Mockito.verify(mockCashOut).cashOut(Mockito.eq(100L), Mockito.any());
@@ -54,7 +54,7 @@ class ATMWithCellsAndManagersTest {
     void testPutAndPutAll() {
         var mockCashOut = Mockito.mock(CashOutManager.class);
         var mockPut = Mockito.mock(PutManager.class);
-        ATMWithCellsAndManagers atm = new ATMWithCellsAndManagers(
+        var atm = new ATMWithCellsAndManagers(
                 List.of(), mockCashOut, mockPut);
 
         atm.put(D200);

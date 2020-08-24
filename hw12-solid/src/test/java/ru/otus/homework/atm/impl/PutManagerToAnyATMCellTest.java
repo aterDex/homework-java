@@ -1,6 +1,5 @@
 package ru.otus.homework.atm.impl;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.homework.atm.ATMException;
 
@@ -16,16 +15,11 @@ import static ru.otus.homework.atm.Denomination.*;
 
 class PutManagerToAnyATMCellTest {
 
-    private PutManagerToAnyCell manager;
-
-    @BeforeEach
-    void before() {
-        manager = new PutManagerToAnyCell();
-    }
+    PutManagerToAnyCell manager = new PutManagerToAnyCell();
 
     @Test
     void testWorkKit() {
-        List<ATMCellWithLimit> cells = List.of(
+        var cells = List.of(
                 new ATMCellWithLimit(D50, 100, 0),
                 new ATMCellWithLimit(D100, 100, 0),
                 new ATMCellWithLimit(D2000, 100, 0)
@@ -49,7 +43,7 @@ class PutManagerToAnyATMCellTest {
 
     @Test
     void testDenominationNotSupportException() {
-        List<ATMCellWithLimit> cells = List.of(
+        var cells = List.of(
                 new ATMCellWithLimit(D50, 100, 0),
                 new ATMCellWithLimit(D100, 100, 0)
         );
@@ -58,7 +52,7 @@ class PutManagerToAnyATMCellTest {
 
     @Test
     void testFreeSpaceException() {
-        List<ATMCellWithLimit> cells = List.of(
+        var cells = List.of(
                 new ATMCellWithLimit(D50, 100, 100),
                 new ATMCellWithLimit(D100, 100, 99)
         );
@@ -68,7 +62,7 @@ class PutManagerToAnyATMCellTest {
 
     @Test
     void testSeveralDenominationCellWithSameCost() {
-        List<ATMCellWithLimit> cells = List.of(
+        var cells = List.of(
                 new ATMCellWithLimit(D100, 100, 100),
                 new ATMCellWithLimit(D50, 100, 50),
                 new ATMCellWithLimit(D50, 100, 50),
