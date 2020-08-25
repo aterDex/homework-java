@@ -3,6 +3,7 @@ package ru.otus.homework.atm.impl;
 import ru.otus.homework.atm.ATMCell;
 import ru.otus.homework.atm.ATMException;
 import ru.otus.homework.atm.Denomination;
+import ru.otus.homework.atm.Snapshot;
 
 public class ATMCellWithLimit implements ATMCell {
 
@@ -67,8 +68,29 @@ public class ATMCellWithLimit implements ATMCell {
         return getDenomination().getCost() * getCount();
     }
 
+    @Override
+    public Snapshot createSnapshot() {
+        return new ATMCellSnapshot(count, this);
+    }
+
     private boolean checkPut(int count) {
         int sum = this.count + count;
         return count >= 0 && sum >= 0 && sum <= limit;
+    }
+
+    private static class ATMCellSnapshot extends SnapshotWithZonedDateTime {
+
+        private final int count;
+        private final ATMCellWithLimit cell;
+
+        public ATMCellSnapshot(int count, ATMCellWithLimit cell) {
+            this.count = count;
+            this.cell = cell;
+        }
+
+        @Override
+        public void restore() {
+            cell.count = count;
+        }
     }
 }

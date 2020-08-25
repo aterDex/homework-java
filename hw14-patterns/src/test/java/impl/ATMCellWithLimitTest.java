@@ -65,4 +65,22 @@ class ATMCellWithLimitTest {
         atmCell0.cashOut(6);
         assertEquals(atmCell0.getLimit(), atmCell0.getFree());
     }
+
+    @Test
+    void testSnapshot() {
+        var atmCell0 = new ATMCellWithLimit(D50, 10, 10);
+        var snapshot10 = atmCell0.createSnapshot();
+        atmCell0.cashOut(3);
+        var snapshot7 = atmCell0.createSnapshot();
+        atmCell0.put(1);
+        var snapshot8 = atmCell0.createSnapshot();
+
+        assertEquals(8, atmCell0.getCount());
+        snapshot7.restore();
+        assertEquals(7, atmCell0.getCount());
+        snapshot10.restore();
+        assertEquals(10, atmCell0.getCount());
+        snapshot8.restore();
+        assertEquals(8, atmCell0.getCount());
+    }
 }

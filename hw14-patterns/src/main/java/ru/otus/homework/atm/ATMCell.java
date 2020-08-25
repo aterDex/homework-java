@@ -1,6 +1,6 @@
 package ru.otus.homework.atm;
 
-public interface ATMCell {
+public interface ATMCell extends Memento {
 
     /**
      * @return тип купюр, которые содержит эта ячека

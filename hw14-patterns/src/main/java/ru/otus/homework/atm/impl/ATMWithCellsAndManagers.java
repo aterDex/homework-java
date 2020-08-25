@@ -17,9 +17,9 @@ public class ATMWithCellsAndManagers implements ATM {
         if (cells == null)
             throw new IllegalArgumentException("Cells mustn't be null.");
         if (cashOutStrategy == null)
-            throw new IllegalArgumentException("Cells mustn't be null.");
+            throw new IllegalArgumentException("CashOutStrategy mustn't be null.");
         if (putStrategy == null)
-            throw new IllegalArgumentException("Cells mustn't be null.");
+            throw new IllegalArgumentException("PutStrategy mustn't be null.");
 
         this.cells = Collections.unmodifiableList(new ArrayList<>(cells));
         this.cashOutStrategy = cashOutStrategy;
@@ -44,5 +44,10 @@ public class ATMWithCellsAndManagers implements ATM {
     @Override
     public long balance() {
         return cells.stream().mapToLong(ATMCell::getAmount).sum();
+    }
+
+    @Override
+    public Snapshot createSnapshot() {
+        return SnapshotDeMultiplexer.createFromMementos(cells);
     }
 }

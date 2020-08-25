@@ -1,6 +1,6 @@
 package ru.otus.homework.atm;
 
-public interface ATM {
+public interface ATM extends Memento {
 
     void put(Denomination denomination);
 

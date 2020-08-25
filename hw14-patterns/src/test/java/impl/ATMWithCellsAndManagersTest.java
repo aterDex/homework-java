@@ -1,7 +1,10 @@
 package impl;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.homework.atm.CashOutStrategy;
 import ru.otus.homework.atm.Denomination;
 import ru.otus.homework.atm.PutStrategy;
@@ -14,7 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.otus.homework.atm.Denomination.*;
 
+@ExtendWith(MockitoExtension.class)
 class ATMWithCellsAndManagersTest {
+
+    @Mock
+    CashOutStrategy mockCashOut;
+    @Mock
+    PutStrategy mockPut;
 
     @Test
     void testBalance() {
@@ -23,15 +32,13 @@ class ATMWithCellsAndManagersTest {
                         new ATMCellWithLimit(Denomination.D100, 20, 20),
                         new ATMCellWithLimit(Denomination.D100, 10, 1),
                         new ATMCellWithLimit(Denomination.D2000, 10, 3)
-                ), Mockito.mock(CashOutStrategy.class), Mockito.mock(PutStrategy.class)
+                ), mockCashOut, mockPut
         );
         assertEquals(9100, atm.balance());
     }
 
     @Test
     void testConstructor() {
-        var mockCashOut = Mockito.mock(CashOutStrategy.class);
-        var mockPut = Mockito.mock(PutStrategy.class);
         assertThrows(IllegalArgumentException.class, () -> new ATMWithCellsAndManagers(
                 null, mockCashOut, mockPut));
         assertThrows(IllegalArgumentException.class, () -> new ATMWithCellsAndManagers(
@@ -42,8 +49,6 @@ class ATMWithCellsAndManagersTest {
 
     @Test
     void testCashOut() {
-        var mockCashOut = Mockito.mock(CashOutStrategy.class);
-        var mockPut = Mockito.mock(PutStrategy.class);
         var atm = new ATMWithCellsAndManagers(
                 List.of(), mockCashOut, mockPut);
         atm.cashOut(100L);
@@ -54,8 +59,6 @@ class ATMWithCellsAndManagersTest {
 
     @Test
     void testPutAndPutAll() {
-        var mockCashOut = Mockito.mock(CashOutStrategy.class);
-        var mockPut = Mockito.mock(PutStrategy.class);
         var atm = new ATMWithCellsAndManagers(
                 List.of(), mockCashOut, mockPut);
 
@@ -69,5 +72,19 @@ class ATMWithCellsAndManagersTest {
         Mockito.verify(mockPut).put(Mockito.any(), Mockito.any());
         Mockito.verifyNoMoreInteractions(mockPut);
         Mockito.verifyNoInteractions(mockCashOut);
+    }
+
+    @Test
+    void testMemento() {
+        var cells = List.of(new ATMCellWithLimit(D200, 10, 5),
+                new ATMCellWithLimit(D100, 20, 10));
+        var atm = new ATMWithCellsAndManagers(cells, mockCashOut, mockPut);
+        assertEquals(2000, atm.balance());
+        var snapshot = atm.createSnapshot();
+        cells.get(0).put(1);
+        cells.get(1).cashOut(1);
+        assertEquals(2100, atm.balance());
+        snapshot.restore();
+        assertEquals(2000, atm.balance());
     }
 }
