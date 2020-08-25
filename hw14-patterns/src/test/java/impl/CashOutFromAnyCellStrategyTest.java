@@ -3,7 +3,7 @@ package impl;
 import org.junit.jupiter.api.Test;
 import ru.otus.homework.atm.ATMException;
 import ru.otus.homework.atm.impl.ATMCellWithLimit;
-import ru.otus.homework.atm.impl.CashOutStrategyFromAnyCell;
+import ru.otus.homework.atm.impl.CashOutFromAnyCellStrategy;
 
 import java.util.List;
 
@@ -11,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.otus.homework.atm.Denomination.*;
 
-class CashOutStrategyFromAnyCellTest {
+class CashOutFromAnyCellStrategyTest {
 
 
-    CashOutStrategyFromAnyCell manager = new CashOutStrategyFromAnyCell();
+    CashOutFromAnyCellStrategy manager = new CashOutFromAnyCellStrategy();
 
     @Test
     void testOneCell() {

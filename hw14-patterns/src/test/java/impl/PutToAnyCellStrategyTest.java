@@ -3,7 +3,7 @@ package impl;
 import org.junit.jupiter.api.Test;
 import ru.otus.homework.atm.ATMException;
 import ru.otus.homework.atm.impl.ATMCellWithLimit;
-import ru.otus.homework.atm.impl.PutStrategyToAnyCell;
+import ru.otus.homework.atm.impl.PutToAnyCellStrategy;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.otus.homework.atm.Denomination.*;
 
-class PutStrategyToAnyCellTest {
+class PutToAnyCellStrategyTest {
 
-    PutStrategyToAnyCell manager = new PutStrategyToAnyCell();
+    PutToAnyCellStrategy manager = new PutToAnyCellStrategy();
 
     @Test
     void testWorkKit() {

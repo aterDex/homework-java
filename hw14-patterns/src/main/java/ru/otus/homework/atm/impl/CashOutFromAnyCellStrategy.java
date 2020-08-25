@@ -14,7 +14,7 @@ import java.util.stream.StreamSupport;
  * Если не возможно выдать сумму, кидает ошибку ATMException.
  * В первую очередь выдаем крупные купюры.
  */
-public class CashOutStrategyFromAnyCell implements CashOutStrategy {
+public class CashOutFromAnyCellStrategy implements CashOutStrategy {
 
     @Override
     public void cashOut(long amount, Iterable<? extends ATMCell> cells) {

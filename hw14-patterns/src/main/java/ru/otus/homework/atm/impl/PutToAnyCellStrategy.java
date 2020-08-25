@@ -17,7 +17,7 @@ import java.util.stream.StreamSupport;
  * Находит первую попавшуюся ячейку в которую могут быть зачисленны средства и зачисляет в нее максимум сколько может.
  * Если зачисление не возможно будет ошибка ATMException.
  */
-public class PutStrategyToAnyCell implements PutStrategy {
+public class PutToAnyCellStrategy implements PutStrategy {
 
     @Override
     public void put(Iterable<? extends ATMCell> cells, Iterable<Denomination> denominations) {
