@@ -19,6 +19,7 @@ public class SnapshotDeMultiplexer extends SnapshotWithZonedDateTime {
     }
 
     public static SnapshotDeMultiplexer createFromMementos(Collection<? extends Memento> mementos) {
+        if (mementos == null) return new SnapshotDeMultiplexer(null);
         return new SnapshotDeMultiplexer(mementos.stream().map(Memento::createSnapshot).toArray(Snapshot[]::new));
     }
 
