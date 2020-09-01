@@ -23,9 +23,6 @@ public class Demo {
                 .field3("field3")
                 .field6("field6")
                 .field10("field10")
-                .field13("-- 13 --")
-                .field12("-- 12 --")
-                .field11("-- 11 --")
                 .build();
 
         var result = complexProcessor.handle(message);
