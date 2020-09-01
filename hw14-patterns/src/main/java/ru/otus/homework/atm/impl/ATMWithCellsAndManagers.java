@@ -7,11 +7,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static ru.otus.homework.atm.ATMEventType.CASH_OUT;
+import static ru.otus.homework.atm.ATMEventType.PUT;
+
 public class ATMWithCellsAndManagers implements ATM {
 
     private final List<? extends ATMCell> cells;
     private final CashOutStrategy cashOutStrategy;
     private final PutStrategy putStrategy;
+    private final List<ATMSubscriber> atmSubscribers = new ArrayList<>();
 
     public ATMWithCellsAndManagers(Collection<? extends ATMCell> cells, CashOutStrategy cashOutStrategy, PutStrategy putStrategy) {
         if (cells == null)
@@ -29,11 +33,13 @@ public class ATMWithCellsAndManagers implements ATM {
     @Override
     public void put(Denomination denomination) {
         this.putAll(Collections.singleton(denomination));
+        notify(PUT);
     }
 
     @Override
     public void putAll(Iterable<Denomination> denominations) {
         putStrategy.put(cells, denominations);
+        notify(CASH_OUT);
     }
 
     @Override
@@ -47,7 +53,21 @@ public class ATMWithCellsAndManagers implements ATM {
     }
 
     @Override
+    public void subscribe(ATMSubscriber subscriber) {
+        atmSubscribers.add(subscriber);
+    }
+
+    @Override
+    public void unsubscribe(ATMSubscriber subscriber) {
+        atmSubscribers.remove(subscriber);
+    }
+
+    @Override
     public Snapshot createSnapshot() {
         return SnapshotDeMultiplexer.createFromMementos(cells);
+    }
+
+    protected void notify(ATMEventType type) {
+        atmSubscribers.forEach(x -> x.update(type, this));
     }
 }

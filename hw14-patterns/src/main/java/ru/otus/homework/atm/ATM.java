@@ -9,4 +9,8 @@ public interface ATM extends Memento {
     void cashOut(long amount);
 
     long balance();
+
+    void subscribe(ATMSubscriber subscriber);
+
+    void unsubscribe(ATMSubscriber subscriber);
 }
