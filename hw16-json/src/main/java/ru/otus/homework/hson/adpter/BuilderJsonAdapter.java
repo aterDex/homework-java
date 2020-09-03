@@ -6,19 +6,19 @@ import javax.json.JsonValue;
 
 public interface BuilderJsonAdapter {
 
-    void value(boolean value);
+    void add(boolean value);
 
-    void value(float value);
+    void add(float value);
 
-    void value(double value);
+    void add(double value);
 
-    void value(long value);
+    void add(long value);
 
-    void value(String value);
+    void add(String value);
 
-    void value(JsonArrayBuilder value);
+    void add(JsonArrayBuilder value);
 
-    void value(JsonObjectBuilder value);
+    void add(JsonObjectBuilder value);
 
-    void value(JsonValue value);
+    void add(JsonValue value);
 }

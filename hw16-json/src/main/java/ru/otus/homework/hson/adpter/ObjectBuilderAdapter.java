@@ -15,42 +15,42 @@ public class ObjectBuilderAdapter implements BuilderJsonAdapter {
     }
 
     @Override
-    public void value(boolean value) {
+    public void add(boolean value) {
         builder.add(field, value);
     }
 
     @Override
-    public void value(float value) {
+    public void add(float value) {
         builder.add(field, value);
     }
 
     @Override
-    public void value(double value) {
+    public void add(double value) {
         builder.add(field, value);
     }
 
     @Override
-    public void value(long value) {
+    public void add(long value) {
         builder.add(field, value);
     }
 
     @Override
-    public void value(String value) {
+    public void add(String value) {
         builder.add(field, value);
     }
 
     @Override
-    public void value(JsonArrayBuilder value) {
+    public void add(JsonArrayBuilder value) {
         builder.add(field, value);
     }
 
     @Override
-    public void value(JsonObjectBuilder value) {
+    public void add(JsonObjectBuilder value) {
         builder.add(field, value);
     }
 
     @Override
-    public void value(JsonValue value) {
+    public void add(JsonValue value) {
         builder.add(field, value);
     }
 }

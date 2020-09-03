@@ -2,6 +2,7 @@ package ru.otus.homework.hson;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,7 +12,7 @@ class HsonTest {
 
     @Test
     void primitiveField() {
-        Hson hson = new Hson();
+        var hson = new Hson();
         var expected = "{\"bt\":10,\"sh\":11,\"in\":12,\"ln\":13,\"db\":14.0323,\"fl\":11.010000228881836,\"bl\":true,\"ch\":\"T\",\"st\":\"str\"}";
         var result0 = hson.toJson(new Object() {
             byte bt = 10;
@@ -44,8 +45,7 @@ class HsonTest {
 
     @Test
     void nullFields() {
-        Hson hson = new Hson();
-        var result = hson.toJson(new Object() {
+        var result = new Hson().toJson(new Object() {
             Object a;
             String b;
             Long c;
@@ -58,8 +58,7 @@ class HsonTest {
 
     @Test
     void collectionFields() {
-        Hson hson = new Hson();
-        var result = hson.toJson(new Object() {
+        var result = new Hson().toJson(new Object() {
             Collection<String> l0 = List.of();
             Collection<String> l1 = List.of("a");
             Collection<String> l5 = List.of("a", "b", "c", "d");
@@ -69,8 +68,7 @@ class HsonTest {
 
     @Test
     void collection2Fields() {
-        Hson hson = new Hson();
-        var result = hson.toJson(new Object() {
+        var result = new Hson().toJson(new Object() {
             Collection<Collection<String>> l0 = List.of(List.of("A", "B"), List.of("C", "D"), List.of());
         });
         assertEquals("{\"l0\":[[\"A\",\"B\"],[\"C\",\"D\"],[]]}", result);
@@ -78,8 +76,7 @@ class HsonTest {
 
     @Test
     void arraysFields() {
-        Hson hson = new Hson();
-        var result = hson.toJson(new Object() {
+        var result = new Hson().toJson(new Object() {
             String[] a0 = new String[0];
             String[] a1 = new String[]{"a"};
             String[] a5 = new String[]{"a", "b", "c", "d"};
@@ -89,8 +86,7 @@ class HsonTest {
 
     @Test
     void arrays2Fields() {
-        Hson hson = new Hson();
-        var result = hson.toJson(new Object() {
+        var result = new Hson().toJson(new Object() {
             String[][] a0 = new String[0][0];
             String[][] a1 = new String[][]{{"a", "b", "c"}};
             String[][] a2 = new String[][]{{"a0", "b0", "c0"}, {"a1", "b1", "c1"}, {"a2", "b2", "c2"}};
@@ -102,8 +98,7 @@ class HsonTest {
 
     @Test
     void objectsFields() {
-        Hson hson = new Hson();
-        var result = hson.toJson(new Object() {
+        var result = new Hson().toJson(new Object() {
             Object object1 = new Object() {
                 String a = "value a";
             };
@@ -114,5 +109,31 @@ class HsonTest {
             Object st = "String";
         });
         assertEquals("{\"object1\":{\"a\":\"value a\"},\"object2\":{\"a\":\"value a\",\"b\":\"value b\"},\"st\":\"String\"}", result);
+    }
+
+    @Test
+    void arraysTest() {
+        var result = new Hson().toJson(new String[]{"A", null, "B"});
+        assertEquals("[\"A\",null,\"B\"]", result);
+    }
+
+    @Test
+    void CollectionTest() {
+        var result = new Hson().toJson(Arrays.asList("A", null, "B"));
+        assertEquals("[\"A\",null,\"B\"]", result);
+    }
+
+    @Test
+    void extendsClassTest() {
+        var result = new Hson().toJson(new Second());
+        assertEquals("{\"b\":\"B\",\"a\":\"A\"}", result);
+    }
+
+    public static class First {
+        public String a = "A";
+    }
+
+    public static class Second extends First {
+        public String b = "B";
     }
 }

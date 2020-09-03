@@ -10,9 +10,9 @@ public class StringsProcessor implements ValueProcessor {
 
     @Override
     @SneakyThrows
-    public boolean processValue(ProcessorContext context) {
+    public boolean processValue(ProcessorValueContext context) {
         if (SUPPORT_TYPE.contains(context.getValueClass())) {
-            context.getBuilder().value(context.getValue().toString());
+            context.getBuilder().add(context.getValue().toString());
             return true;
         }
         return false;

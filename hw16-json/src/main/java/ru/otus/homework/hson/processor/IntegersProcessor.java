@@ -10,9 +10,9 @@ public class IntegersProcessor implements ValueProcessor {
 
     @Override
     @SneakyThrows
-    public boolean processValue(ProcessorContext context) {
+    public boolean processValue(ProcessorValueContext context) {
         if (!SUPPORT_TYPE.contains(context.getValueClass())) return false;
-        context.getBuilder().value(((Number) context.getValue()).longValue());
+        context.getBuilder().add(((Number) context.getValue()).longValue());
         return true;
     }
 }

@@ -10,7 +10,7 @@ import java.util.Collection;
 public class CollectionAndArrayProcessor implements ValueProcessor {
 
     @Override
-    public boolean processValue(ProcessorContext context) {
+    public boolean processValue(ProcessorValueContext context) {
         if (Collection.class.isAssignableFrom(context.getValueClass())) {
             processCollection((Collection) context.getValue(), context);
             return true;
@@ -22,15 +22,15 @@ public class CollectionAndArrayProcessor implements ValueProcessor {
         return false;
     }
 
-    private void processCollection(Collection collections, ProcessorContext context) {
+    private void processCollection(Collection collections, ProcessorValueContext context) {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (Object collection : collections) {
             if (collection == null) {
                 arrayBuilder.addNull();
             } else {
-                context.getCollectionExecutor().execute(collection, new ArrayBuilderAdapter(arrayBuilder));
+                context.getProcessExecutor().execute(collection, new ArrayBuilderAdapter(arrayBuilder));
             }
         }
-        context.getBuilder().value(arrayBuilder);
+        context.getBuilder().add(arrayBuilder);
     }
 }

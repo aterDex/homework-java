@@ -2,7 +2,7 @@ package ru.otus.homework.hson.executor;
 
 import ru.otus.homework.hson.adpter.BuilderJsonAdapter;
 import ru.otus.homework.hson.processor.ValueProcessor;
-import ru.otus.homework.hson.processor.ProcessorContext;
+import ru.otus.homework.hson.processor.ProcessorValueContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,11 +19,11 @@ public class CollectionExecutor implements ProcessExecutor {
     @Override
     public void execute(Object value, BuilderJsonAdapter builder) {
         for (ValueProcessor processor : processors) {
-            if (processor.processValue(ProcessorContext.builder()
+            if (processor.processValue(ProcessorValueContext.builder()
                     .value(value)
                     .builder(builder)
                     .valueClass(value.getClass())
-                    .collectionExecutor(this)
+                    .processExecutor(this)
                     .build()))
                 break;
         }

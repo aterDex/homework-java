@@ -1,6 +1,5 @@
 package ru.otus.homework.hson.adpter;
 
-import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
@@ -10,43 +9,43 @@ public class StringBuilderAdapter implements BuilderJsonAdapter {
     private String value;
 
     @Override
-    public void value(boolean value) {
-//        value(Json.createValue(value));
+    public void add(boolean value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void value(float value) {
-        value(Json.createValue(value));
+    public void add(float value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void value(double value) {
-        value(Json.createValue(value));
+    public void add(double value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void value(long value) {
-        value(Json.createValue(value));
+    public void add(long value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void value(String value) {
-        value(Json.createValue(value));
+    public void add(String value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void value(JsonArrayBuilder value) {
+    public void add(JsonArrayBuilder value) {
         this.value = String.valueOf(value.build());
     }
 
     @Override
-    public void value(JsonObjectBuilder value) {
+    public void add(JsonObjectBuilder value) {
         this.value = String.valueOf(value.build());
     }
 
     @Override
-    public void value(JsonValue value) {
-        this.value = String.valueOf(value.asJsonObject());
+    public void add(JsonValue value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
