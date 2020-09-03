@@ -11,5 +11,4 @@
 * **hw03-generics** - Лекция 3. Контейнеры и алгоритмы.
 * **hw06-reflection** - Лекция 6. Аннотации и Reflection.
 * **hw12-solid** - Лекция 12. SOLID.
-
-
+* **hw16-json** - Лекция 16. Serialization to JSON.
