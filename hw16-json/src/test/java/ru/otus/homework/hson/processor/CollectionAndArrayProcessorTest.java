@@ -57,4 +57,22 @@ class CollectionAndArrayProcessorTest {
         verify(executor).execute(eq("B"), isA(ArrayBuilderAdapter.class));
         verifyNoMoreInteractions(adapter);
     }
+
+    @Test
+    void executePrimitiveArrayProcessor() {
+        int[] arrays = new  int[] {10, 20, -30};
+        var adapter = mock(BuilderJsonAdapter.class);
+        var executor = mock(CollectionExecutor.class);
+        var context = new ProcessorValueContext.ProcessorValueContextBuilder()
+                .value(arrays).valueClass(arrays.getClass())
+                .builder(adapter)
+                .processExecutor(executor)
+                .build();
+        assertTrue(processor.processValue(context));
+        verify(adapter).add(isA(JsonArrayBuilder.class));
+        verify(executor).execute(eq(10), isA(ArrayBuilderAdapter.class));
+        verify(executor).execute(eq(20), isA(ArrayBuilderAdapter.class));
+        verify(executor).execute(eq(-30), isA(ArrayBuilderAdapter.class));
+        verifyNoMoreInteractions(adapter);
+    }
 }

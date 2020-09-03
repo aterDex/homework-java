@@ -8,7 +8,6 @@ import javax.json.JsonObjectBuilder;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class ObjectProcessor implements ValueProcessor {
 
@@ -25,7 +24,7 @@ public class ObjectProcessor implements ValueProcessor {
     }
 
     private Iterable<Field> getAllFields(Class<?> valueClass) {
-        List<Field> fields = new ArrayList<>(Arrays.asList(valueClass.getDeclaredFields()));
+        var fields = new ArrayList<>(Arrays.asList(valueClass.getDeclaredFields()));
         while (valueClass.getSuperclass() != null) {
             valueClass = valueClass.getSuperclass();
             fields.addAll(Arrays.asList(valueClass.getDeclaredFields()));

@@ -16,6 +16,7 @@ public class ObjectExample {
     private boolean tom;
     private ObjectExampleInternal objectExampleInternal;
     private Object uk;
+    private long[][] mass;
     @Singular
     private Collection<ObjectExampleInternal> collections;
 }

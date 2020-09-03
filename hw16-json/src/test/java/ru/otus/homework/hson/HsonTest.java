@@ -118,6 +118,12 @@ class HsonTest {
     }
 
     @Test
+    void arraysPrimitiveTest() {
+        var result = new Hson().toJson(new int[][]{{10}, {0, 30}});
+        assertEquals("[[10],[0,30]]", result);
+    }
+
+    @Test
     void CollectionTest() {
         var result = new Hson().toJson(Arrays.asList("A", null, "B"));
         assertEquals("[\"A\",null,\"B\"]", result);

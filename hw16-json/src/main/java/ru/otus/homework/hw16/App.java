@@ -2,7 +2,6 @@ package ru.otus.homework.hw16;
 
 import com.google.gson.Gson;
 import ru.otus.homework.hson.Hson;
-import ru.otus.homework.hson.adpter.StringBuilderAdapter;
 
 public class App {
 
@@ -16,6 +15,7 @@ public class App {
                 .collection(new ObjectExampleInternal(23.03F, 12.43F))
                 .collection(new ObjectExampleInternal(44, 23.4234f))
                 .uk("Object as text")
+                .mass(new long[][]{{10, 20, 30}, {-10, -20}, {0}})
                 .build();
 
         String json = new Hson().toJson(objForTest);
