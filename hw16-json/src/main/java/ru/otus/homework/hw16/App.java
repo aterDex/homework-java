@@ -24,9 +24,14 @@ public class App {
 
         var repairObject = new Gson().fromJson(json, ObjectExample.class);
 
-        System.out.println("Original and deserialize object is " + (repairObject.equals(originalObject) ? "EQUALS" : "NOT equals"));
+
+        compare(originalObject, repairObject);
         System.out.println("Change counter in deserialize object");
         repairObject.setCounter(100L);
+        compare(originalObject, repairObject);
+    }
+
+    private static void compare(ObjectExample originalObject, ObjectExample repairObject) {
         System.out.println("Original and deserialize object is " + (repairObject.equals(originalObject) ? "EQUALS" : "NOT equals"));
     }
 }
