@@ -22,7 +22,7 @@ public class CollectionExecutor implements ProcessExecutor {
             if (processor.processValue(ProcessorValueContext.builder()
                     .value(value)
                     .builder(builder)
-                    .valueClass(value.getClass())
+                    .valueClass(value == null ? null : value.getClass())
                     .processExecutor(this)
                     .build()))
                 break;

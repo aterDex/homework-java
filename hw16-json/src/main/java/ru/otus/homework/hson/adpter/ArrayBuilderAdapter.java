@@ -48,6 +48,11 @@ public class ArrayBuilderAdapter implements BuilderJsonAdapter {
     }
 
     @Override
+    public void addNull() {
+        builder.addNull();
+    }
+
+    @Override
     public void add(JsonValue value) {
         builder.add(value);
     }

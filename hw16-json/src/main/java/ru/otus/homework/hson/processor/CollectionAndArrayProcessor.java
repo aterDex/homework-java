@@ -38,11 +38,7 @@ public class CollectionAndArrayProcessor implements ValueProcessor {
     private void processCollection(Collection collections, ProcessorValueContext context) {
         var arrayBuilder = Json.createArrayBuilder();
         for (Object collection : collections) {
-            if (collection == null) {
-                arrayBuilder.addNull();
-            } else {
-                context.getProcessExecutor().execute(collection, new ArrayBuilderAdapter(arrayBuilder));
-            }
+            context.getProcessExecutor().execute(collection, new ArrayBuilderAdapter(arrayBuilder));
         }
         context.getBuilder().add(arrayBuilder);
     }

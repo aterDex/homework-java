@@ -21,4 +21,6 @@ public interface BuilderJsonAdapter {
     void add(JsonObjectBuilder value);
 
     void add(JsonValue value);
+
+    void addNull();
 }

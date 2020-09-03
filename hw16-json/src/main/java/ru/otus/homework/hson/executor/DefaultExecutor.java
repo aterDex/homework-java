@@ -18,6 +18,7 @@ public final class DefaultExecutor extends CollectionExecutor {
     private static final class DefaultExecutorInstance {
 
         private final static DefaultExecutor defaultExecutor = new DefaultExecutor(List.of(
+                new NullProcessor(),
                 new StringsProcessor(),
                 new BooleanProcessor(),
                 new FloatsProcessor(),

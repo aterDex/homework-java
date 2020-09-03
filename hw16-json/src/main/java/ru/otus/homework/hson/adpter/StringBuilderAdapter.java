@@ -6,31 +6,31 @@ import javax.json.JsonValue;
 
 public class StringBuilderAdapter implements BuilderJsonAdapter {
 
-    private String value;
+    private String value = null;
 
     @Override
     public void add(boolean value) {
-        throw new UnsupportedOperationException();
+        this.value = String.valueOf(value);
     }
 
     @Override
     public void add(float value) {
-        throw new UnsupportedOperationException();
+        this.value = String.valueOf(value);
     }
 
     @Override
     public void add(double value) {
-        throw new UnsupportedOperationException();
+        this.value = String.valueOf(value);
     }
 
     @Override
     public void add(long value) {
-        throw new UnsupportedOperationException();
+        this.value = String.valueOf(value);
     }
 
     @Override
     public void add(String value) {
-        throw new UnsupportedOperationException();
+        this.value = value;
     }
 
     @Override
@@ -45,7 +45,12 @@ public class StringBuilderAdapter implements BuilderJsonAdapter {
 
     @Override
     public void add(JsonValue value) {
-        throw new UnsupportedOperationException();
+        this.value = value.toString();
+    }
+
+    @Override
+    public void addNull() {
+        value = null;
     }
 
     @Override

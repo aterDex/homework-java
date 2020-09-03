@@ -53,4 +53,9 @@ public class ObjectBuilderAdapter implements BuilderJsonAdapter {
     public void add(JsonValue value) {
         builder.add(field, value);
     }
+
+    @Override
+    public void addNull() {
+        builder.addNull(field);
+    }
 }

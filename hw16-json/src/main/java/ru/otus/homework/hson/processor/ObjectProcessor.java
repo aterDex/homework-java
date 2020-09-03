@@ -35,11 +35,6 @@ public class ObjectProcessor implements ValueProcessor {
     @SneakyThrows
     private void processField(Field field, JsonObjectBuilder builder, ProcessorValueContext context) {
         field.setAccessible(true);
-        var value = field.get(context.getValue());
-        if (value == null) {
-            builder.addNull(field.getName());
-        } else {
-            context.getProcessExecutor().execute(value, new ObjectBuilderAdapter(field.getName(), builder));
-        }
+        context.getProcessExecutor().execute(field.get(context.getValue()), new ObjectBuilderAdapter(field.getName(), builder));
     }
 }

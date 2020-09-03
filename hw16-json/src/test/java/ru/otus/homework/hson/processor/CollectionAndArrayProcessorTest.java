@@ -37,6 +37,7 @@ class CollectionAndArrayProcessorTest {
         assertTrue(processor.processValue(context));
         verify(adapter).add(isA(JsonArrayBuilder.class));
         verify(executor).execute(eq("A"), isA(ArrayBuilderAdapter.class));
+        verify(executor).execute(isNull(), isA(ArrayBuilderAdapter.class));
         verify(executor).execute(eq("B"), isA(ArrayBuilderAdapter.class));
         verifyNoMoreInteractions(adapter, executor);
     }

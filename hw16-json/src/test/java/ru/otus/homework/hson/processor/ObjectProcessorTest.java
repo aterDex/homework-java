@@ -29,6 +29,7 @@ class ObjectProcessorTest {
                 .build();
         assertTrue(processor.processValue(context));
         verify(adapter).add(isA(JsonObjectBuilder.class));
+        verify(executor).execute(isNull(), isA(ObjectBuilderAdapter.class));
         verify(executor).execute(eq("test"), isA(ObjectBuilderAdapter.class));
         verifyNoMoreInteractions(adapter, executor);
     }
