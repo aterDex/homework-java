@@ -6,7 +6,7 @@ import ru.otus.homework.hson.Hson;
 public class App {
 
     public static void main(String[] args) {
-        var objForTest = ObjectExample.builder()
+        var originalObject = ObjectExample.builder()
                 .i(10)
                 .counter(Long.MAX_VALUE)
                 .name("test")
@@ -18,12 +18,15 @@ public class App {
                 .mass(new long[][]{{10, 20, 30}, {-10, -20}, {0}})
                 .build();
 
-        String json = new Hson().toJson(objForTest);
+        String json = new Hson().toJson(originalObject);
 
         System.out.println("Serializer result: " + json);
 
-        var example = new Gson().fromJson(json, ObjectExample.class);
+        var repairObject = new Gson().fromJson(json, ObjectExample.class);
 
-        System.out.printf("Original and deserialize object is " + (example.equals(objForTest) ? "EQUALS" : "NOT equals"));
+        System.out.println("Original and deserialize object is " + (repairObject.equals(originalObject) ? "EQUALS" : "NOT equals"));
+        System.out.println("Change counter in deserialize object");
+        repairObject.setCounter(100L);
+        System.out.println("Original and deserialize object is " + (repairObject.equals(originalObject) ? "EQUALS" : "NOT equals"));
     }
 }
