@@ -2,7 +2,6 @@ package ru.otus.homework.hson.processor;
 
 import lombok.SneakyThrows;
 
-
 public class FloatsProcessor implements ValueProcessor {
 
     @Override
