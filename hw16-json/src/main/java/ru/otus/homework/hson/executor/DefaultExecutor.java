@@ -5,19 +5,15 @@ import ru.otus.homework.hson.processor.*;
 import java.util.Collection;
 import java.util.List;
 
-public final class DefaultExecutor extends CollectionExecutor {
+public final class DefaultExecutor {
 
-    private DefaultExecutor(Collection<? extends ValueProcessor> processors) {
-        super(processors);
-    }
-
-    public static DefaultExecutor getExecutor() {
+    public static ProcessExecutor getExecutor() {
         return DefaultExecutorInstance.defaultExecutor;
     }
 
     private static final class DefaultExecutorInstance {
 
-        private final static DefaultExecutor defaultExecutor = new DefaultExecutor(List.of(
+        private final static ProcessExecutor defaultExecutor = new CollectionExecutor(List.of(
                 new NullProcessor(),
                 new StringsProcessor(),
                 new BooleanProcessor(),
