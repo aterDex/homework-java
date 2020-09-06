@@ -4,9 +4,9 @@ import ru.otus.homework.hson.adpter.StringBuilderAdapter;
 import ru.otus.homework.hson.executor.DefaultExecutor;
 import ru.otus.homework.hson.executor.ProcessExecutor;
 
-public class Hson {
+public final class Hson {
 
-    private ProcessExecutor processExecutor;
+    private final ProcessExecutor processExecutor;
 
     public Hson() {
         this(DefaultExecutor.getExecutor());
