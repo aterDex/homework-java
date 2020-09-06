@@ -13,7 +13,9 @@ public final class Hson {
     }
 
     public Hson(ProcessExecutor processExecutor) {
-        if (processExecutor == null) throw new IllegalArgumentException("processExecutor mustn't be null.");
+        if (processExecutor == null) {
+            throw new IllegalArgumentException("processExecutor mustn't be null.");
+        }
         this.processExecutor = processExecutor;
     }
 

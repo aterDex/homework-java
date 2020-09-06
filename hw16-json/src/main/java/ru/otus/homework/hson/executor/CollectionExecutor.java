@@ -24,8 +24,9 @@ public class CollectionExecutor implements ProcessExecutor {
                     .builder(builder)
                     .valueClass(value == null ? null : value.getClass())
                     .processExecutor(this)
-                    .build()))
+                    .build())) {
                 break;
+            }
         }
     }
 
