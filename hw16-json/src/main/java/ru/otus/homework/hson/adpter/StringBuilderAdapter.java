@@ -1,5 +1,6 @@
 package ru.otus.homework.hson.adpter;
 
+import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
@@ -30,7 +31,7 @@ public class StringBuilderAdapter implements BuilderJsonAdapter {
 
     @Override
     public void add(String value) {
-        this.value = value;
+        this.value = Json.createValue(value).toString();
     }
 
     @Override
@@ -50,7 +51,7 @@ public class StringBuilderAdapter implements BuilderJsonAdapter {
 
     @Override
     public void addNull() {
-        value = null;
+        value = "null";
     }
 
     @Override

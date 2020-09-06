@@ -18,7 +18,6 @@ public class Hson {
     }
 
     public String toJson(Object obj) {
-        if (obj == null) throw new IllegalArgumentException("obj mustn't be null.");
         var adapter = new StringBuilderAdapter();
         processExecutor.execute(obj, adapter);
         return adapter.toString();
