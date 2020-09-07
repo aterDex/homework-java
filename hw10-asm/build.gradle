@@ -1,0 +1,33 @@
+plugins {
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow'
+    id 'io.freefair.lombok'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+dependencies {
+    implementation('org.ow2.asm:asm')
+    testImplementation('org.ow2.asm:asm-util')
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation('org.mockito:mockito-core')
+    testImplementation('org.mockito:mockito-junit-jupiter')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    archiveClassifier.set('uber')
+    manifest {
+        attributes('PreMain-Class': 'ru.otus.homework.hw10.AgentLogMethod',
+                'Can-Retransform-Classes': 'true')
+    }
+}
+
+compileTestJava {
+//    options.compilerArgs << '-parameters'
+}
