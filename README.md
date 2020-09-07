@@ -14,4 +14,5 @@
     * **hw10-asm** - Реализация JavaAgent.
     * **hw10-asm-app** - Приложение для проверки JavaAgent. 
 * **hw12-solid** - Лекция 12. SOLID.
+* **hw14-patterns2** - Лекция 14. Patterns.    
 * **hw16-json** - Лекция 16. Serialization to JSON.
