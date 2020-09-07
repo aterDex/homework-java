@@ -31,6 +31,7 @@ allprojects {
             dependency("com.google.guava:guava:${Versions.guava}")
             dependency("org.ow2.asm:asm:${Versions.asm}")
             dependency("org.ow2.asm:asm-util:${Versions.asm}")
+            dependency("org.glassfish:javax.json:${Versions.glassfishJson}")
         }
     }
 }

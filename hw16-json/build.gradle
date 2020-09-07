@@ -1,0 +1,56 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow'
+    id 'io.freefair.lombok'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+// Other variables
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw16.App'
+
+dependencies {
+    implementation ('com.google.code.gson:gson')
+    implementation ('javax.json:javax.json-api')
+    implementation ('org.glassfish:javax.json')
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation('org.mockito:mockito-core')
+    testImplementation('org.mockito:mockito-junit-jupiter')
+}
+
+application {
+    mainClassName MAIN_CLASS_NAME
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task thinJar(type: Jar, description: "Create alternative jar with classpath in manifest and lib folder") {
+    final pathForThinJar = "${buildDir}/libs/${project.name}-thin"
+    final dependenciesForClassPath = configurations.runtimeClasspath
+    final pathForLib = 'lib'
+
+    tasks.build.dependsOn tasks.thinJar
+
+    destinationDirectory.set(file(pathForThinJar))
+    from sourceSets.main.output
+    manifest {
+        attributes 'Main-Class': MAIN_CLASS_NAME
+        attributes 'Class-Path': dependenciesForClassPath.collect { "${pathForLib}/${it.getName()}" }.join(' ')
+    }
+
+    doLast {
+        copy {
+            from dependenciesForClassPath
+            into "${pathForThinJar}/${pathForLib}"
+        }
+    }
+}
+
+shadowJar {
+    archiveClassifier.set('fat')
+    mainClassName = MAIN_CLASS_NAME
+}
