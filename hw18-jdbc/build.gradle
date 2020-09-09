@@ -12,6 +12,9 @@ version '0.1'
 final MAIN_CLASS_NAME = 'ru.otus.homework.hw18.App'
 
 dependencies {
+    implementation('com.h2database:h2')
+    implementation('ch.qos.logback:logback-classic')
+    implementation('org.flywaydb:flyway-core')
     testImplementation('org.junit.jupiter:junit-jupiter')
     testImplementation('org.mockito:mockito-core')
     testImplementation('org.mockito:mockito-junit-jupiter')
