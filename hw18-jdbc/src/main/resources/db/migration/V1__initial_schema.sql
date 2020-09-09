@@ -1,3 +1,2 @@
-create table test(id int, name varchar(50));
-create table user(id long auto_increment, name varchar(50));
+create table User(id bigint not null auto_increment, name varchar(255), age int);
 
