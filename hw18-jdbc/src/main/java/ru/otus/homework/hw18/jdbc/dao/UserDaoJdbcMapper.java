@@ -25,7 +25,6 @@ public class UserDaoJdbcMapper implements UserDao {
     }
 
     @Override
-    @SneakyThrows
     public long insertUser(User user) {
         return mapper.insert(user, sessionManager.getCurrentSession().getConnection());
     }
