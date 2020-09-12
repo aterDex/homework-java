@@ -1,7 +1,6 @@
 package ru.otus.hw18.jdbc.mapper;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,10 +11,19 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
     private final String insertSql;
     private final String updateSql;
 
-    public EntitySQLMetaDataImpl(EntityClassMetaData entityClassMetaData) {
-        var l = (List<Field>) entityClassMetaData.getAllFields();
-        String columns = l.stream().map(x -> x.getName()).collect(Collectors.joining(", "));
-        this.selectAllSql = null;
+    public EntitySQLMetaDataImpl(EntityClassMetaData<?> entityClassMetaData) {
+        String columns = entityClassMetaData.getAllFields().stream()
+                .map(Field::getName)
+                .collect(Collectors.joining(", "));
+        String columnsParameters = Stream
+                .generate(() -> "?")
+                .limit(entityClassMetaData.getAllFields().size())
+                .collect(Collectors.joining(", "));
+        String columnsWithoutIdForUpdate = entityClassMetaData.getFieldsWithoutId().stream()
+                .map(x -> x.getName() + " = ?")
+                .collect(Collectors.joining(", "));
+
+        this.selectAllSql = String.format("select %s from %s", columns, entityClassMetaData.getName());
         this.selectByIdSql = String.format("select %s from %s where %s = ?",
                 columns,
                 entityClassMetaData.getName(),
@@ -24,9 +32,13 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
         this.insertSql = String.format("insert into %s (%s) values (%s)",
                 entityClassMetaData.getName(),
                 columns,
-                Stream.generate(() -> "?").limit(l.size()).collect(Collectors.joining(", "))
+                columnsParameters
         );
-        this.updateSql = null;
+        this.updateSql = String.format("update %s set %s where %s = ?",
+                entityClassMetaData.getName(),
+                columnsWithoutIdForUpdate,
+                entityClassMetaData.getIdField().getName()
+        );
     }
 
     @Override

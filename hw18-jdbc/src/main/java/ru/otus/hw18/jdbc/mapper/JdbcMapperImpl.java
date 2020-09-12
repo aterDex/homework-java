@@ -48,7 +48,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     @SneakyThrows
     public void insertOrUpdate(T objectData, Connection connection) {
         Object id = entityClassMetaData.getIdField().get(objectData);
-        if (findById(id, (Class) objectData.getClass(), connection).isPresent()) {
+        if (findById(id, connection).isPresent()) {
             update(objectData, connection);
         } else {
             insert(objectData, connection);
@@ -57,7 +57,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
     @Override
     @SneakyThrows
-    public Optional<T> findById(Object id, Class<T> clazz, Connection connection) {
+    public Optional<T> findById(Object id, Connection connection) {
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), id, this::mapper);
     }
 

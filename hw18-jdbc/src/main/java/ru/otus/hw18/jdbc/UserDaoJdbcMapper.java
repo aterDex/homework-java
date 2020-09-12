@@ -21,7 +21,7 @@ public class UserDaoJdbcMapper implements UserDao {
 
     @Override
     public Optional<User> findById(long id) {
-        return mapper.findById(id, User.class, sessionManager.getCurrentSession().getConnection());
+        return mapper.findById(id, sessionManager.getCurrentSession().getConnection());
     }
 
     @Override

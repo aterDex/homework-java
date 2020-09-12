@@ -14,5 +14,5 @@ public interface JdbcMapper<T> {
 
     void insertOrUpdate(T objectData, Connection connection);
 
-    Optional<T> findById(Object id, Class<T> clazz, Connection connection);
+    Optional<T> findById(Object id, Connection connection);
 }

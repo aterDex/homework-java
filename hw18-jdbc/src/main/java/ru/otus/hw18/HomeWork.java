@@ -47,8 +47,11 @@ public class HomeWork {
             sessionManager.beginSession();
             var connection = sessionManager.getCurrentSession().getConnection();
             long idAccount = jdbcMapperAccount.insert(new Account(0, "typeTest", BigDecimal.TEN), connection);
-            jdbcMapperAccount.findById(idAccount, Account.class, connection)
+            jdbcMapperAccount.findById(idAccount, connection)
                     .ifPresentOrElse(x -> logger.info("account created: {}", x), () -> logger.info("account didn't create."));
+            jdbcMapperAccount.update(new Account(0, "typeTestUpdate", BigDecimal.ONE), connection);
+            jdbcMapperAccount.findById(idAccount, connection)
+                    .ifPresentOrElse(x -> logger.info("account updated: {}", x), () -> logger.info("account didn't update."));
         } finally {
             sessionManager.close();
         }

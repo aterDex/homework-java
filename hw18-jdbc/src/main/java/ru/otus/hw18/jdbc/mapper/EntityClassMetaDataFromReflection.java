@@ -15,7 +15,7 @@ public class EntityClassMetaDataFromReflection<T> implements EntityClassMetaData
     private final Constructor<T> constructor;
     private final List<Field> fields;
     private final Field idField;
-    private final List<Field> fieldsWhitoutId;
+    private final List<Field> fieldsWithoutId;
 
     @SneakyThrows
     public EntityClassMetaDataFromReflection(Class<T> clazz) {
@@ -23,7 +23,7 @@ public class EntityClassMetaDataFromReflection<T> implements EntityClassMetaData
         this.constructor = clazz.getConstructor();
         this.fields = List.of(clazz.getDeclaredFields());
         this.idField = searchIdField(fields);
-        this.fieldsWhitoutId = fields.stream().filter(x -> !x.equals(idField)).collect(Collectors.toUnmodifiableList());
+        this.fieldsWithoutId = fields.stream().filter(x -> !x.equals(idField)).collect(Collectors.toUnmodifiableList());
 
         this.constructor.setAccessible(true);
         this.fields.forEach(x -> x.setAccessible(true));
@@ -32,10 +32,10 @@ public class EntityClassMetaDataFromReflection<T> implements EntityClassMetaData
     private Field searchIdField(Collection<Field> fields) {
         List<Field> ids = fields.stream().filter(x -> x.isAnnotationPresent(Id.class)).collect(Collectors.toList());
         if (ids.isEmpty()) {
-            // TODO ошибку прописать
+            throw new RuntimeException("Не нашли в классе " + clazz.getCanonicalName() + " поле помечанное атрибутом @Id");
         }
         if (ids.size() > 1) {
-            // TODO ошибку прописать
+            throw new RuntimeException("В классе " + clazz.getCanonicalName() + " должно быть только одно поле @Id");
         }
         return ids.get(0);
     }
@@ -62,6 +62,6 @@ public class EntityClassMetaDataFromReflection<T> implements EntityClassMetaData
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        return fieldsWhitoutId;
+        return fieldsWithoutId;
     }
 }
