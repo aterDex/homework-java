@@ -1,6 +1,5 @@
 package ru.otus.homework.hw18.jdbc.dao;
 
-import lombok.SneakyThrows;
 import ru.otus.homework.hw18.core.dao.UserDao;
 import ru.otus.homework.hw18.core.model.User;
 import ru.otus.homework.hw18.core.sessionmanager.SessionManager;
