@@ -16,13 +16,13 @@ import java.util.stream.Stream;
  *
  * @param <T>
  */
-public class JdbcMapperImpl<T> implements JdbcMapper<T> {
+public class JdbcMapperFromReflection<T> implements JdbcMapper<T> {
 
     private final EntityClassMetaData<T> entityClassMetaData;
     private final EntitySQLMetaData entitySQLMetaData;
     private final DbExecutor<T> dbExecutor;
 
-    public JdbcMapperImpl(EntityClassMetaData<T> entityClassMetaData, EntitySQLMetaData entitySQLMetaData, DbExecutor<T> dbExecutor) {
+    public JdbcMapperFromReflection(EntityClassMetaData<T> entityClassMetaData, EntitySQLMetaData entitySQLMetaData, DbExecutor<T> dbExecutor) {
         this.entityClassMetaData = entityClassMetaData;
         this.entitySQLMetaData = entitySQLMetaData;
         this.dbExecutor = dbExecutor;

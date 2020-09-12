@@ -4,14 +4,14 @@ import java.lang.reflect.Field;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
+public class EntitySQLMetaDataFromReflection implements EntitySQLMetaData {
 
     private final String selectAllSql;
     private final String selectByIdSql;
     private final String insertSql;
     private final String updateSql;
 
-    public EntitySQLMetaDataImpl(EntityClassMetaData<?> entityClassMetaData) {
+    public EntitySQLMetaDataFromReflection(EntityClassMetaData<?> entityClassMetaData) {
         String columns = entityClassMetaData.getAllFields().stream()
                 .map(Field::getName)
                 .collect(Collectors.joining(", "));

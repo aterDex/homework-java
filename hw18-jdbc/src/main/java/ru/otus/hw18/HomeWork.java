@@ -30,7 +30,7 @@ public class HomeWork {
 // Работа с пользователем
         DbExecutorImpl<User> dbExecutor = new DbExecutorImpl<>();
         EntityClassMetaData<User> metaDataUser = new EntityClassMetaDataFromReflection<>(User.class);
-        JdbcMapper<User> jdbcMapperUser = new JdbcMapperImpl<>(metaDataUser, new EntitySQLMetaDataImpl(metaDataUser), dbExecutor);
+        JdbcMapper<User> jdbcMapperUser = new JdbcMapperFromReflection<>(metaDataUser, new EntitySQLMetaDataFromReflection(metaDataUser), dbExecutor);
         UserDao userDao = new UserDaoJdbcMapper(jdbcMapperUser, sessionManager);
 
 // Код дальше должен остаться, т.е. userDao должен использоваться
@@ -42,7 +42,7 @@ public class HomeWork {
         );
 // Работа со счетом
         EntityClassMetaData<Account> metaDataAccount = new EntityClassMetaDataFromReflection<>(Account.class);
-        JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperImpl<>(metaDataAccount, new EntitySQLMetaDataImpl(metaDataAccount), new DbExecutorImpl<>());
+        JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperFromReflection<>(metaDataAccount, new EntitySQLMetaDataFromReflection(metaDataAccount), new DbExecutorImpl<>());
         try {
             sessionManager.beginSession();
             var connection = sessionManager.getCurrentSession().getConnection();
