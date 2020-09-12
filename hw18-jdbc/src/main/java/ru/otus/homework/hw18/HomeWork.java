@@ -41,7 +41,7 @@ public class HomeWork {
                 () -> logger.info("user didn't create")
         );
 // Работа со счетом
-        EntityClassMetaData<Account> metaDataAccount = new EntityClassMetaDataFromReflection<>(Account.class);
+        var metaDataAccount = new EntityClassMetaDataFromReflection<>(Account.class);
         JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperFromReflection<>(metaDataAccount, new EntitySQLMetaDataFromReflection(metaDataAccount), new DbExecutorImpl<>());
         try {
             sessionManager.beginSession();
