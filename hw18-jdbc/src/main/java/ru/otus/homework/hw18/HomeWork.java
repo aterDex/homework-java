@@ -3,7 +3,6 @@ package ru.otus.homework.hw18;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.homework.hw18.core.dao.UserDao;
 import ru.otus.homework.hw18.core.model.Account;
 import ru.otus.homework.hw18.core.model.User;
 import ru.otus.homework.hw18.core.service.DbServiceUserImpl;
@@ -28,10 +27,10 @@ public class HomeWork {
         sessionManager.beginSession();
 
 // Работа с пользователем
-        DbExecutorImpl<User> dbExecutor = new DbExecutorImpl<>();
-        EntityClassMetaData<User> metaDataUser = new EntityClassMetaDataFromReflection<>(User.class);
-        JdbcMapper<User> jdbcMapperUser = new JdbcMapperFromReflection<>(metaDataUser, new EntitySQLMetaDataFromReflection(metaDataUser), dbExecutor);
-        UserDao userDao = new UserDaoJdbcMapper(jdbcMapperUser, sessionManager);
+        var dbExecutor = new DbExecutorImpl<User>();
+        var metaDataUser = new EntityClassMetaDataFromReflection<>(User.class);
+        var jdbcMapperUser = new JdbcMapperFromReflection<>(metaDataUser, new EntitySQLMetaDataFromReflection(metaDataUser), dbExecutor);
+        var userDao = new UserDaoJdbcMapper(jdbcMapperUser, sessionManager);
 
 // Код дальше должен остаться, т.е. userDao должен использоваться
         var dbServiceUser = new DbServiceUserImpl(userDao);
@@ -42,11 +41,11 @@ public class HomeWork {
         );
 // Работа со счетом
         var metaDataAccount = new EntityClassMetaDataFromReflection<>(Account.class);
-        JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperFromReflection<>(metaDataAccount, new EntitySQLMetaDataFromReflection(metaDataAccount), new DbExecutorImpl<>());
+        var jdbcMapperAccount = new JdbcMapperFromReflection<>(metaDataAccount, new EntitySQLMetaDataFromReflection(metaDataAccount), new DbExecutorImpl<>());
         try {
             sessionManager.beginSession();
             var connection = sessionManager.getCurrentSession().getConnection();
-            long idAccount = jdbcMapperAccount.insert(new Account(0, "typeTest", BigDecimal.TEN), connection);
+            var idAccount = jdbcMapperAccount.insert(new Account(0, "typeTest", BigDecimal.TEN), connection);
             jdbcMapperAccount.findById(idAccount, connection)
                     .ifPresentOrElse(x -> logger.info("account created: {}", x), () -> logger.info("account didn't create."));
             jdbcMapperAccount.update(new Account(0, "typeTestUpdate", BigDecimal.ONE), connection);
