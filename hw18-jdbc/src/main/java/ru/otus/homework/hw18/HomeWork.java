@@ -10,7 +10,7 @@ import ru.otus.homework.hw18.core.service.DbServiceUserImpl;
 import ru.otus.homework.hw18.jdbc.mapper.*;
 import ru.otus.homework.hw18.h2.DataSourceH2;
 import ru.otus.homework.hw18.jdbc.DbExecutorImpl;
-import ru.otus.homework.hw18.jdbc.UserDaoJdbcMapper;
+import ru.otus.homework.hw18.jdbc.dao.UserDaoJdbcMapper;
 import ru.otus.homework.hw18.jdbc.sessionmanager.SessionManagerJdbc;
 
 import javax.sql.DataSource;

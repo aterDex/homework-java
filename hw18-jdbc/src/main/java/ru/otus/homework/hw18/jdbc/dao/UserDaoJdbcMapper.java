@@ -1,4 +1,4 @@
-package ru.otus.homework.hw18.jdbc;
+package ru.otus.homework.hw18.jdbc.dao;
 
 import lombok.SneakyThrows;
 import ru.otus.homework.hw18.core.dao.UserDao;
