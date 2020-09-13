@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class EntityClassMetaDataFromReflection<T> implements EntityClassMetaData<T> {
@@ -20,10 +21,12 @@ public class EntityClassMetaDataFromReflection<T> implements EntityClassMetaData
     @SneakyThrows
     public EntityClassMetaDataFromReflection(Class<T> clazz) {
         this.clazz = clazz;
-        this.constructor = clazz.getConstructor();
+        this.constructor = clazz.getDeclaredConstructor();
         this.fields = List.of(clazz.getDeclaredFields());
         this.idField = searchIdField(fields);
-        this.fieldsWithoutId = fields.stream().filter(x -> !x.equals(idField)).collect(Collectors.toUnmodifiableList());
+        this.fieldsWithoutId = fields.stream()
+                .filter(Predicate.not(idField::equals))
+                .collect(Collectors.toUnmodifiableList());
 
         this.constructor.setAccessible(true);
         this.fields.forEach(x -> x.setAccessible(true));
