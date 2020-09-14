@@ -9,7 +9,7 @@ targetCompatibility = JavaVersion.VERSION_14
 version '0.1'
 
 // Other variables
-final MAIN_CLASS_NAME = 'ru.otus.homework.hw18.App'
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw18.HomeWork'
 
 dependencies {
     implementation('com.h2database:h2')

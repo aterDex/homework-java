@@ -58,11 +58,11 @@ public class JdbcMapperFromReflection<T> implements JdbcMapper<T> {
     @Override
     @SneakyThrows
     public Optional<T> findById(Object id, Connection connection) {
-        return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), id, this::mapper);
+        return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), id, this::mapperOneRow);
     }
 
     @SneakyThrows
-    private T mapper(ResultSet resultSet) {
+    private T mapperOneRow(ResultSet resultSet) {
         if (resultSet.next()) {
             var constructor = entityClassMetaData.getConstructor();
             T inst = constructor.newInstance();
