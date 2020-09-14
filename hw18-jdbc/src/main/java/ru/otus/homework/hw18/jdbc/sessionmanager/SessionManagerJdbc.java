@@ -3,9 +3,9 @@ package ru.otus.homework.hw18.jdbc.sessionmanager;
 import ru.otus.homework.hw18.core.sessionmanager.SessionManager;
 import ru.otus.homework.hw18.core.sessionmanager.SessionManagerException;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.sql.DataSource;
 
 public class SessionManagerJdbc implements SessionManager {
 

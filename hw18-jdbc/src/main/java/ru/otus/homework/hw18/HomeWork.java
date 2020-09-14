@@ -6,10 +6,12 @@ import org.slf4j.LoggerFactory;
 import ru.otus.homework.hw18.core.model.Account;
 import ru.otus.homework.hw18.core.model.User;
 import ru.otus.homework.hw18.core.service.DbServiceUserImpl;
-import ru.otus.homework.hw18.jdbc.mapper.*;
 import ru.otus.homework.hw18.h2.DataSourceH2;
 import ru.otus.homework.hw18.jdbc.DbExecutorImpl;
 import ru.otus.homework.hw18.jdbc.dao.UserDaoJdbcMapper;
+import ru.otus.homework.hw18.jdbc.mapper.EntityClassMetaDataFromReflection;
+import ru.otus.homework.hw18.jdbc.mapper.EntitySQLMetaDataFromReflection;
+import ru.otus.homework.hw18.jdbc.mapper.JdbcMapperFromReflection;
 import ru.otus.homework.hw18.jdbc.sessionmanager.SessionManagerJdbc;
 
 import javax.sql.DataSource;

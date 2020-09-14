@@ -1,6 +1,5 @@
 package ru.otus.homework.hw18.core.sessionmanager;
 
-
 public class SessionManagerException extends RuntimeException {
     public SessionManagerException(String msg) {
         super(msg);

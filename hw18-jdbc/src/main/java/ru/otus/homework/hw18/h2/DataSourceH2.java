@@ -1,11 +1,11 @@
 package ru.otus.homework.hw18.h2;
 
+import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-import javax.sql.DataSource;
 
 /**
  * @author sergey

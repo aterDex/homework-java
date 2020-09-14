@@ -5,6 +5,7 @@ import java.util.Optional;
 
 /**
  * Сохратяет объект в базу, читает объект из базы
+ *
  * @param <T>
  */
 public interface JdbcMapper<T> {

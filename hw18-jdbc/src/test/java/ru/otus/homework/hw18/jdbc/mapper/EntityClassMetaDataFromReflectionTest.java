@@ -3,7 +3,8 @@ package ru.otus.homework.hw18.jdbc.mapper;
 import org.junit.jupiter.api.Test;
 import ru.otus.homework.hw18.core.annotation.Id;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class EntityClassMetaDataFromReflectionTest {
 
@@ -52,9 +53,10 @@ class EntityClassMetaDataFromReflectionTest {
     }
 
     private static class ClassOnlyArgConstructor {
-        ClassOnlyArgConstructor(int a) {}
         int a1;
         @Id
         int b2;
+        ClassOnlyArgConstructor(int a) {
+        }
     }
 }

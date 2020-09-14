@@ -25,7 +25,6 @@ class JdbcMapperFromReflectionTest {
     private Connection connection;
 
 
-
     @Test
     void testInsert() throws Exception {
         var jdbcMapper = new JdbcMapperFromReflection<>(metaData, metaSql, dbExecutor);
@@ -73,9 +72,9 @@ class JdbcMapperFromReflectionTest {
 
     private static class ClassTest {
 
-        int a = 10;
-        String b = "test";
         @Id
         public long id = -1;
+        int a = 10;
+        String b = "test";
     }
 }
