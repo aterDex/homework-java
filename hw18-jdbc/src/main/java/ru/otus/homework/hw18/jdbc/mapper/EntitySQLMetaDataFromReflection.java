@@ -15,10 +15,8 @@ public class EntitySQLMetaDataFromReflection implements EntitySQLMetaData {
         String columns = entityClassMetaData.getAllFields().stream()
                 .map(Field::getName)
                 .collect(Collectors.joining(", "));
-        String columnsParameters = Stream
-                .generate(() -> "?")
-                .limit(entityClassMetaData.getAllFields().size())
-                .collect(Collectors.joining(", "));
+        int sf = entityClassMetaData.getAllFields().size();
+        String columnsParameters = "?, ".repeat(sf).substring(0, sf * 3 - 2);
         String columnsWithoutIdForUpdate = entityClassMetaData.getFieldsWithoutId().stream()
                 .map(x -> x.getName() + " = ?")
                 .collect(Collectors.joining(", "));
