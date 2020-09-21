@@ -1,6 +1,5 @@
 package ru.otus.homework.hw21.core.model;
 
-
 import javax.persistence.*;
 import java.util.List;
 
