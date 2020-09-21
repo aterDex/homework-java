@@ -8,8 +8,8 @@ import ru.otus.homework.hw21.core.sessionmanager.SessionManagerException;
 
 public class SessionManagerHibernate implements SessionManager {
 
-    private DatabaseSessionHibernate databaseSession;
     private final SessionFactory sessionFactory;
+    private DatabaseSessionHibernate databaseSession;
 
     public SessionManagerHibernate(SessionFactory sessionFactory) {
         if (sessionFactory == null) {

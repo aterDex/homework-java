@@ -36,7 +36,6 @@ public class DbServiceUserImpl implements DBServiceUser {
         }
     }
 
-
     @Override
     public Optional<User> getUser(long id) {
         try (SessionManager sessionManager = userDao.getSessionManager()) {

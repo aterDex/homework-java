@@ -1,6 +1,5 @@
 package ru.otus.homework.hw21.hibernate.dao;
 
-
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,6 @@ public class UserDaoHibernate implements UserDao {
     public UserDaoHibernate(SessionManagerHibernate sessionManager) {
         this.sessionManager = sessionManager;
     }
-
 
     @Override
     public Optional<User> findById(long id) {
@@ -69,14 +67,13 @@ public class UserDaoHibernate implements UserDao {
                 hibernateSession.merge(user);
             } else {
                 hibernateSession.persist(user);
-                hibernateSession.flush();
             }
+            hibernateSession.flush();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new UserDaoException(e);
         }
     }
-
 
     @Override
     public SessionManager getSessionManager() {
