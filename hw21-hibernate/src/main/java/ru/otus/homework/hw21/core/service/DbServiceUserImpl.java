@@ -41,10 +41,7 @@ public class DbServiceUserImpl implements DBServiceUser {
         try (SessionManager sessionManager = userDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
-                Optional<User> userOptional = userDao.findById(id);
-
-                logger.info("user: {}", userOptional.orElse(null));
-                return userOptional;
+                return userDao.findById(id);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 sessionManager.rollbackSession();
