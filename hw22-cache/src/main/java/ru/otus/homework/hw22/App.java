@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 @Slf4j
 public class App {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         var dataSource = new DataSourceH2();
         flywayMigrations(dataSource);
@@ -38,13 +38,25 @@ public class App {
 
         var dbServiceUser = new DBServiceUserCache(new DbServiceUserImpl(userDao), cacheUser);
         var id = dbServiceUser.saveUser(new User(0, "dbServiceUser", 30));
+        var idAdmin = dbServiceUser.saveUser(new User(1, "admin", 100));
+        var idUser = dbServiceUser.saveUser(new User(2, "user", 5));
+
+        checkUser(dbServiceUser, id);
+        checkUser(dbServiceUser, idAdmin);
+        checkUser(dbServiceUser, id);
+        checkUser(dbServiceUser, 100);
+
+        log.info("--------------------- gc ---------------------");
+        System.gc();
+        Thread.sleep(1000);
+
+        checkUser(dbServiceUser, id);
+    }
+
+    private static void checkUser(DBServiceUserCache dbServiceUser, long id) {
         dbServiceUser.getUser(id).ifPresentOrElse(
-                crUser -> log.info("user created, name: {}", crUser.getName()),
-                () -> log.info("user didn't create")
-        );
-        dbServiceUser.getUser(id).ifPresentOrElse(
-                crUser -> log.info("user created, name: {}", crUser.getName()),
-                () -> log.info("user didn't create")
+                crUser -> log.info("user find, name: {} by key {}", crUser.getName(), id),
+                () -> log.info("user didn't find by key {}", id)
         );
     }
 
