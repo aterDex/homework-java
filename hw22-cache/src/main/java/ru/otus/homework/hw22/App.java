@@ -41,23 +41,28 @@ public class App {
         var idAdmin = dbServiceUser.saveUser(new User(1, "admin", 100));
         var idUser = dbServiceUser.saveUser(new User(2, "user", 5));
 
-        checkUser(dbServiceUser, id);
-        checkUser(dbServiceUser, idAdmin);
-        checkUser(dbServiceUser, id);
-        checkUser(dbServiceUser, 100);
+        checkUserFixTime(dbServiceUser, id);
+        checkUserFixTime(dbServiceUser, idAdmin);
+        checkUserFixTime(dbServiceUser, id);
+        checkUserFixTime(dbServiceUser, 100);
 
         log.info("--------------------- gc ---------------------");
         System.gc();
         Thread.sleep(1000);
 
-        checkUser(dbServiceUser, id);
+        checkUserFixTime(dbServiceUser, id);
+        checkUserFixTime(dbServiceUser, id);
+
     }
 
-    private static void checkUser(DBServiceUserCache dbServiceUser, long id) {
+    private static void checkUserFixTime(DBServiceUserCache dbServiceUser, long id) {
+        log.info("Start check -----------");
+        long start = System.nanoTime();
         dbServiceUser.getUser(id).ifPresentOrElse(
                 crUser -> log.info("user find, name: {} by key {}", crUser.getName(), id),
                 () -> log.info("user didn't find by key {}", id)
         );
+        log.info("Done check {} ms", (System.nanoTime() - start) / 1000000d);
     }
 
     private static void flywayMigrations(DataSource dataSource) {
