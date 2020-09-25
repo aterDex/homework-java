@@ -7,42 +7,33 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
-import java.util.function.Function;
 
 @Slf4j
 public class MyCache<K, V> implements HwCache<K, V> {
 
-    private final Function<K, String> keyNormalizer;
-    private final WeakHashMap<String, V> cache = new WeakHashMap<>();
+    public static final String ACTION_REMOVE = "remove";
+    public static final String ACTION_PUT = "put";
+    public static final String ACTION_GET = "get";
+
+    private final WeakHashMap<K, V> cache = new WeakHashMap<>();
     private final Collection<WeakReference<HwListener>> listeners = new LinkedList<>();
-
-    public MyCache() {
-        keyNormalizer = x -> String.valueOf(x.hashCode());
-    }
-
-    public MyCache(Function<K, String> keyNormalizer) {
-        if (keyNormalizer == null) {
-            throw new IllegalArgumentException("keyNormalizer mustn't be null.");
-        }
-        this.keyNormalizer = keyNormalizer;
-    }
 
     @Override
     public void put(K key, V value) {
-        cache.put(keyNormalizer.apply(key), value);
-        notify(key, value, "put");
+        cache.put(key, value);
+        notify(key, value, ACTION_PUT);
     }
 
     @Override
     public void remove(K key) {
-        V value = cache.remove(keyNormalizer.apply(key));
-        notify(key, value, "remove");
+        V value = cache.remove(key);
+        notify(key, value, ACTION_REMOVE);
     }
 
     @Override
     public V get(K key) {
-        V value = cache.get(keyNormalizer.apply(key));
-        notify(key, value, "get");
+        V value = cache.get(key);
+        notify(key, value, ACTION_GET);
         return value;
     }
 

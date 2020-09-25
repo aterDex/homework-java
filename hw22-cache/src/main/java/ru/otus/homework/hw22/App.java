@@ -32,8 +32,8 @@ public class App {
         var jdbcMapperUser = new JdbcMapperFromReflection<>(metaDataUser, new EntitySQLMetaDataFromReflection(metaDataUser), dbExecutor);
         var userDao = new UserDaoJdbcMapper(jdbcMapperUser, sessionManager);
 
-        var cacheUser = new MyCache<Long, User>();
-        var cacheListenerUser = new HwListenerLogger<Long, User>();
+        var cacheUser = new MyCache<String, User>();
+        var cacheListenerUser = new HwListenerLogger<String, User>();
         cacheUser.addListener(cacheListenerUser);
 
         var dbServiceUser = new DBServiceUserCache(new DbServiceUserImpl(userDao), cacheUser);

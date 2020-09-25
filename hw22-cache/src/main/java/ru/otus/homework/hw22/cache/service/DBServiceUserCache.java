@@ -11,9 +11,9 @@ import java.util.Optional;
 public class DBServiceUserCache implements DBServiceUser {
 
     private final DBServiceUser serviceUser;
-    private final HwCache<Long, User> cache;
+    private final HwCache<String, User> cache;
 
-    public DBServiceUserCache(DBServiceUser serviceUser, HwCache<Long, User> cache) {
+    public DBServiceUserCache(DBServiceUser serviceUser, HwCache<String, User> cache) {
         if (serviceUser == null) {
             throw new IllegalArgumentException("serviceUser mustn't be null.");
         }
@@ -31,13 +31,13 @@ public class DBServiceUserCache implements DBServiceUser {
 
     @Override
     public Optional<User> getUser(long id) {
-        User value = cache.get(id);
+        User value = cache.get(String.valueOf(id));
         if (value != null) {
             return Optional.of(value);
         }
         Optional<User> valueOpt = serviceUser.getUser(id);
         if (valueOpt.isPresent()) {
-            cache.put(id, valueOpt.get());
+            cache.put(String.valueOf(id), valueOpt.get());
         }
         return valueOpt;
     }
