@@ -40,9 +40,9 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     @Override
     public void removeListener(HwListener<K, V> listener) {
-        Iterator<WeakReference<HwListener<K, V>>> iter = listeners.iterator();
+        var iter = listeners.iterator();
         while (iter.hasNext()) {
-            HwListener listenerCheck = iter.next().get();
+            var listenerCheck = iter.next().get();
             if (listenerCheck == null || listenerCheck.equals(listener)) {
                 iter.remove();
             }
@@ -50,10 +50,10 @@ public class MyCache<K, V> implements HwCache<K, V> {
     }
 
     private void notify(K key, V value, HwListenerAction action) {
-        Iterator<WeakReference<HwListener<K, V>>> iter = listeners.iterator();
+        var iter = listeners.iterator();
         while (iter.hasNext()) {
             try {
-                HwListener listener = iter.next().get();
+                var listener = iter.next().get();
                 if (listener != null) {
                     listener.notify(key, value, action);
                 } else {
