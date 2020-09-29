@@ -11,29 +11,25 @@ import java.util.WeakHashMap;
 @Slf4j
 public class MyCache<K, V> implements HwCache<K, V> {
 
-    public static final String ACTION_REMOVE = "remove";
-    public static final String ACTION_PUT = "put";
-    public static final String ACTION_GET = "get";
-
     private final WeakHashMap<K, V> cache = new WeakHashMap<>();
     private final Collection<WeakReference<HwListener<K, V>>> listeners = new LinkedList<>();
 
     @Override
     public void put(K key, V value) {
         cache.put(key, value);
-        notify(key, value, ACTION_PUT);
+        notify(key, value, HwListenerAction.PUT);
     }
 
     @Override
     public void remove(K key) {
         V value = cache.remove(key);
-        notify(key, value, ACTION_REMOVE);
+        notify(key, value, HwListenerAction.REMOVE);
     }
 
     @Override
     public V get(K key) {
         V value = cache.get(key);
-        notify(key, value, ACTION_GET);
+        notify(key, value, HwListenerAction.GET);
         return value;
     }
 
@@ -53,7 +49,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
         }
     }
 
-    private void notify(K key, V value, String action) {
+    private void notify(K key, V value, HwListenerAction action) {
         Iterator<WeakReference<HwListener<K, V>>> iter = listeners.iterator();
         while (iter.hasNext()) {
             try {
