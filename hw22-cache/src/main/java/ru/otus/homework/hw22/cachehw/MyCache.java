@@ -60,7 +60,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
                     iter.remove();
                 }
             } catch (Exception e) {
-                log.warn(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
     }
