@@ -36,6 +36,7 @@ class DBServiceUserCacheTest {
         when(serviceUser.saveUser(eq(user))).thenReturn(10002L);
         assertEquals(10002L, cache.saveUser(user));
         verify(serviceUser).saveUser(eq(user));
+        verify(hwCache).put(eq(String.valueOf(user.getId())), eq(user));
         verifyNoMoreInteractions(serviceUser, hwCache);
     }
 

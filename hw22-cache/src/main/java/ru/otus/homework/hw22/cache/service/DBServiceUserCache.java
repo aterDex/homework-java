@@ -26,7 +26,9 @@ public class DBServiceUserCache implements DBServiceUser {
 
     @Override
     public long saveUser(User user) {
-        return serviceUser.saveUser(user);
+        long id = serviceUser.saveUser(user);
+        cache.put(String.valueOf(user.getId()), user);
+        return id;
     }
 
     @Override
