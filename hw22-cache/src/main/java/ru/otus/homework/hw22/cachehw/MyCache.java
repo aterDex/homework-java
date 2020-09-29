@@ -16,7 +16,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
     public static final String ACTION_GET = "get";
 
     private final WeakHashMap<K, V> cache = new WeakHashMap<>();
-    private final Collection<WeakReference<HwListener>> listeners = new LinkedList<>();
+    private final Collection<WeakReference<HwListener<K, V>>> listeners = new LinkedList<>();
 
     @Override
     public void put(K key, V value) {
@@ -44,7 +44,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     @Override
     public void removeListener(HwListener<K, V> listener) {
-        Iterator<WeakReference<HwListener>> iter = listeners.iterator();
+        Iterator<WeakReference<HwListener<K, V>>> iter = listeners.iterator();
         while (iter.hasNext()) {
             HwListener listenerCheck = iter.next().get();
             if (listenerCheck == null || listenerCheck.equals(listener)) {
@@ -54,7 +54,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
     }
 
     private void notify(K key, V value, String action) {
-        Iterator<WeakReference<HwListener>> iter = listeners.iterator();
+        Iterator<WeakReference<HwListener<K, V>>> iter = listeners.iterator();
         while (iter.hasNext()) {
             try {
                 HwListener listener = iter.next().get();
