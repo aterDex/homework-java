@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class UsersApiServlet extends HttpServlet {
 
@@ -26,13 +27,11 @@ public class UsersApiServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
-        ServletOutputStream out = response.getOutputStream();
+        Object result = null;
         if (request.getPathInfo() == null || "/".equals(request.getPathInfo())) {
-            out.print(gson.toJson(dbServiceUser.getUsers()));
-        } else {
-            User user = dbServiceUser.getUser(extractIdFromRequest(request)).orElse(null);
-            out.print(gson.toJson(user));
+            result = dbServiceUser.getUsers();
         }
+        gson.toJson(dbServiceUser.getUsers(), response.getWriter());
     }
 
     @Override
