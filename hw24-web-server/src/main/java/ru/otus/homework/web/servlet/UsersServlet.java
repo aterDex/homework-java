@@ -1,6 +1,5 @@
 package ru.otus.homework.web.servlet;
 
-import ru.otus.homework.data.core.service.DBServiceUser;
 import ru.otus.homework.web.services.TemplateProcessor;
 
 import javax.servlet.http.HttpServlet;
@@ -22,6 +21,6 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
-        response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, Collections.emptyMap()));
+        templateProcessor.writePage(USERS_PAGE_TEMPLATE, Collections.emptyMap(), response.getWriter());
     }
 }
