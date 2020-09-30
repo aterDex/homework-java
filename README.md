@@ -18,4 +18,6 @@
 * **hw16-json** - Лекция 16. Serialization to JSON.
 * **hw18-jdbc** - Лекция 18. JDBC.
 * **hw21-hibernate** - Лекция 21. Hibernate.
-* **hw22-cache** - Лекция 22. Сache.
+* **hw22-cache** - Лекция 22. Cache.
+* **hw24-web-server** - Лекция 24. Web server.
+
