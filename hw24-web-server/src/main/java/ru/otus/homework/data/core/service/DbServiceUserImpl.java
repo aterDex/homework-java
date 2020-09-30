@@ -5,7 +5,6 @@ import ru.otus.homework.data.core.dao.UserDao;
 import ru.otus.homework.data.core.model.User;
 import ru.otus.homework.data.core.sessionmanager.SessionManager;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
