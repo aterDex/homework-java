@@ -84,7 +84,7 @@ public class UsersWebServerWithBasicSecurity implements UsersWebServer {
 
     private ServletContextHandler createServletContextHandler() {
         var servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
-        servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, dbServiceUser)), USERS);
+        servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor)), USERS);
         servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(dbServiceUser, gson)), USERS_API);
         return servletContextHandler;
     }

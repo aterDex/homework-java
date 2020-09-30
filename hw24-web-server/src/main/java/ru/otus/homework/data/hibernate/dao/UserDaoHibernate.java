@@ -9,6 +9,8 @@ import ru.otus.homework.data.core.sessionmanager.SessionManager;
 import ru.otus.homework.data.hibernate.sessionmanager.DatabaseSessionHibernate;
 import ru.otus.homework.data.hibernate.sessionmanager.SessionManagerHibernate;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -92,5 +94,19 @@ public class UserDaoHibernate implements UserDao {
             log.error(e.getMessage(), e);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<User> getUsers() {
+        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+        try {
+            return currentSession
+                    .getHibernateSession()
+                    .createNamedQuery("get_all_users", User.class)
+                    .getResultList();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return Collections.emptyList();
     }
 }

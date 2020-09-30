@@ -13,10 +13,11 @@ import javax.persistence.*;
 @Table(name = "users", indexes = {
         @Index(name = "IDX_USERS_LOGIN", columnList = "login", unique = true)
 })
-@NamedQuery(
-        name = "get_user_by_login",
-        query = "select u from User u where login = :login"
-)
+@NamedQueries({
+        @NamedQuery(name = "get_user_by_login", query = "select u from User u where login = :login"),
+        @NamedQuery(name = "get_all_users", query = "select u from User u")
+})
+
 public class User {
 
     @Id

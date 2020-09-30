@@ -22,6 +22,9 @@ public class App {
         try (var sessionManager = new SessionManagerHibernate(sessionFactory)) {
 
             var dbServiceUser = new DbServiceUserImpl(new UserDaoHibernate(sessionManager));
+
+            initBaseLogin(dbServiceUser);
+
             Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
             var templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
             var loginService = new LoginServiceByDBServiceUser(dbServiceUser);
@@ -32,5 +35,18 @@ public class App {
             usersWebServer.start();
             usersWebServer.join();
         }
+    }
+
+    private static void initBaseLogin(DbServiceUserImpl dbServiceUser) {
+        var admin = new User();
+        admin.setLogin("admin");
+        admin.setPassword("password");
+        admin.setName("Администратор");
+        dbServiceUser.saveUser(admin);
+        var user = new User();
+        user.setLogin("user");
+        user.setPassword("123");
+        user.setName("Пользователь");
+        dbServiceUser.saveUser(user);
     }
 }

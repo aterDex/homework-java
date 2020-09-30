@@ -5,6 +5,8 @@ import ru.otus.homework.data.core.dao.UserDao;
 import ru.otus.homework.data.core.model.User;
 import ru.otus.homework.data.core.sessionmanager.SessionManager;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -44,7 +46,7 @@ public class DbServiceUserImpl implements DBServiceUser {
 
     @Override
     public List<User> getUsers() {
-        return null;
+        return invokeIntoSession(userDao::getUsers, Collections.emptyList());
     }
 
     @Override

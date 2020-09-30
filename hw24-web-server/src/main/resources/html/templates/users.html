@@ -1,42 +1,124 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
     <title>Пользователи</title>
     <script>
-        function getUserById() {
-            const userIdTextBox = document.getElementById('userIdTextBox');
-            const userDataContainer = document.getElementById('userDataContainer');
-            const id = userIdTextBox.value;
-            //fetch('api/user?id=' + id)
-            fetch('api/user/' + id)
-                .then(response => response.json())
-                .then(user => userDataContainer.innerHTML = JSON.stringify(user));
+        function addUser() {
+            const data = {
+                name: document.getElementById('userNameTextBox').value,
+                login: document.getElementById('loginTextBox').value,
+                password: document.getElementById('passwordTextBox').value
+            }
+            fetch('api/user/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        printAddError()
+                        updateUsersTable()
+                    } else {
+                        throw new Error("Code: " + response.status + " , Text: " + response.statusText);
+                    }
+                })
+                .catch(e => printAddError(e));
         }
+
+        function updateUsersTable() {
+            const usersTable = document.getElementById('usersTable');
+            usersTable.innerHTML = ''
+
+            const userDataContainer = document.getElementById('userDataContainer');
+            fetch('api/user')
+                .then(getJsonPromiseOrError)
+                .then(users => {
+                    printUpdateError()
+                    users.forEach(user => {
+                        const tr = document.createElement('tr');
+                        const id = document.createElement('td');
+                        const name = document.createElement('td');
+                        const login = document.createElement('td');
+                        const password = document.createElement('td');
+                        id.textContent = user.id
+                        name.textContent = user.name
+                        login.textContent = user.login
+                        password.textContent = user.password
+                        tr.append(id, name, login, password)
+                        usersTable.append(tr)
+                    })
+                })
+                .catch(e => printUpdateError(e));
+        }
+
+        function getJsonPromiseOrError(response) {
+            if (response.ok) {
+                return response.json()
+            } else {
+                throw new Error("Code: " + response.status + " , Text: " + response.statusText);
+            }
+        }
+
+        function printUpdateError(text) {
+            printBlockError(text, 'blockUpdateError')
+        }
+
+        function printAddError(text) {
+            printBlockError(text, 'blockAddError')
+        }
+
+        function printBlockError(text, blockName) {
+            const blockAddError = document.getElementById(blockName);
+            if (text) {
+                blockAddError.hidden = false
+                blockAddError.textContent = text
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUsersTable()
+        }, false);
     </script>
 </head>
-
 <body>
-<h4>Получить пользователя по id</h4>
-<input type="text" id = "userIdTextBox" value="3" placeholder="Введите id пользователя">
-<button onclick="getUserById()">Получить</button>
-<pre id = "userDataContainer"></pre>
-
-<h4>Случайный пользователь</h4>
+<h4>Добавить пользователя</h4>
+<table style="width: 500px">
+    <tbody>
+    <tr>
+        <td>Имя пользователя</td>
+        <td><input type="text" id="userNameTextBox" placeholder="Имя"/></td>
+    </tr>
+    <tr>
+        <td>Логин</td>
+        <td><input type="text" id="loginTextBox" placeholder="Логин"/></td>
+    </tr>
+    <tr>
+        <td>Пароль</td>
+        <td><input type="text" id="passwordTextBox" placeholder="Пароль"/></td>
+    </tr>
+    </tbody>
+</table>
+<button onclick="addUser()">Добавить</button>
+<div hidden id="blockAddError"
+     style="color: red;margin: 15px;border-style: groove;padding: 5px;border-color: red;"></div>
+<pre id="userDataContainer"></pre>
+<h4>Список пользователей</h4>
+<button onclick="updateUsersTable()">Обновить</button>
+<div hidden id="blockUpdateError"
+     style="color: red;margin: 15px;border-style: groove;padding: 5px;border-color: red;"></div>
 <table style="width: 400px">
     <thead>
-        <tr>
-            <td style="width: 50px">Id</td>
-            <td style="width: 150px">Имя</td>
-            <td style="width: 100px">Логин</td>
-            <td style="width: 100px">Пароль</td>
-        </tr>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 100px">Логин</td>
+        <td style="width: 100px">Пароль</td>
+    </tr>
     </thead>
-    <tbody>
-        <tr>
-            <td>${randomUser.id}</td>
-            <td>${randomUser.name}</td>
-            <td>${randomUser.login}</td>
-            <td>${randomUser.password}</td>
-        </tr>
+    <tbody id="usersTable">
     </tbody>
 </table>
 </body>

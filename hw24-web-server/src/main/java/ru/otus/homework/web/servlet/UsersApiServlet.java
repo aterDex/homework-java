@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import ru.otus.homework.data.core.model.User;
 import ru.otus.homework.data.core.service.DBServiceUser;
 
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,11 +25,20 @@ public class UsersApiServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        User user = dbServiceUser.getUser(extractIdFromRequest(request)).orElse(null);
-
         response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream out = response.getOutputStream();
-        out.print(gson.toJson(user));
+        if (request.getPathInfo() == null || "/".equals(request.getPathInfo())) {
+            out.print(gson.toJson(dbServiceUser.getUsers()));
+        } else {
+            User user = dbServiceUser.getUser(extractIdFromRequest(request)).orElse(null);
+            out.print(gson.toJson(user));
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = gson.fromJson(req.getReader(), User.class);
+        dbServiceUser.saveUser(user);
     }
 
     private long extractIdFromRequest(HttpServletRequest request) {

@@ -3,6 +3,7 @@ package ru.otus.homework.data.core.dao;
 import ru.otus.homework.data.core.model.User;
 import ru.otus.homework.data.core.sessionmanager.SessionManager;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
@@ -17,4 +18,6 @@ public interface UserDao {
     SessionManager getSessionManager();
 
     Optional<User> findByLogin(String login);
+
+    List<User> getUsers();
 }
