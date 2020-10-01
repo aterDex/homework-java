@@ -104,13 +104,10 @@ public class UsersWebServerWithBasicSecurity implements UsersWebServer {
         });
 
         ConstraintSecurityHandler security = new ConstraintSecurityHandler();
-        //как декодировать стороку с юзером:паролем https://www.base64decode.org/
         security.setAuthenticator(new BasicAuthenticator());
-
         security.setLoginService(loginService);
         security.setConstraintMappings(constraintMappings);
         security.setHandler(new HandlerList(servletContextHandler));
-
         return security;
     }
 }
