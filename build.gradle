@@ -36,6 +36,7 @@ allprojects {
             dependency("org.eclipse.jetty:jetty-server:${Versions.jetty}")
             dependency("org.eclipse.jetty:jetty-webapp:${Versions.jetty}")
             dependency("org.freemarker:freemarker:${Versions.freemarker}")
+            dependency("org.jsoup:jsoup:${Versions.jsoup}")
         }
     }
 }
