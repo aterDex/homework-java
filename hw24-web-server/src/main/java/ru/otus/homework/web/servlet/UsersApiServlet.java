@@ -16,6 +16,12 @@ public class UsersApiServlet extends HttpServlet {
     private final Gson gson;
 
     public UsersApiServlet(DBServiceUser dbServiceUser, Gson gson) {
+        if (dbServiceUser == null) {
+            throw new IllegalArgumentException("dbServiceUser mustn't be null.");
+        }
+        if (gson == null) {
+            throw new IllegalArgumentException("gson mustn't be null.");
+        }
         this.dbServiceUser = dbServiceUser;
         this.gson = gson;
     }
@@ -33,8 +39,7 @@ public class UsersApiServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            User user = gson.fromJson(request.getReader(), User.class);
-            dbServiceUser.saveUser(user);
+            dbServiceUser.saveUser(gson.fromJson(request.getReader(), User.class));
         } catch (JsonParseException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
