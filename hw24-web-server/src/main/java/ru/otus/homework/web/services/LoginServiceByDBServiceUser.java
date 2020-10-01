@@ -6,9 +6,6 @@ import ru.otus.homework.data.core.service.DBServiceUser;
 
 public class LoginServiceByDBServiceUser extends AbstractLoginService {
 
-    private static final String[] ADMIN_ROLE = {"admin", "user"};
-    private static final String[] USERS_ROLE = {"user"};
-
     private final DBServiceUser userServices;
 
     public LoginServiceByDBServiceUser(DBServiceUser userServices) {
@@ -20,7 +17,7 @@ public class LoginServiceByDBServiceUser extends AbstractLoginService {
 
     @Override
     protected String[] loadRoleInfo(UserPrincipal userPrincipal) {
-        return "admin".equals(userPrincipal.getName()) ? ADMIN_ROLE : USERS_ROLE;
+        return "admin".equals(userPrincipal.getName()) ? new String[] {"admin", "user"} : new String[] {"user"};
     }
 
     @Override
