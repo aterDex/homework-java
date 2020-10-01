@@ -2,6 +2,7 @@ package ru.otus.homework.web.servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import lombok.extern.slf4j.Slf4j;
 import ru.otus.homework.data.core.model.User;
 import ru.otus.homework.data.core.service.DBServiceUser;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 public class UsersApiServlet extends HttpServlet {
 
     private final DBServiceUser dbServiceUser;
@@ -39,8 +41,13 @@ public class UsersApiServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            dbServiceUser.saveUser(gson.fromJson(request.getReader(), User.class));
+            if (request.getPathInfo() == null || "/".equals(request.getPathInfo())) {
+                dbServiceUser.saveUser(gson.fromJson(request.getReader(), User.class));
+            } else {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            }
         } catch (JsonParseException e) {
+            log.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
