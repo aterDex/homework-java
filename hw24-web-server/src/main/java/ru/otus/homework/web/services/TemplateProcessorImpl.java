@@ -1,7 +1,6 @@
 package ru.otus.homework.web.services;
 
 import freemarker.template.Configuration;
-import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 import java.io.IOException;
@@ -21,8 +20,7 @@ public class TemplateProcessorImpl implements TemplateProcessor {
     @Override
     public void writePage(String filename, Map<String, Object> data, Writer writer) throws IOException {
         try {
-            Template template = configuration.getTemplate(filename);
-            template.process(data, writer);
+            configuration.getTemplate(filename).process(data, writer);
         } catch (TemplateException e) {
             throw new IOException(e);
         }
