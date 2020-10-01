@@ -66,6 +66,7 @@ class UsersApiServletTest {
             new UsersApiServlet(dbServiceUser, gson).doGet(request, response);
 
             assertEquals("[]", baseWriter.toString());
+            verify(response).setContentType(eq("application/json;charset=UTF-8"));
         }
     }
 

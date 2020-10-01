@@ -15,6 +15,9 @@ public class UsersServlet extends HttpServlet {
     private final TemplateProcessor templateProcessor;
 
     public UsersServlet(TemplateProcessor templateProcessor) {
+        if (templateProcessor == null) {
+            throw new IllegalArgumentException("templateProcessor mustn't be null.");
+        }
         this.templateProcessor = templateProcessor;
     }
 
