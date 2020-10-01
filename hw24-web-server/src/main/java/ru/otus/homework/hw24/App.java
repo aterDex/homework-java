@@ -38,11 +38,13 @@ public class App {
     }
 
     private static void initBaseLogin(DbServiceUserImpl dbServiceUser) {
+
         var admin = new User();
         admin.setLogin("admin");
         admin.setPassword("password");
         admin.setName("Администратор");
         dbServiceUser.saveUser(admin);
+
         var user = new User();
         user.setLogin("user");
         user.setPassword("123");

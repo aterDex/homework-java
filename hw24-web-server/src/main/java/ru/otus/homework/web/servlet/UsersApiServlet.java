@@ -5,7 +5,6 @@ import com.google.gson.JsonParseException;
 import ru.otus.homework.data.core.model.User;
 import ru.otus.homework.data.core.service.DBServiceUser;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +21,7 @@ public class UsersApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (request.getPathInfo() == null || "/".equals(request.getPathInfo())) {
             response.setContentType("application/json;charset=UTF-8");
             gson.toJson(dbServiceUser.getUsers(), response.getWriter());
@@ -32,7 +31,7 @@ public class UsersApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             User user = gson.fromJson(request.getReader(), User.class);
             dbServiceUser.saveUser(user);
