@@ -12,6 +12,9 @@ public class LoginServiceByDBServiceUser extends AbstractLoginService {
     private final DBServiceUser userServices;
 
     public LoginServiceByDBServiceUser(DBServiceUser userServices) {
+        if (userServices == null) {
+            throw new IllegalArgumentException("userServices mustn't be null.");
+        }
         this.userServices = userServices;
     }
 
