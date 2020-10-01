@@ -34,7 +34,13 @@
 
             const userDataContainer = document.getElementById('userDataContainer');
             fetch('api/user')
-                .then(getJsonPromiseOrError)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        throw new Error("Code: " + response.status + " , Text: " + response.statusText);
+                    }
+                })
                 .then(users => {
                     printUpdateError()
                     users.forEach(user => {
@@ -54,14 +60,6 @@
                 .catch(e => printUpdateError(e));
         }
 
-        function getJsonPromiseOrError(response) {
-            if (response.ok) {
-                return response.json()
-            } else {
-                throw new Error("Code: " + response.status + " , Text: " + response.statusText);
-            }
-        }
-
         function printUpdateError(text) {
             printBlockError(text, 'blockUpdateError')
         }
@@ -75,6 +73,9 @@
             if (text) {
                 blockAddError.hidden = false
                 blockAddError.textContent = text
+            } else {
+                blockAddError.hidden = true
+                blockAddError.textContent = ""
             }
         }
 
