@@ -2,15 +2,15 @@ package ru.otus.homework.hw24;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.extern.slf4j.Slf4j;
-import ru.otus.homework.data.core.model.User;
-import ru.otus.homework.data.core.service.DbServiceUserImpl;
-import ru.otus.homework.data.hibernate.HibernateUtils;
-import ru.otus.homework.data.hibernate.dao.UserDaoHibernate;
-import ru.otus.homework.data.hibernate.sessionmanager.SessionManagerHibernate;
-import ru.otus.homework.web.server.UsersWebServerWithBasicSecurity;
-import ru.otus.homework.web.services.LoginServiceByDBServiceUser;
-import ru.otus.homework.web.services.TemplateProcessorImpl;
+import ru.otus.homework.hw24.data.FlywayUtils;
+import ru.otus.homework.hw24.data.core.model.User;
+import ru.otus.homework.hw24.data.core.service.DbServiceUserImpl;
+import ru.otus.homework.hw24.data.hibernate.HibernateUtils;
+import ru.otus.homework.hw24.data.hibernate.dao.UserDaoHibernate;
+import ru.otus.homework.hw24.data.hibernate.sessionmanager.SessionManagerHibernate;
+import ru.otus.homework.hw24.web.server.UsersWebServerWithBasicSecurity;
+import ru.otus.homework.hw24.web.services.LoginServiceByDBServiceUser;
+import ru.otus.homework.hw24.web.services.TemplateProcessorImpl;
 
 public class App {
 
