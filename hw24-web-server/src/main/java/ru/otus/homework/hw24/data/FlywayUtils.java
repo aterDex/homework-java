@@ -3,13 +3,18 @@ package ru.otus.homework.hw24.data;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 
+import javax.sql.DataSource;
+
 @Slf4j
 public class FlywayUtils {
 
-    public static void flywayMigrations(String url, String user, String password, String scriptPaths) {
+    private FlywayUtils() {
+    }
+
+    public static void flywayMigrations(DataSource dataSource, String scriptPaths) {
         log.info("***************** flywayMigrations *****************");
         var flyway = Flyway.configure()
-                .dataSource(url, user, password)
+                .dataSource(dataSource)
                 .locations(scriptPaths)
                 .load();
         flyway.migrate();

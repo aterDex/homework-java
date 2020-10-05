@@ -1,26 +1,25 @@
 package ru.otus.homework.hw24.data.hibernate;
 
-import lombok.SneakyThrows;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 public final class HibernateUtils {
 
     private HibernateUtils() {
     }
 
-    @SneakyThrows
-    public static SessionFactory buildSessionFactory(String configResourceFileName, Consumer<Configuration> customSchemaGeneration, Class<?>... annotatedClasses) {
+    public static SessionFactory buildSessionFactory(String configResourceFileName, DataSource dataSource, Class<?>... annotatedClasses) {
         Configuration configuration = new Configuration().configure(configResourceFileName);
-        if (customSchemaGeneration != null) {
-            customSchemaGeneration.accept(configuration);
+        if (dataSource != null) {
+            configuration.getProperties().put(AvailableSettings.DATASOURCE, dataSource);
         }
 
         MetadataSources metadataSources = new MetadataSources(createServiceRegistry(configuration));
