@@ -13,6 +13,7 @@ final MAIN_CLASS_NAME = 'ru.otus.homework.hw25.App'
 
 dependencies {
     implementation('ch.qos.logback:logback-classic')
+    implementation("org.reflections:reflections")
     testImplementation('org.junit.jupiter:junit-jupiter')
     testImplementation('org.mockito:mockito-core')
     testImplementation('org.mockito:mockito-junit-jupiter')

@@ -1,6 +1,9 @@
 package ru.otus.homework.hw25.appcontainer;
 
 import lombok.extern.slf4j.Slf4j;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
 import ru.otus.homework.hw25.appcontainer.api.AppComponent;
 import ru.otus.homework.hw25.appcontainer.api.AppComponentsContainer;
 import ru.otus.homework.hw25.appcontainer.api.AppComponentsContainerConfig;
@@ -17,7 +20,14 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private final Map<String, Object> appComponentsByName = new HashMap<>();
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) {
+        checkConfigClass(initialConfigClass);
         processConfig(initialConfigClass);
+    }
+
+    public AppComponentsContainerImpl(String pckg) {
+        this(new Reflections(pckg, new TypeAnnotationsScanner(), new SubTypesScanner())
+                .getTypesAnnotatedWith(AppComponentsContainerConfig.class)
+                .toArray(Class<?>[]::new));
     }
 
     public AppComponentsContainerImpl(Class<?>... initialConfigClasses) {
@@ -30,7 +40,6 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     private void processConfig(Class<?> configClass) {
-        checkConfigClass(configClass);
         log.info("processConfig");
         final Object instance;
         try {
