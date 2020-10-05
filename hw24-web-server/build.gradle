@@ -19,6 +19,7 @@ dependencies {
     implementation('ch.qos.logback:logback-classic')
     implementation('org.hibernate:hibernate-core')
     implementation('com.h2database:h2')
+    implementation('org.flywaydb:flyway-core')
     testImplementation('org.junit.jupiter:junit-jupiter')
     testImplementation('org.mockito:mockito-core')
     testImplementation('org.mockito:mockito-junit-jupiter')
