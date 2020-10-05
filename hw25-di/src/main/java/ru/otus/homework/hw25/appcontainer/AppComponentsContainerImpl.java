@@ -63,7 +63,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         }
         try {
             method.setAccessible(true);
-            var instanceComponent = method.invoke(instance, resolveArgument(method, component));
+            var instanceComponent = method.invoke(instance, resolveArgument(method));
             appComponents.add(instanceComponent);
             appComponentsByName.put(component.name(), instanceComponent);
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         }
     }
 
-    private Object[] resolveArgument(Method method, AppComponent component) {
+    private Object[] resolveArgument(Method method) {
         if (method.getParameterCount() == 0) {
             return null;
         }
