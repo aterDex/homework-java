@@ -1,0 +1,32 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow'
+    id 'io.freefair.lombok'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+// Other variables
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw25.App'
+
+dependencies {
+    implementation('ch.qos.logback:logback-classic')
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation('org.mockito:mockito-core')
+    testImplementation('org.mockito:mockito-junit-jupiter')
+}
+
+application {
+    mainClassName MAIN_CLASS_NAME
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    archiveClassifier.set('fat')
+    mainClassName = MAIN_CLASS_NAME
+}

@@ -19,3 +19,5 @@
 * **hw18-jdbc** - Лекция 18. JDBC.
 * **hw21-hibernate** - Лекция 21. Hibernate.
 * **hw22-cache** - Лекция 22. Сache.
+* **hw25-di** - Лекция 25. Dependency injection.
+
