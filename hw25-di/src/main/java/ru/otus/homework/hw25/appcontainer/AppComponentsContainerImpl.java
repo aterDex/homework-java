@@ -20,6 +20,15 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         processConfig(initialConfigClass);
     }
 
+    public AppComponentsContainerImpl(Class<?>... initialConfigClasses) {
+        for (Class<?> initialConfigClass : initialConfigClasses) {
+            checkConfigClass(initialConfigClass);
+        }
+        Arrays.stream(initialConfigClasses)
+                .sorted(Comparator.comparingInt(x -> x.getAnnotation(AppComponentsContainerConfig.class).order()))
+                .forEachOrdered(this::processConfig);
+    }
+
     private void processConfig(Class<?> configClass) {
         checkConfigClass(configClass);
         log.info("processConfig");
@@ -67,7 +76,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     private void checkConfigClass(Class<?> configClass) {
         if (!configClass.isAnnotationPresent(AppComponentsContainerConfig.class)) {
-            throw new IllegalArgumentException(String.format("Given class is not config '%s'", configClass.getName()));
+            throw new IllegalArgumentException(String.format("Переданный класс не является конфигурацией '%s'", configClass.getName()));
         }
     }
 
