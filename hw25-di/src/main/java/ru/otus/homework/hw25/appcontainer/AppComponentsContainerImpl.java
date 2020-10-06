@@ -31,67 +31,18 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     public AppComponentsContainerImpl(Class<?>... initialConfigClasses) {
-        for (Class<?> initialConfigClass : initialConfigClasses) {
-            checkConfigClass(initialConfigClass);
-        }
+        Arrays.stream(initialConfigClasses)
+                .forEach(this::checkConfigClass);
         Arrays.stream(initialConfigClasses)
                 .sorted(Comparator.comparingInt(x -> x.getAnnotation(AppComponentsContainerConfig.class).order()))
                 .forEachOrdered(this::processConfig);
     }
 
-    private void processConfig(Class<?> configClass) {
-        log.info("processConfig");
-        final Object instance;
-        try {
-            var constructor = configClass.getConstructor();
-            constructor.setAccessible(true);
-            instance = constructor.newInstance();
-        } catch (Exception e) {
-            throw new AppComponentsContainerException(String.format("Не смогли создать экземпляр класса '%s'.", configClass.getClass().getCanonicalName()), e);
-        }
-        Method[] methods = configClass.getDeclaredMethods();
-        Arrays.stream(methods)
-                .filter(x -> x.isAnnotationPresent(AppComponent.class))
-                .sorted(Comparator.comparingInt(x -> x.getAnnotation(AppComponent.class).order()))
-                .forEachOrdered(x -> invokeMethodForComponent(x, instance));
-    }
-
-    private void invokeMethodForComponent(Method method, Object instance) {
-        var component = method.getAnnotation(AppComponent.class);
-        if (appComponentsByName.containsKey(component.name())) {
-            throw new AppComponentsContainerException(String.format("Компонент с именем '%s' уже находится в контексте. В контексте не может быть компонентов с одинаковыми именами.", component.name()));
-        }
-        try {
-            method.setAccessible(true);
-            var instanceComponent = method.invoke(instance, resolveArgument(method));
-            appComponents.add(instanceComponent);
-            appComponentsByName.put(component.name(), instanceComponent);
-        } catch (Exception e) {
-            throw new AppComponentsContainerException(String.format("Не смогли создать компонент '%s'.", component.name()), e);
-        }
-    }
-
-    private Object[] resolveArgument(Method method) {
-        if (method.getParameterCount() == 0) {
-            return null;
-        }
-        Object[] args = new Object[method.getParameterCount()];
-        var parameters = method.getParameters();
-        for (int i = 0; i < args.length; i++) {
-            args[i] = getAppComponent(parameters[i].getType());
-        }
-        return args;
-    }
-
-    private void checkConfigClass(Class<?> configClass) {
-        if (!configClass.isAnnotationPresent(AppComponentsContainerConfig.class)) {
-            throw new IllegalArgumentException(String.format("Переданный класс не является конфигурацией '%s'", configClass.getName()));
-        }
-    }
-
     @Override
+    @SuppressWarnings("unchecked")
     public <C> C getAppComponent(Class<C> componentClass) {
-        List<Object> components = appComponents.stream().filter(x -> componentClass.isInstance(x))
+        List<Object> components = appComponents.stream()
+                .filter(x -> componentClass.isInstance(x))
                 .collect(Collectors.toList());
         if (components.isEmpty()) {
             throw new AppComponentsContainerException(String.format("Не смогли найти компонент '%s' в контексте.", componentClass.getCanonicalName()));
@@ -103,11 +54,74 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <C> C getAppComponent(String componentName) {
         C component = (C) appComponentsByName.get(componentName);
         if (component == null) {
             throw new AppComponentsContainerException(String.format("Не смогли найти компонент '%s' в контексте.", componentName));
         }
         return component;
+    }
+
+    private void processConfig(Class<?> configClass) {
+        try {
+            log.info("processConfig");
+            final Object instance = initInstanceForConfig(configClass);
+            Arrays.stream(configClass.getDeclaredMethods())
+                    .filter(x -> x.isAnnotationPresent(AppComponent.class))
+                    .sorted(Comparator.comparingInt(x -> x.getAnnotation(AppComponent.class).order()))
+                    .forEachOrdered(x -> processComponentMethod(x, instance));
+        } catch (Exception e) {
+            clearContext();
+            throw e;
+        }
+    }
+
+    private void clearContext() {
+        appComponents.clear();
+        appComponentsByName.clear();
+    }
+
+    private Object initInstanceForConfig(Class<?> configClass) {
+        try {
+            var constructor = configClass.getConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        } catch (Exception e) {
+            throw new AppComponentsContainerException(String.format("Не смогли создать экземпляр класса '%s'.", configClass.getClass().getCanonicalName()), e);
+        }
+    }
+
+    private void processComponentMethod(Method method, Object instance) {
+        var componentMeta = method.getAnnotation(AppComponent.class);
+        if (appComponentsByName.containsKey(componentMeta.name())) {
+            throw new AppComponentsContainerException(String.format("Компонент с именем '%s' уже находится в контексте. В контексте не может быть компонентов с одинаковыми именами.", componentMeta.name()));
+        }
+        try {
+            method.setAccessible(true);
+            var instanceComponent = method.invoke(instance, resolveComponentArgument(method));
+            appComponents.add(instanceComponent);
+            appComponentsByName.put(componentMeta.name(), instanceComponent);
+        } catch (Exception e) {
+            throw new AppComponentsContainerException(String.format("Не смогли создать компонент '%s'.", componentMeta.name()), e);
+        }
+    }
+
+    private Object[] resolveComponentArgument(Method method) {
+        if (method.getParameterCount() == 0) {
+            return null;
+        }
+        var args = new Object[method.getParameterCount()];
+        var parameters = method.getParameters();
+        for (int i = 0; i < args.length; i++) {
+            args[i] = getAppComponent(parameters[i].getType());
+        }
+        return args;
+    }
+
+    private void checkConfigClass(Class<?> configClass) {
+        if (!configClass.isAnnotationPresent(AppComponentsContainerConfig.class)) {
+            throw new IllegalArgumentException(String.format("Переданный класс не является конфигурацией '%s'", configClass.getName()));
+        }
     }
 }
