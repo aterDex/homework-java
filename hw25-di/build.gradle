@@ -17,6 +17,10 @@ dependencies {
     testImplementation('org.junit.jupiter:junit-jupiter')
 }
 
+run {
+    standardInput = System.in
+}
+
 application {
     mainClassName MAIN_CLASS_NAME
 }
