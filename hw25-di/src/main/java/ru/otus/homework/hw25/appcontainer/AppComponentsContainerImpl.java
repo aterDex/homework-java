@@ -41,6 +41,9 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     @Override
     @SuppressWarnings("unchecked")
     public <C> C getAppComponent(Class<C> componentClass) {
+        if (componentClass == null) {
+            throw new IllegalArgumentException("componentClass не может быть null.");
+        }
         log.debug("getAppComponent by class {}", componentClass.getCanonicalName());
         List<Object> components = appComponents.stream()
                 .filter(x -> componentClass.isInstance(x))
@@ -57,6 +60,9 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     @Override
     @SuppressWarnings("unchecked")
     public <C> C getAppComponent(String componentName) {
+        if (componentName == null) {
+            throw new IllegalArgumentException("componentName не может быть null.");
+        }
         log.debug("getAppComponent by name {}", componentName);
         C component = (C) appComponentsByName.get(componentName);
         if (component == null) {
@@ -90,7 +96,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             constructor.setAccessible(true);
             return constructor.newInstance();
         } catch (Exception e) {
-            throw new AppComponentsContainerException(String.format("Не смогли создать экземпляр класса '%s'.", configClass.getClass().getCanonicalName()), e);
+            throw new AppComponentsContainerException(String.format("Не смогли создать экземпляр класса '%s'.", configClass.getCanonicalName()), e);
         }
     }
 
