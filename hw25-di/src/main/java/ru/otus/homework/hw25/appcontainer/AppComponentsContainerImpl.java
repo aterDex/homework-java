@@ -41,6 +41,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     @Override
     @SuppressWarnings("unchecked")
     public <C> C getAppComponent(Class<C> componentClass) {
+        log.debug("getAppComponent by class {}", componentClass.getCanonicalName());
         List<Object> components = appComponents.stream()
                 .filter(x -> componentClass.isInstance(x))
                 .collect(Collectors.toList());
@@ -56,6 +57,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     @Override
     @SuppressWarnings("unchecked")
     public <C> C getAppComponent(String componentName) {
+        log.debug("getAppComponent by name {}", componentName);
         C component = (C) appComponentsByName.get(componentName);
         if (component == null) {
             throw new AppComponentsContainerException(String.format("Не смогли найти компонент '%s' в контексте.", componentName));
@@ -65,7 +67,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     private void processConfig(Class<?> configClass) {
         try {
-            log.info("processConfig");
+            log.debug("processConfig {}", configClass.getCanonicalName());
             final Object instance = initInstanceForConfig(configClass);
             Arrays.stream(configClass.getDeclaredMethods())
                     .filter(x -> x.isAnnotationPresent(AppComponent.class))
@@ -120,6 +122,9 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     private void checkConfigClass(Class<?> configClass) {
+        if (configClass == null) {
+            throw new IllegalArgumentException("configClass не может быть null.");
+        }
         if (!configClass.isAnnotationPresent(AppComponentsContainerConfig.class)) {
             throw new IllegalArgumentException(String.format("Переданный класс не является конфигурацией '%s'", configClass.getName()));
         }
