@@ -31,26 +31,36 @@ class AppComponentsContainerImplTest {
 
     @Test
     void checkGetAppComponent() {
-        var appWithComponent = new AppComponentsContainerImpl(ComponentContainerWithComponents.class);
+        var app = new AppComponentsContainerImpl(ComponentContainerWithComponents.class);
 
-        assertThrows(AppComponentsContainerException.class, () -> appWithComponent.getAppComponent("unknown"));
-        assertThrows(IllegalArgumentException.class, () -> appWithComponent.getAppComponent((String) null));
-        assertThrows(IllegalArgumentException.class, () -> appWithComponent.getAppComponent((Class) null));
+        assertThrows(AppComponentsContainerException.class, () -> app.getAppComponent("unknown"));
+        assertThrows(IllegalArgumentException.class, () -> app.getAppComponent((String) null));
+        assertThrows(IllegalArgumentException.class, () -> app.getAppComponent((Class) null));
 
-        assertNotNull(appWithComponent.getAppComponent("notComponentContainer"));
-        ArrayList<String> component = appWithComponent.getAppComponent("arrayList");
+        assertNotNull(app.getAppComponent("notComponentContainer"));
+        ArrayList<String> component = app.getAppComponent("arrayList");
         assertNotNull(component);
 
-        assertEquals(component, appWithComponent.getAppComponent(ArrayList.class));
-        assertEquals(component, appWithComponent.getAppComponent(List.class));
-        assertEquals(component, appWithComponent.getAppComponent(Collection.class));
-        assertEquals(component, appWithComponent.getAppComponent(Iterable.class));
-        assertEquals(component, appWithComponent.getAppComponent(RandomAccess.class));
+        assertEquals(component, app.getAppComponent(ArrayList.class));
+        assertEquals(component, app.getAppComponent(List.class));
+        assertEquals(component, app.getAppComponent(Collection.class));
+        assertEquals(component, app.getAppComponent(Iterable.class));
+        assertEquals(component, app.getAppComponent(RandomAccess.class));
+    }
 
-        var appWithSameComponent = new AppComponentsContainerImpl(ComponentContainerWithSameComponents.class);
-        assertNotNull(appWithSameComponent.getAppComponent(List.class));
-        assertNotNull(appWithSameComponent.getAppComponent(Map.class));
+    @Test
+    void checkGetAppComponentWithComponentContainerWithSameComponents() {
+        var app = new AppComponentsContainerImpl(ComponentContainerWithSameComponents.class);
+        assertNotNull(app.getAppComponent(List.class));
+        assertNotNull(app.getAppComponent(Map.class));
 
-        assertThrows(AppComponentsContainerException.class, () -> appWithSameComponent.getAppComponent(Cloneable.class));
+        assertThrows(AppComponentsContainerException.class, () -> app.getAppComponent(Cloneable.class));
+    }
+
+    @Test
+    void checkGetAppComponentWithComponentContainerWithStaticComponents() {
+        var app = new AppComponentsContainerImpl(ComponentContainerWithStaticComponents.class);
+        assertNotNull(app.getAppComponent("notComponentContainer"));
+        assertNotNull(app.getAppComponent("arrayList"));
     }
 }
