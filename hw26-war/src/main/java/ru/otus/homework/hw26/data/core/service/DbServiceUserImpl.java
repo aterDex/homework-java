@@ -1,6 +1,7 @@
 package ru.otus.homework.hw26.data.core.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import ru.otus.homework.hw26.data.core.dao.UserDao;
 import ru.otus.homework.hw26.data.core.model.User;
 import ru.otus.homework.hw26.data.core.sessionmanager.SessionManager;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @Slf4j
+@Service
 public class DbServiceUserImpl implements DBServiceUser {
 
     private final UserDao userDao;

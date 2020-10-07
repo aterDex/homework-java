@@ -2,6 +2,7 @@ package ru.otus.homework.hw26.data.hibernate.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 import ru.otus.homework.hw26.data.core.dao.UserDao;
 import ru.otus.homework.hw26.data.core.dao.UserDaoException;
 import ru.otus.homework.hw26.data.core.model.User;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@Repository
 public class UserDaoHibernate implements UserDao {
 
     private final SessionManagerHibernate sessionManager;

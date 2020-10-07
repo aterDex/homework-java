@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Пользователи</title>
@@ -79,9 +79,9 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            updateUsersTable()
-        }, false);
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     updateUsersTable()
+        // }, false);
     </script>
 </head>
 <body>
@@ -120,6 +120,12 @@
     </tr>
     </thead>
     <tbody id="usersTable">
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}">1</td>
+        <td th:text="${user.name}">John Doe</td>
+        <td th:text="${user.login}">login</td>
+        <td th:text="${user.password}">pass</td>
+    </tr>
     </tbody>
 </table>
 </body>
