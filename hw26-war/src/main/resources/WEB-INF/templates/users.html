@@ -10,7 +10,7 @@
                 login: document.getElementById('loginTextBox').value,
                 password: document.getElementById('passwordTextBox').value
             }
-            fetch('api/user/', {
+            fetch('api/user', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -79,9 +79,6 @@
             }
         }
 
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     updateUsersTable()
-        // }, false);
     </script>
 </head>
 <body>

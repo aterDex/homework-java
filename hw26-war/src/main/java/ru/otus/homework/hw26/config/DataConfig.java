@@ -11,7 +11,7 @@ import ru.otus.homework.hw26.data.hibernate.HibernateUtils;
 import javax.sql.DataSource;
 
 @Configuration
-public class DatabaseConfig {
+public class DataConfig {
 
     private static final String DB_URL = "jdbc:h2:mem:OtusExamplesDB;DB_CLOSE_DELAY=-1";
     private static final String DB_USER = "sa";
