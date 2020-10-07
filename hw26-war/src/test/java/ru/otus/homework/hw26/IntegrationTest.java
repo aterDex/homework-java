@@ -17,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = WebConfig.class)
@@ -27,7 +28,7 @@ public class IntegrationTest {
     private static final String DEFAULT_USERS =
             "[{\"id\":1,\"name\":\"Администратор\",\"login\":\"admin\",\"password\":\"password\"}," +
                     "{\"id\":2,\"name\":\"Пользователь\",\"login\":\"user\",\"password\":\"123\"}]";
-    private static final String NEW_USER= "{\"id\":0,\"name\":\"N\",\"login\":\"L\",\"password\":\"P\"}";
+    private static final String NEW_USER = "{\"id\":0,\"name\":\"N\",\"login\":\"L\",\"password\":\"P\"}";
 
     private MockMvc mvc;
 

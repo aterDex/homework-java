@@ -1,11 +1,12 @@
 package ru.otus.homework.hw26.config;
 
+import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.otus.homework.hw26.data.FlywayUtils;
+import org.springframework.context.annotation.DependsOn;
 import ru.otus.homework.hw26.data.core.model.User;
 import ru.otus.homework.hw26.data.hibernate.HibernateUtils;
 
@@ -15,19 +16,19 @@ import javax.sql.DataSource;
 public class DataConfig {
 
     @Value("${db.url}")
-    private String dbUrl;
+    String dbUrl;
 
     @Value("${db.user}")
-    private String dbUser;
+    String dbUser;
 
     @Value("${db.password}")
-    private String dbPassword;
+    String dbPassword;
 
     @Value("${flyway.scripts}")
-    private String flywayScripts;
+    String flywayScripts;
 
     @Value("${hibernate.config}")
-    private String hibernateConfig;
+    String hibernateConfig;
 
     @Bean
     public DataSource dataSource() {
@@ -35,11 +36,19 @@ public class DataConfig {
         dataSource.setUser(dbUser);
         dataSource.setPassword(dbPassword);
         dataSource.setURL(dbUrl);
-        FlywayUtils.flywayMigrations(dataSource, flywayScripts);
         return dataSource;
     }
 
+    @Bean(initMethod = "migrate")
+    public Flyway flyway(DataSource dataSource) {
+        return Flyway.configure()
+                .dataSource(dataSource)
+                .locations(flywayScripts)
+                .load();
+    }
+
     @Bean
+    @DependsOn({"flyway"})
     public SessionFactory sessionFactory(DataSource dataSource) {
         return HibernateUtils.buildSessionFactory(hibernateConfig, dataSource, User.class);
     }
