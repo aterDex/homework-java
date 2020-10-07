@@ -17,8 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = WebConfig.class)
@@ -60,5 +59,34 @@ public class IntegrationTest {
         assertTrue(user.isPresent());
         assertEquals("N", user.get().getName());
         assertEquals("P", user.get().getPassword());
+    }
+
+    @Test
+    void testStaticContent() throws Exception {
+        mvc.perform(get("/index.html"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.TEXT_HTML));
+        mvc.perform(get("/res/img/logo.svg"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("image/svg+xml"));
+    }
+
+    @Test
+    void testUsersTemplate() throws Exception {
+        mvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"));
+    }
+
+    @Test
+    void testRedirectRoot() throws Exception {
+        mvc.perform(get("/"))
+                .andExpect(redirectedUrl("/index.html"));
+    }
+
+    @Test
+    void testNotFound() throws Exception {
+        mvc.perform(get("/pageWhichNotFound"))
+                .andExpect(status().isNotFound());
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @ComponentScan
 @EnableWebMvc
-@PropertySource(value = {"classpath:/WEB-INF/application.properties"})
+@PropertySource(value = {"classpath:/application.properties"})
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
