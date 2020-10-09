@@ -15,10 +15,10 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 public class TemplateConfig {
 
     @Value("${template.prefix}")
-    String prefix;
+    private String prefix;
 
     @Value("${template.suffix}")
-    String suffix;
+    private String suffix;
 
     @Bean
     public SpringResourceTemplateResolver templateResolver(ApplicationContext applicationContext) {

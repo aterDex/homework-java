@@ -16,19 +16,19 @@ import javax.sql.DataSource;
 public class DataConfig {
 
     @Value("${db.url}")
-    String dbUrl;
+    private String dbUrl;
 
     @Value("${db.user}")
-    String dbUser;
+    private String dbUser;
 
     @Value("${db.password}")
-    String dbPassword;
+    private String dbPassword;
 
     @Value("${flyway.scripts}")
-    String flywayScripts;
+    private String flywayScripts;
 
     @Value("${hibernate.config}")
-    String hibernateConfig;
+    private String hibernateConfig;
 
     @Bean
     public DataSource dataSource() {
