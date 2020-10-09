@@ -32,6 +32,11 @@ allprojects {
             dependency("org.ow2.asm:asm:${Versions.asm}")
             dependency("org.ow2.asm:asm-util:${Versions.asm}")
             dependency("org.glassfish:javax.json:${Versions.glassfishJson}")
+            dependency("com.google.code.gson:gson:${Versions.gson}")
+            dependency("org.eclipse.jetty:jetty-server:${Versions.jetty}")
+            dependency("org.eclipse.jetty:jetty-webapp:${Versions.jetty}")
+            dependency("org.freemarker:freemarker:${Versions.freemarker}")
+            dependency("org.jsoup:jsoup:${Versions.jsoup}")
         }
     }
 }
