@@ -7,13 +7,9 @@ sourceCompatibility = JavaVersion.VERSION_14
 targetCompatibility = JavaVersion.VERSION_14
 version '0.1'
 
-// Other variables
 final MAIN_CLASS_NAME = 'ru.otus.homework.hw08.App'
 
 dependencies {
-    testImplementation('org.junit.jupiter:junit-jupiter')
-    testImplementation('org.mockito:mockito-core')
-    testImplementation('org.mockito:mockito-junit-jupiter')
 }
 
 application {
@@ -22,30 +18,6 @@ application {
 
 test {
     useJUnitPlatform()
-}
-
-// I hate fat jars so...
-task thinJar(type: Jar, description: "Create alternative jar with classpath in manifest and lib folder") {
-    final pathForThinJar = "${buildDir}/libs/${project.name}-thin"
-    final dependenciesForClassPath = configurations.runtimeClasspath
-    final pathForLib = 'lib'
-
-    // Auto create before build
-    tasks.build.dependsOn tasks.thinJar
-
-    destinationDirectory.set(file(pathForThinJar))
-    from sourceSets.main.output
-    manifest {
-        attributes 'Main-Class': MAIN_CLASS_NAME
-        attributes 'Class-Path': dependenciesForClassPath.collect { "${pathForLib}/${it.getName()}" }.join(' ')
-    }
-
-    doLast {
-        copy {
-            from dependenciesForClassPath
-            into "${pathForThinJar}/${pathForLib}"
-        }
-    }
 }
 
 // uber also fat jar
@@ -58,20 +30,20 @@ task rWithSerialGC(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = MAIN_CLASS_NAME
     jvmArgs('-XX:+UseSerialGC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-serial-%t-%p.log:tags,uptime,time,level'
-//            , '-XX:+HeapDumpOnOutOfMemoryError', '-XX:HeapDumpPath=./logs/dump'
     )
-}
-
-task rWithParallelGC(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = MAIN_CLASS_NAME
-    jvmArgs('-XX:+UseParallelGC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-parallel-%t-%p.log:tags,uptime,time,level')
 }
 
 task rWithG1GC(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = MAIN_CLASS_NAME
     jvmArgs('-XX:+UseG1GC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-g1-%t-%p.log:tags,uptime,time,level')
+}
+
+
+task rWithParallelGC(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = MAIN_CLASS_NAME
+    jvmArgs('-XX:+UseParallelGC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-parallel-%t-%p.log:tags,uptime,time,level')
 }
 
 task rWithZGC(type: JavaExec) {

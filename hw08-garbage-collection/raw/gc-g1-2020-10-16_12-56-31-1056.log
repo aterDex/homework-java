@@ -1,0 +1,17 @@
+[2020-10-16T12:56:31.052+1000][0.002s][debug][gc] ConcGCThreads: 2 offset 16
+[2020-10-16T12:56:31.052+1000][0.002s][debug][gc] ParallelGCThreads: 8
+[2020-10-16T12:56:31.052+1000][0.002s][debug][gc] Initialize mark stack with 4096 chunks, maximum 16384
+[2020-10-16T12:56:31.063+1000][0.014s][info ][gc] Using G1
+[2020-10-16T12:56:31.073+1000][0,023s][info ][gc] Periodic GC disabled
+[2020-10-16T12:56:38.732+1000][7,682s][info ][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 205M->10M(4096M) 13,750ms
+[2020-10-16T12:56:46.070+1000][15,020s][info ][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 204M->19M(4096M) 15,062ms
+[2020-10-16T12:56:53.789+1000][22,739s][info ][gc] GC(2) Pause Young (Normal) (G1 Evacuation Pause) 223M->28M(4096M) 17,625ms
+[2020-10-16T12:57:03.008+1000][31,958s][info ][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 272M->37M(4096M) 15,217ms
+[2020-10-16T12:57:17.990+1000][46,940s][info ][gc] GC(4) Pause Young (Normal) (G1 Evacuation Pause) 433M->54M(4096M) 22,211ms
+[2020-10-16T12:57:35.070+1000][64,020s][info ][gc] GC(5) Pause Young (Normal) (G1 Evacuation Pause) 506M->73M(4096M) 35,440ms
+[2020-10-16T12:57:51.834+1000][80,784s][info ][gc] GC(6) Pause Young (Normal) (G1 Evacuation Pause) 517M->92M(4096M) 25,372ms
+[2020-10-16T12:58:20.403+1000][109,353s][info ][gc] GC(7) Pause Young (Normal) (G1 Evacuation Pause) 848M->122M(4096M) 34,818ms
+[2020-10-16T12:58:53.501+1000][142,451s][info ][gc] GC(8) Pause Young (Normal) (G1 Evacuation Pause) 998M->159M(4096M) 42,622ms
+[2020-10-16T12:59:28.604+1000][177,554s][info ][gc] GC(9) Pause Young (Normal) (G1 Evacuation Pause) 1089M->197M(4096M) 51,193ms
+[2020-10-16T13:00:12.547+1000][221,497s][info ][gc] GC(10) Pause Young (Normal) (G1 Evacuation Pause) 1359M->243M(4096M) 49,656ms
+[2020-10-16T13:01:06.102+1000][275,052s][info ][gc] GC(11) Pause Young (Normal) (G1 Evacuation Pause) 1659M->299M(4096M) 71,500ms

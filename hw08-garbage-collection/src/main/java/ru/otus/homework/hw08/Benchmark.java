@@ -8,26 +8,22 @@ import java.util.Random;
 public class Benchmark {
 
     private final int loopCounter;
-    private int size = 10000;
-    private double flowFactor = 0.08;
-    private List<Object[]> flow = new LinkedList<>();
+    private final int size = 10000;
+    private final int flowSize = 400;
+    private final List<Object[]> flow = new LinkedList<>();
 
     public Benchmark(int loopCounter) {
         this.loopCounter = loopCounter;
     }
 
     void run() throws InterruptedException {
-        Random random = new Random(468469);
         for (int idx = 0; idx < loopCounter; idx++) {
-            int local = size;
-            String[] array = new String[local];
-            for (int i = 0; i < local; i++) {
+            String[] array = new String[size];
+            for (int i = 0; i < size; i++) {
                 array[i] = new String(new char[0]);
             }
-            String[] arc = Arrays.copyOf(array, random.nextInt((int) (size * flowFactor)));
-            flow.add(arc);
+            flow.add(Arrays.copyOf(array, flowSize));
             Thread.sleep(10);
-            System.out.println(Runtime.getRuntime().freeMemory());
         }
     }
 }
