@@ -1,0 +1,53 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw08.App'
+
+dependencies {
+}
+
+application {
+    mainClassName MAIN_CLASS_NAME
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// uber also fat jar
+shadowJar {
+    archiveClassifier.set('fat')
+    mainClassName = MAIN_CLASS_NAME
+}
+
+task rWithSerialGC(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = MAIN_CLASS_NAME
+    jvmArgs('-XX:+UseSerialGC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-serial-%t-%p.log:tags,uptime,time,level'
+    )
+}
+
+task rWithG1GC(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = MAIN_CLASS_NAME
+    jvmArgs('-XX:+UseG1GC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-g1-%t-%p.log:tags,uptime,time,level')
+}
+
+
+task rWithParallelGC(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = MAIN_CLASS_NAME
+    jvmArgs('-XX:+UseParallelGC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-parallel-%t-%p.log:tags,uptime,time,level')
+}
+
+task rWithZGC(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = MAIN_CLASS_NAME
+    jvmArgs('-XX:+UnlockExperimentalVMOptions', '-XX:+UseZGC', '-Xms256m', '-Xmx256m', '-Xlog:gc=debug:file=./logs/gc-z-%t-%p.log:tags,uptime,time,level')
+}
