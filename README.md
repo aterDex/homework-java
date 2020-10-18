@@ -10,6 +10,7 @@
 * **hw01-gradle** - Лекция 1. Подготовка к курсу.
 * **hw03-generics** - Лекция 3. Контейнеры и алгоритмы.
 * **hw06-reflection** - Лекция 6. Аннотации и Reflection.
+* **hw08-garbage-collection** - Лекция 8. Сборщик мусора.
 * **hw10-asm** - Лекция 10. ClassLoader и  ASM.
     * **hw10-asm** - Реализация JavaAgent.
     * **hw10-asm-app** - Приложение для проверки JavaAgent. 
@@ -21,3 +22,4 @@
 * **hw22-cache** - Лекция 22. Сache.
 * **hw24-web-server** - Лекция 24. Web server.
 * **hw25-di** - Лекция 25. Dependency injection.
+* **hw26-war** - Лекция 26. War, Spring MVC.
