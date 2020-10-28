@@ -30,12 +30,12 @@ public class ByMonitor<T> {
 
     private synchronized void model() {
         try {
-            for (T i : seq) {
+            for (T element : seq) {
                 while (voice != null) {
                     this.wait();
                 }
-                log.info(String.valueOf(i));
-                voice = i;
+                log.info(String.valueOf(element));
+                voice = element;
                 this.notifyAll();
             }
         } catch (InterruptedException e) {
