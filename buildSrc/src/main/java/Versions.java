@@ -7,4 +7,6 @@ public interface Versions {
     String freemarker = "2.3.30";
     String gson = "2.8.6";
     String jsoup = "1.13.1";
+    String sockjs = "1.1.2";
+    String stomp = "2.3.3-1";
 }

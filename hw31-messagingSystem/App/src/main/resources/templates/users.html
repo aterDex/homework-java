@@ -3,127 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <title>Пользователи</title>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script>
-        function addUser() {
-            const data = {
-                name: document.getElementById('userNameTextBox').value,
-                login: document.getElementById('loginTextBox').value,
-                password: document.getElementById('passwordTextBox').value
-            }
-            fetch('api/user', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        printAddError()
-                        updateUsersTable()
-                    } else {
-                        throw new Error("Code: " + response.status + " , Text: " + response.statusText);
-                    }
-                })
-                .catch(e => printAddError(e));
-        }
+        let stompClient;
 
-        function updateUsersTable() {
+        function updateUsersTable(users) {
             const usersTable = document.getElementById('usersTable');
             usersTable.innerHTML = ''
 
             const userDataContainer = document.getElementById('userDataContainer');
-            fetch('api/user')
-                .then(response => {
-                    if (response.ok) {
-                        return response.json()
-                    } else {
-                        throw new Error("Code: " + response.status + " , Text: " + response.statusText);
-                    }
-                })
-                .then(users => {
-                    printUpdateError()
-                    users.forEach(user => {
-                        const tr = document.createElement('tr');
-                        const id = document.createElement('td');
-                        const name = document.createElement('td');
-                        const login = document.createElement('td');
-                        const password = document.createElement('td');
-                        id.textContent = user.id
-                        name.textContent = user.name
-                        login.textContent = user.login
-                        password.textContent = user.password
-                        tr.append(id, name, login, password)
-                        usersTable.append(tr)
-                    })
-                })
-                .catch(e => printUpdateError(e));
+            users.forEach(user => {
+                const tr = document.createElement('tr');
+                const id = document.createElement('td');
+                const name = document.createElement('td');
+                const login = document.createElement('td');
+                const password = document.createElement('td');
+                id.textContent = user.id
+                name.textContent = user.name
+                login.textContent = user.login
+                password.textContent = user.password
+                tr.append(id, name, login, password)
+                usersTable.append(tr)
+            })
         }
 
-        function printUpdateError(text) {
-            printBlockError(text, 'blockUpdateError')
-        }
-
-        function printAddError(text) {
-            printBlockError(text, 'blockAddError')
-        }
-
-        function printBlockError(text, blockName) {
-            const blockAddError = document.getElementById(blockName);
-            if (text) {
-                blockAddError.hidden = false
-                blockAddError.textContent = text
+        function setConnectedWs(connected) {
+            const status = document.getElementById("statusWs");
+            if (connected) {
+                status.textContent = "Подключились к webSocket"
             } else {
-                blockAddError.hidden = true
-                blockAddError.textContent = ""
+                status.textContent = "Нет подключения к webSocket, попробуйте обновить страницу"
             }
         }
 
+        window.onload = function () {
+            console.log("---------------")
+            let socket = new SockJS("/api/webSocket/endpoint");
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                setConnectedWs(true)
+                stompClient.subscribe("/topic/users", function (mess) {
+                    console.log("/topic/users " + mess)
+                    updateUsersTable(JSON.parse(mess.body))
+                });
+            }, function (error) {
+                setConnectedWs(false)
+            });
+        }
+
+        function addUser() {
+            stompClient.send("/app/addUser", {}, JSON.stringify({
+                name: document.getElementById('userNameTextBox').value,
+                login: document.getElementById('loginTextBox').value,
+                password: document.getElementById('passwordTextBox').value
+            }));
+        }
     </script>
 </head>
 <body>
-<h4>Добавить пользователя</h4>
-<table style="width: 500px">
-    <tbody>
-    <tr>
-        <td>Имя пользователя</td>
-        <td><input id="userNameTextBox" placeholder="Имя" type="text"/></td>
-    </tr>
-    <tr>
-        <td>Логин</td>
-        <td><input id="loginTextBox" placeholder="Логин" type="text"/></td>
-    </tr>
-    <tr>
-        <td>Пароль</td>
-        <td><input id="passwordTextBox" placeholder="Пароль" type="text"/></td>
-    </tr>
-    </tbody>
-</table>
-<button onclick="addUser()">Добавить</button>
-<div hidden id="blockAddError"
-     style="color: red;margin: 15px;border-style: groove;padding: 5px;border-color: red;"></div>
-<pre id="userDataContainer"></pre>
-<h4>Список пользователей</h4>
-<button onclick="updateUsersTable()">Обновить</button>
-<div hidden id="blockUpdateError"
-     style="color: red;margin: 15px;border-style: groove;padding: 5px;border-color: red;"></div>
-<table style="width: 400px">
-    <thead>
-    <tr>
-        <td style="width: 50px">Id</td>
-        <td style="width: 150px">Имя</td>
-        <td style="width: 100px">Логин</td>
-        <td style="width: 100px">Пароль</td>
-    </tr>
-    </thead>
-    <tbody id="usersTable">
-    <tr th:each="user : ${users}">
-        <td th:text="${user.id}">1</td>
-        <td th:text="${user.name}">John Doe</td>
-        <td th:text="${user.login}">login</td>
-        <td th:text="${user.password}">pass</td>
-    </tr>
-    </tbody>
-</table>
+<h2 id="statusWs">Идет подключение к webSocket...</h2>
+<div>
+    <h4>Добавить пользователя</h4>
+    <table style="width: 500px">
+        <tbody>
+        <tr>
+            <td>Имя пользователя</td>
+            <td><input id="userNameTextBox" placeholder="Имя" type="text"/></td>
+        </tr>
+        <tr>
+            <td>Логин</td>
+            <td><input id="loginTextBox" placeholder="Логин" type="text"/></td>
+        </tr>
+        <tr>
+            <td>Пароль</td>
+            <td><input id="passwordTextBox" placeholder="Пароль" type="text"/></td>
+        </tr>
+        </tbody>
+    </table>
+    <button onclick="addUser()">Добавить</button>
+    <div hidden id="blockAddError"
+         style="color: red;margin: 15px;border-style: groove;padding: 5px;border-color: red;"></div>
+    <pre id="userDataContainer"></pre>
+    <h4>Список пользователей</h4>
+    <button onclick="updateUsersTable()">Обновить</button>
+    <div hidden id="blockUpdateError"
+         style="color: red;margin: 15px;border-style: groove;padding: 5px;border-color: red;"></div>
+    <table style="width: 400px">
+        <thead>
+        <tr>
+            <td style="width: 50px">Id</td>
+            <td style="width: 150px">Имя</td>
+            <td style="width: 100px">Логин</td>
+            <td style="width: 100px">Пароль</td>
+        </tr>
+        </thead>
+        <tbody id="usersTable">
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}">1</td>
+            <td th:text="${user.name}">John Doe</td>
+            <td th:text="${user.login}">login</td>
+            <td th:text="${user.password}">pass</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
