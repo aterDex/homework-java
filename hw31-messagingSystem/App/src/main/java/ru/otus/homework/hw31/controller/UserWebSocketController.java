@@ -23,7 +23,7 @@ public class UserWebSocketController {
     }
 
     @MessageMapping("/addUser")
-    public void getMessage(User user, Principal principal) throws Exception {
+    public void addUser(User user, Principal principal) throws Exception {
         frontendService.saveUser(
                 user,
                 us -> template.convertAndSend("/topic/newUser", us),
