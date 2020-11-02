@@ -1,5 +1,6 @@
 package ru.otus.homework.hw31.message;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.otus.homework.hw31.data.core.model.User;
 import ru.otus.homework.hw31.data.core.service.DBServiceUser;
 import ru.otus.messagesystem.RequestHandler;
@@ -9,6 +10,7 @@ import ru.otus.messagesystem.message.MessageHelper;
 
 import java.util.Optional;
 
+@Slf4j
 public class CreateUserRequestHandler implements RequestHandler<User> {
 
     private final DBServiceUser dbService;
@@ -23,6 +25,7 @@ public class CreateUserRequestHandler implements RequestHandler<User> {
         try {
             dbService.saveUser(user);
         } catch (Exception e) {
+            log.error("", e);
             return Optional.of(MessageBuilder.buildReplyMessage(msg, new ErrorAction(String.format("Ошибка при создании пользователя %s. %s", user, e.getMessage()))));
         }
         return Optional.of(MessageBuilder.buildReplyMessage(msg, user));

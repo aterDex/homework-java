@@ -22,7 +22,6 @@ public class CreateUserResponseHandler implements RequestHandler<User> {
 
     @Override
     public Optional<Message> handle(Message msg) {
-        log.info("new message:{}", msg);
         try {
             MessageCallback<? extends ResultDataType> callback = callbackRegistry.getAndRemove(msg.getCallbackId());
             if (callback != null) {
