@@ -8,7 +8,7 @@ import java.util.UUID;
 public class MessageBuilder {
     private static final Message VOID_MESSAGE =
             new Message(new MessageId(UUID.randomUUID().toString()), null, null,
-                    null, "voidTechnicalMessage", new byte[1],  null);
+                    null, "voidTechnicalMessage", new byte[1], null);
 
     private MessageBuilder() {
     }
@@ -18,7 +18,7 @@ public class MessageBuilder {
     }
 
     public static <T extends ResultDataType> Message buildMessage(String from, String to, MessageId sourceMessageId,
-                                                                     T data, MessageType msgType) {
+                                                                  T data, MessageType msgType) {
         return buildMessage(from, to, sourceMessageId, data, msgType, null);
     }
 
@@ -28,7 +28,7 @@ public class MessageBuilder {
     }
 
     private static <T extends ResultDataType> Message buildMessage(String from, String to, MessageId sourceMessageId,
-                                                                     T data, MessageType msgType, CallbackId callbackId) {
+                                                                   T data, MessageType msgType, CallbackId callbackId) {
         String id = UUID.randomUUID().toString();
         return new Message(new MessageId(id), from, to, sourceMessageId, msgType.getName(),
                 Serializers.serialize(data), callbackId == null ? new CallbackId(id) : callbackId);

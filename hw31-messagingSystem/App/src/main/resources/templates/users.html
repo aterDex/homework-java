@@ -8,24 +8,44 @@
     <script>
         let stompClient;
 
-        function updateUsersTable(users) {
-            const usersTable = document.getElementById('usersTable');
-            usersTable.innerHTML = ''
+        window.onload = function () {
+            let socket = new SockJS("/api/webSocket/endpoint");
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                setConnectedWs(true)
+                stompClient.subscribe("/topic/newUser", function (mess) {
+                    addUserToTable(JSON.parse(mess.body))
+                });
+                stompClient.subscribe("/user/queue/errors", function (mess) {
+                    alert(JSON.parse(mess.body).error);
+                });
+            }, function (error) {
+                setConnectedWs(false)
+            });
+        }
 
-            const userDataContainer = document.getElementById('userDataContainer');
-            users.forEach(user => {
-                const tr = document.createElement('tr');
-                const id = document.createElement('td');
-                const name = document.createElement('td');
-                const login = document.createElement('td');
-                const password = document.createElement('td');
-                id.textContent = user.id
-                name.textContent = user.name
-                login.textContent = user.login
-                password.textContent = user.password
-                tr.append(id, name, login, password)
-                usersTable.append(tr)
-            })
+        function addUserToTable(user) {
+            const usersTable = document.getElementById('usersTable');
+
+            const tr = document.createElement('tr');
+            const id = document.createElement('td');
+            const name = document.createElement('td');
+            const login = document.createElement('td');
+            const password = document.createElement('td');
+            id.textContent = user.id
+            name.textContent = user.name
+            login.textContent = user.login
+            password.textContent = user.password
+            tr.append(id, name, login, password)
+            usersTable.append(tr)
+        }
+
+        function addUser() {
+            stompClient.send("/app/addUser", {}, JSON.stringify({
+                name: document.getElementById('userNameTextBox').value,
+                login: document.getElementById('loginTextBox').value,
+                password: document.getElementById('passwordTextBox').value
+            }));
         }
 
         function setConnectedWs(connected) {
@@ -35,29 +55,6 @@
             } else {
                 status.textContent = "Нет подключения к webSocket, попробуйте обновить страницу"
             }
-        }
-
-        window.onload = function () {
-            console.log("---------------")
-            let socket = new SockJS("/api/webSocket/endpoint");
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, function (frame) {
-                setConnectedWs(true)
-                stompClient.subscribe("/topic/users", function (mess) {
-                    console.log("/topic/users " + mess)
-                    updateUsersTable(JSON.parse(mess.body))
-                });
-            }, function (error) {
-                setConnectedWs(false)
-            });
-        }
-
-        function addUser() {
-            stompClient.send("/app/addUser", {}, JSON.stringify({
-                name: document.getElementById('userNameTextBox').value,
-                login: document.getElementById('loginTextBox').value,
-                password: document.getElementById('passwordTextBox').value
-            }));
         }
     </script>
 </head>
@@ -86,9 +83,6 @@
          style="color: red;margin: 15px;border-style: groove;padding: 5px;border-color: red;"></div>
     <pre id="userDataContainer"></pre>
     <h4>Список пользователей</h4>
-    <button onclick="updateUsersTable()">Обновить</button>
-    <div hidden id="blockUpdateError"
-         style="color: red;margin: 15px;border-style: groove;padding: 5px;border-color: red;"></div>
     <table style="width: 400px">
         <thead>
         <tr>

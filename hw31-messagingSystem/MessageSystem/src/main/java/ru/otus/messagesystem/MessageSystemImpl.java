@@ -7,14 +7,7 @@ import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageBuilder;
 
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,27 +21,24 @@ public final class MessageSystemImpl implements MessageSystem {
 
     private final Map<String, MsClient> clientMap = new ConcurrentHashMap<>();
     private final BlockingQueue<Message> messageQueue = new ArrayBlockingQueue<>(MESSAGE_QUEUE_SIZE);
-
-    private Runnable disposeCallback;
-
     private final ExecutorService msgProcessor = Executors.newSingleThreadExecutor(runnable -> {
         Thread thread = new Thread(runnable);
         thread.setName("msg-processor-thread");
         return thread;
     });
-
     private final ExecutorService msgHandler = Executors.newFixedThreadPool(MSG_HANDLER_THREAD_LIMIT,
             new ThreadFactory() {
 
-        private final AtomicInteger threadNameSeq = new AtomicInteger(0);
+                private final AtomicInteger threadNameSeq = new AtomicInteger(0);
 
-        @Override
-        public Thread newThread(Runnable runnable) {
-            Thread thread = new Thread(runnable);
-            thread.setName("msg-handler-thread-" + threadNameSeq.incrementAndGet());
-            return thread;
-        }
-    });
+                @Override
+                public Thread newThread(Runnable runnable) {
+                    Thread thread = new Thread(runnable);
+                    thread.setName("msg-handler-thread-" + threadNameSeq.incrementAndGet());
+                    return thread;
+                }
+            });
+    private Runnable disposeCallback;
 
     public MessageSystemImpl() {
         start();

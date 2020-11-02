@@ -2,6 +2,7 @@ package ru.otus.messagesystem.message;
 
 import org.junit.jupiter.api.Test;
 import ru.otus.messagesystem.client.CallbackId;
+
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;

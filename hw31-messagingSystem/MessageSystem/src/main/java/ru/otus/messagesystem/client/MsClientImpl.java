@@ -3,11 +3,11 @@ package ru.otus.messagesystem.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.messagesystem.HandlersStore;
+import ru.otus.messagesystem.MessageSystem;
+import ru.otus.messagesystem.RequestHandler;
 import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageBuilder;
-import ru.otus.messagesystem.MessageSystem;
 import ru.otus.messagesystem.message.MessageType;
-import ru.otus.messagesystem.RequestHandler;
 
 import java.util.Objects;
 
@@ -59,7 +59,7 @@ public class MsClientImpl implements MsClient {
 
     @Override
     public <T extends ResultDataType> Message produceMessage(String to, T data, MessageType msgType,
-                                                                MessageCallback<T> callback) {
+                                                             MessageCallback<T> callback) {
         Message message = MessageBuilder.buildMessage(name, to, null, data, msgType);
         callbackRegistry.put(message.getCallbackId(), callback);
         return message;

@@ -3,6 +3,7 @@ package ru.otus.homework.hw31.data.core.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.otus.messagesystem.client.ResultDataType;
 
 import javax.persistence.*;
 
@@ -17,7 +18,7 @@ import javax.persistence.*;
         @NamedQuery(name = "get_user_by_login", query = "select u from User u where login = :login"),
         @NamedQuery(name = "get_all_users", query = "select u from User u")
 })
-public class User {
+public class User extends ResultDataType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
