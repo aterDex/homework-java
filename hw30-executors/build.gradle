@@ -1,0 +1,23 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw30.App'
+
+dependencies {
+    implementation('ch.qos.logback:logback-classic')
+}
+
+application {
+    mainClassName MAIN_CLASS_NAME
+}
+
+shadowJar {
+    archiveClassifier.set('fat')
+    mainClassName = MAIN_CLASS_NAME
+}
