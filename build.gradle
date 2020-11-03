@@ -38,6 +38,8 @@ allprojects {
             dependency("org.eclipse.jetty:jetty-webapp:${Versions.jetty}")
             dependency("org.freemarker:freemarker:${Versions.freemarker}")
             dependency("org.jsoup:jsoup:${Versions.jsoup}")
+            dependency("org.webjars:sockjs-client:${Versions.sockjs}")
+            dependency("org.webjars:stomp-websocket:${Versions.stomp}")
         }
     }
 }
