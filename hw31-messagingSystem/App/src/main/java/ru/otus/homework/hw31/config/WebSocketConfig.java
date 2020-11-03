@@ -5,7 +5,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import ru.otus.homework.hw31.helper.AnonymousHandshakeHandler;
+import ru.otus.homework.hw31.ws.handler.AnonymousHandshakeHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker

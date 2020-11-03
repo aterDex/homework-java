@@ -2,6 +2,7 @@ package ru.otus.homework.hw31.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.otus.homework.hw31.data.core.service.DBServiceUser;
@@ -23,8 +24,10 @@ import ru.otus.messagesystem.message.MessageType;
 @Configuration
 public class MessageSystemConfig {
 
-    private static final String FRONTEND_SERVICE_CLIENT_NAME = "frontendService";
-    private static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";
+    @Value("${message-system.frontend-service-client-name}")
+    private String frontendServiceClientName;
+    @Value("${message-system.database-service-client-name}")
+    private String databaseServiceClientName;
 
     @Bean
     public MessageSystem messageSystem() {
@@ -37,27 +40,43 @@ public class MessageSystemConfig {
     }
 
     @Bean
-    public MsClient databaseMsClient(MessageSystem messageSystem, CallbackRegistry callbackRegistry, DBServiceUser dbService) {
+    public HandlersStore requestHandlerDatabaseStore(DBServiceUser dbService) {
         HandlersStore requestHandlerDatabaseStore = new HandlersStoreImpl();
         requestHandlerDatabaseStore.addHandler(MessageType.USER_DATA, new CreateUserRequestHandler(dbService));
-        MsClientImpl client = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME,
-                messageSystem, requestHandlerDatabaseStore, callbackRegistry);
+        return requestHandlerDatabaseStore;
+    }
+
+    @Bean
+    public MsClient databaseMsClient(
+            MessageSystem messageSystem,
+            CallbackRegistry callbackRegistry,
+            @Qualifier("requestHandlerDatabaseStore") HandlersStore handler) {
+        MsClientImpl client = new MsClientImpl(databaseServiceClientName,
+                messageSystem, handler, callbackRegistry);
         messageSystem.addClient(client);
         return client;
     }
 
     @Bean
-    public MsClient frontendMsClient(MessageSystem messageSystem, CallbackRegistry callbackRegistry) {
+    public HandlersStore requestHandlerFrontendStore(CallbackRegistry callbackRegistry) {
         HandlersStore requestHandlerFrontendStore = new HandlersStoreImpl();
         requestHandlerFrontendStore.addHandler(MessageType.USER_DATA, new CreateUserResponseHandler(callbackRegistry));
-        MsClientImpl client = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME,
-                messageSystem, requestHandlerFrontendStore, callbackRegistry);
+        return requestHandlerFrontendStore;
+    }
+
+    @Bean
+    public MsClient frontendMsClient(
+            MessageSystem messageSystem,
+            CallbackRegistry callbackRegistry,
+            @Qualifier("requestHandlerFrontendStore") HandlersStore handler) {
+        MsClientImpl client = new MsClientImpl(frontendServiceClientName,
+                messageSystem, handler, callbackRegistry);
         messageSystem.addClient(client);
         return client;
     }
 
     @Bean
     public FrontendService frontendService(@Qualifier("frontendMsClient") MsClient client) {
-        return new FrontendServiceImpl(client, DATABASE_SERVICE_CLIENT_NAME);
+        return new FrontendServiceImpl(client, databaseServiceClientName);
     }
 }

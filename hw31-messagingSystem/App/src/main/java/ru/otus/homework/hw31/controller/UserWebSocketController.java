@@ -1,7 +1,6 @@
 package ru.otus.homework.hw31.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,7 @@ public class UserWebSocketController {
     }
 
     @MessageMapping("/addUser")
-    public void addUser(User user, Principal principal) throws Exception {
+    public void addUser(User user, Principal principal) {
         frontendService.saveUser(
                 user,
                 us -> template.convertAndSend("/topic/newUser", us),

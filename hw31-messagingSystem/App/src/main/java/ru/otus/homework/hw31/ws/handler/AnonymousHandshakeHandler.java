@@ -1,4 +1,4 @@
-package ru.otus.homework.hw31.helper;
+package ru.otus.homework.hw31.ws.handler;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
