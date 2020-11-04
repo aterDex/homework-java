@@ -1,0 +1,33 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.5.RELEASE'
+    id 'application'
+    id 'io.freefair.lombok'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw32.back.App'
+
+dependencies {
+    implementation project(':hw31-messagingSystem:MessageSystem')
+    implementation project(':hw32-multiprocess:common')
+
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.hibernate:hibernate-core'
+
+    runtimeOnly 'com.h2database:h2'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+application {
+    mainClassName MAIN_CLASS_NAME
+}
+
+test {
+    useJUnitPlatform()
+}

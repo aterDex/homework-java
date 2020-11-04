@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+dependencies {
+    implementation project(':hw31-messagingSystem:MessageSystem')
+
+    implementation('ch.qos.logback:logback-classic')
+    testImplementation('org.junit.jupiter:junit-jupiter')
+}
+
+test {
+    useJUnitPlatform()
+}
