@@ -26,22 +26,17 @@ public class MessageSystemRegisterByRmiServer implements MessageSystemRegisterBy
 
     @Override
     public void addClient(String clientId, HandleMessageByRmi handler) throws RemoteException {
-        try {
-            log.info("AddClient by rmi {}", clientId);
-            MsClientImpl msClient = new MsClientImpl(clientId, messageSystem, new HandlersStoreSingleHandler(new RequestHandler<ResultDataType>() {
-                @Override
-                @SneakyThrows
-                public Optional<Message> handle(Message msg) {
-                    log.info("invoice before rmi handler");
-                    handler.handle(msg);
-                    return Optional.empty();
-                }
-            }), callbackRegistry);
-            messageSystem.addClient(msClient);
-        } catch (Exception e) {
-            // TODO написать нормальный обработчик
-            e.printStackTrace();
-        }
+        log.info("AddClient by rmi {}", clientId);
+        MsClientImpl msClient = new MsClientImpl(clientId, messageSystem, new HandlersStoreSingleHandler(new RequestHandler<ResultDataType>() {
+            @Override
+            @SneakyThrows
+            public Optional<Message> handle(Message msg) {
+                log.info("invoice before rmi handler");
+                handler.handle(msg);
+                return Optional.empty();
+            }
+        }), callbackRegistry);
+        messageSystem.addClient(msClient);
     }
 
     @Override

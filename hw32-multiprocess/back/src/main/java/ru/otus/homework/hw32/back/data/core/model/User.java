@@ -1,4 +1,4 @@
-package ru.otus.homework.hw32.front.data.core.model;
+package ru.otus.homework.hw32.back.data.core.model;
 
 import lombok.Getter;
 import lombok.Setter;

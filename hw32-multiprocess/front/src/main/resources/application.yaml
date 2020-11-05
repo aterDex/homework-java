@@ -1,0 +1,12 @@
+---
+server:
+  port: 8080
+
+message-system:
+  database-service-client-name: databaseService
+  frontend-service-client-name: frontendService
+
+rmi:
+  registry-port: 15000
+  message-system:
+    name: messageSystem

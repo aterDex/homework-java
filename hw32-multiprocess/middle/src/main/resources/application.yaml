@@ -1,0 +1,6 @@
+---
+middle:
+  rmi:
+    registry-port: 15000
+    message-system:
+      name: messageSystem

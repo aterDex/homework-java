@@ -1,0 +1,14 @@
+---
+spring:
+  datasource:
+    url: jdbc:h2:mem:OtusExamplesDB;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+
+message-system:
+  database-service-client-name: databaseService
+
+rmi:
+  registry-port: 15000
+  message-system:
+    name: messageSystem

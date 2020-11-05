@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.otus.homework.hw32.front.data.core.model.User;
+import ru.otus.homework.hw32.common.dto.UserDto;
 import ru.otus.homework.hw32.front.message.FrontendService;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -23,9 +23,11 @@ public class UserController {
 
     @GetMapping({"/users"})
     public String users(Model model) throws Exception {
-        ArrayBlockingQueue<List<User>> blockingQueue = new ArrayBlockingQueue<>(1);
-        frontendService.getAllUsers(x -> blockingQueue.add(x), x -> log.error(x.getError()));
-        List<User> users = blockingQueue.poll(5, TimeUnit.SECONDS);
+        ArrayBlockingQueue<Collection<UserDto>> blockingQueue = new ArrayBlockingQueue<>(1);
+        frontendService.getAllUsers(x -> blockingQueue.add(x.getUsers()), x -> log.error(x.getText()));
+
+        Collection<UserDto> users = blockingQueue.poll(5, TimeUnit.SECONDS);
+
         if (users == null) {
             throw new RuntimeException("Не получи данных.");
         }

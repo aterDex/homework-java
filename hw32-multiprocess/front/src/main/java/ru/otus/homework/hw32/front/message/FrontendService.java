@@ -1,13 +1,15 @@
 package ru.otus.homework.hw32.front.message;
 
-import ru.otus.homework.hw32.front.data.core.model.User;
+import ru.otus.homework.hw32.common.dto.ErrorDto;
+import ru.otus.homework.hw32.common.dto.UserCollectionDto;
+import ru.otus.homework.hw32.common.dto.UserDto;
+import ru.otus.messagesystem.client.MessageCallback;
 
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.Collection;
 
 public interface FrontendService {
 
-    void saveUser(User user, Consumer<User> dataConsumer, Consumer<ErrorAction> errorConsumer);
+    void saveUser(UserDto user, MessageCallback<UserDto> dataConsumer, MessageCallback<ErrorDto> errorConsumer);
 
-    void getAllUsers(Consumer<List<User>> dataConsumer, Consumer<ErrorAction> errorConsumer);
+    void getAllUsers(MessageCallback<UserCollectionDto> dataConsumer, MessageCallback<ErrorDto> errorConsumer);
 }

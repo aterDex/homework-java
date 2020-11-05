@@ -34,7 +34,6 @@ public class TtTest {
         MessageSystem messageSystem = new MessageSystemImpl(true);
         CallbackRegistry callbackRegistry = new CallbackRegistryImpl();
 
-
         MessageSystemRegisterByRmi messageSystemRmi = new MessageSystemRegisterByRmiServer(messageSystem, callbackRegistry);
         MessageSystemRegisterByRmi messageSystemRmiStub = (MessageSystemRegisterByRmi) UnicastRemoteObject.exportObject(messageSystemRmi, 0);
         Registry registry = LocateRegistry.createRegistry(REGISTRY_PORT);

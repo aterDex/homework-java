@@ -8,24 +8,20 @@ sourceCompatibility = JavaVersion.VERSION_14
 targetCompatibility = JavaVersion.VERSION_14
 version '0.1'
 
-final MAIN_CLASS_NAME = 'ru.otus.homework.hw32.front.App'
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw32.front.AppFront'
 
 dependencies {
-
     implementation project(':hw31-messagingSystem:MessageSystem')
     implementation project(':hw32-multiprocess:common')
 
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.hibernate:hibernate-core'
+
     implementation 'org.webjars:webjars-locator-core'
     implementation 'org.webjars:sockjs-client'
     implementation 'org.webjars:stomp-websocket'
-
-    runtimeOnly 'com.h2database:h2'
+    
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

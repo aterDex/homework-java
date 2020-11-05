@@ -8,7 +8,7 @@ sourceCompatibility = JavaVersion.VERSION_14
 targetCompatibility = JavaVersion.VERSION_14
 version '0.1'
 
-final MAIN_CLASS_NAME = 'ru.otus.homework.hw32.middle.App'
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw32.middle.AppMiddle'
 
 dependencies {
     implementation project(':hw31-messagingSystem:MessageSystem')
