@@ -1,7 +1,7 @@
 package ru.otus.homework.hw32.back;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.otus.homework.hw32.common.rmi.Box;
+import ru.otus.homework.hw32.common.dto.UserDto;
 import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmi;
 import ru.otus.homework.hw32.common.rmi.MsClientByRmiClient;
 import ru.otus.homework.hw32.common.rmi.RmiConnectInfo;
@@ -36,9 +36,9 @@ public class App {
         requestHandlerDatabaseStore.addHandler(MessageType.USER_DATA, new RequestHandler<ResultDataType>() {
             @Override
             public Optional<Message> handle(Message msg) {
-                Box box = MessageHelper.getPayload(msg);
-                log.info("======= {} =======", box);
-                return Optional.of(MessageBuilder.buildReplyMessage(msg, new Box(box.getText() + " " + box.getText())));
+                UserDto user = MessageHelper.getPayload(msg);
+                log.info("======= {} =======", user);
+                return Optional.of(MessageBuilder.buildReplyMessage(msg, user));
             }
         });
 

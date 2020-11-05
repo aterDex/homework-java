@@ -1,23 +1,23 @@
 package ru.otus.homework.hw32.common.rmi;
 
-import ru.otus.messagesystem.HandlersStore;
+import lombok.extern.slf4j.Slf4j;
 import ru.otus.messagesystem.client.MsClient;
 import ru.otus.messagesystem.message.Message;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 
-public class HandleMessageByRmiServer extends UnicastRemoteObject implements HandleMessageByRmi {
+@Slf4j
+public class HandlerMessageByRmiServer implements HandleMessageByRmi {
 
     private final MsClient client;
 
-    protected HandleMessageByRmiServer(int port, MsClient client) throws RemoteException {
-        super(port);
+    protected HandlerMessageByRmiServer(MsClient client) throws RemoteException {
         this.client = client;
     }
 
     @Override
     public void handle(Message msg) throws RemoteException {
+        log.info("invoice rmi handler");
         client.handle(msg);
     }
 }

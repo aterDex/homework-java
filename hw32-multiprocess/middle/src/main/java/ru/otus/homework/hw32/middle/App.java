@@ -2,8 +2,6 @@ package ru.otus.homework.hw32.middle;
 
 import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmi;
 import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmiServer;
-import ru.otus.homework.hw32.common.rmi.TestCH;
-import ru.otus.homework.hw32.common.rmi.TestCHImpl;
 import ru.otus.messagesystem.MessageSystemImpl;
 
 import java.rmi.Naming;

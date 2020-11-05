@@ -1,7 +1,7 @@
 package ru.otus.homework.hw32.front;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.otus.homework.hw32.common.rmi.Box;
+import ru.otus.homework.hw32.common.dto.UserDto;
 import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmi;
 import ru.otus.homework.hw32.common.rmi.MsClientByRmiClient;
 import ru.otus.homework.hw32.common.rmi.RmiConnectInfo;
@@ -66,10 +66,10 @@ public class App {
 
         int counter = 1;
         CountDownLatch waitLatch = new CountDownLatch(counter);
-        Message outMsg = frontendMsClient.produceMessage(DATABASE_SERVICE_CLIENT_NAME, new Box("AAA"),
-                MessageType.USER_DATA, new MessageCallback<Box>() {
+        Message outMsg = frontendMsClient.produceMessage(DATABASE_SERVICE_CLIENT_NAME, new UserDto(),
+                MessageType.USER_DATA, new MessageCallback<UserDto>() {
                     @Override
-                    public void accept(Box box) {
+                    public void accept(UserDto box) {
                         log.warn("--- {} ---", box);
                         waitLatch.countDown();
                     }
