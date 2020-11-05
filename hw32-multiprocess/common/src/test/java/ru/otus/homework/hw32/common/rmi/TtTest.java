@@ -29,75 +29,9 @@ public class TtTest {
     private static final String FRONTEND_SERVICE_CLIENT_NAME = "frontendService";
     private static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";
 
-    private MessageSystem messageSystem;
-    private MsClient frontendMsClient;
-
-    @Test
-    @Disabled
-    void test1() throws Exception {
-        createMessageSystem(true);
-        int counter = 1;
-        CountDownLatch waitLatch = new CountDownLatch(counter);
-        Message outMsg = frontendMsClient.produceMessage(DATABASE_SERVICE_CLIENT_NAME, new Box("AAA"),
-                MessageType.USER_DATA, new MessageCallback<Box>() {
-                    @Override
-                    public void accept(Box box) {
-                        assertEquals("AAA AAA", box.getText());
-                        waitLatch.countDown();
-                    }
-                });
-        frontendMsClient.sendMessage(outMsg);
-        assertTrue(waitLatch.await(5, TimeUnit.SECONDS));
-        messageSystem.dispose();
-    }
-
-    private void createMessageSystem(boolean startProcessing) throws Exception {
-        log.info("setup");
-        messageSystem = new MessageSystemImpl(startProcessing);
-        CallbackRegistry callbackRegistry = new CallbackRegistryImpl();
-
-        HandlersStore requestHandlerDatabaseStore = new HandlersStoreImpl();
-        requestHandlerDatabaseStore.addHandler(MessageType.USER_DATA, new RequestHandler<ResultDataType>() {
-            @Override
-            public Optional<Message> handle(Message msg) {
-                Box box = MessageHelper.getPayload(msg);
-                return Optional.of(MessageBuilder.buildReplyMessage(msg, new Box(box.getText() + " " + box.getText())));
-            }
-        });
-        MsClient databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem,
-                requestHandlerDatabaseStore, callbackRegistry);
-        messageSystem.addClient(databaseMsClient);
-
-        //////////////////////////
-        HandlersStore requestHandlerFrontendStore = new HandlersStoreImpl();
-        requestHandlerFrontendStore.addHandler(MessageType.USER_DATA, new RequestHandler<ResultDataType>() {
-            @Override
-            public Optional<Message> handle(Message msg) {
-                log.info("new message:{}", msg);
-                try {
-                    MessageCallback<? extends ResultDataType> callback = callbackRegistry.getAndRemove(msg.getCallbackId());
-                    if (callback != null) {
-                        callback.accept(MessageHelper.getPayload(msg));
-                    } else {
-                        log.error("callback for Id:{} not found", msg.getCallbackId());
-                    }
-                } catch (Exception ex) {
-                    log.error("msg:{}", msg, ex);
-                }
-                return Optional.empty();
-            }
-        });
-
-        frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, messageSystem,
-                requestHandlerFrontendStore, callbackRegistry);
-        messageSystem.addClient(frontendMsClient);
-
-        log.info("setup done");
-    }
-
     @Test
     void test2() throws Exception {
-        messageSystem = new MessageSystemImpl(true);
+        MessageSystem messageSystem = new MessageSystemImpl(true);
         CallbackRegistry callbackRegistry = new CallbackRegistryImpl();
 
 
