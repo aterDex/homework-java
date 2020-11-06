@@ -48,4 +48,9 @@ public class MessageSystemRegisterByRmiServer implements MessageSystemRegisterBy
     public boolean newMessage(Message msg) throws RemoteException {
         return messageSystem.newMessage(msg);
     }
+
+    @Override
+    public int currentQueueSize() throws RemoteException {
+        return messageSystem.currentQueueSize();
+    }
 }

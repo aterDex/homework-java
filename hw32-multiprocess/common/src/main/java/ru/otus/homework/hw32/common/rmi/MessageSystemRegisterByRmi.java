@@ -1,6 +1,5 @@
 package ru.otus.homework.hw32.common.rmi;
 
-import ru.otus.messagesystem.client.MsClient;
 import ru.otus.messagesystem.message.Message;
 
 import java.rmi.Remote;
@@ -13,4 +12,6 @@ public interface MessageSystemRegisterByRmi extends Remote {
     void removeClient(String clientId) throws RemoteException;
 
     boolean newMessage(Message msg) throws RemoteException;
+
+    int currentQueueSize() throws RemoteException;
 }

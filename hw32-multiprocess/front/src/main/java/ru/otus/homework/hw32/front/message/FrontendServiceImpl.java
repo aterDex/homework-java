@@ -12,8 +12,6 @@ import ru.otus.messagesystem.client.ResultDataType;
 import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageType;
 
-import java.util.Collection;
-
 @Slf4j
 @Service
 public class FrontendServiceImpl implements FrontendService {

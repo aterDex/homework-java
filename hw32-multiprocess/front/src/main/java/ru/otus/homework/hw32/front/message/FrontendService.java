@@ -5,8 +5,6 @@ import ru.otus.homework.hw32.common.dto.UserCollectionDto;
 import ru.otus.homework.hw32.common.dto.UserDto;
 import ru.otus.messagesystem.client.MessageCallback;
 
-import java.util.Collection;
-
 public interface FrontendService {
 
     void saveUser(UserDto user, MessageCallback<UserDto> dataConsumer, MessageCallback<ErrorDto> errorConsumer);
