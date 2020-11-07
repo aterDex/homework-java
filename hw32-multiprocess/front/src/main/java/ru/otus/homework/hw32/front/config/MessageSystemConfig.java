@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.otus.homework.hw32.common.CallbackRequestHandler;
+import ru.otus.homework.hw32.common.ms.CallbackRequestHandler;
 import ru.otus.messagesystem.HandlersStore;
 import ru.otus.messagesystem.HandlersStoreImpl;
 import ru.otus.messagesystem.MessageSystem;

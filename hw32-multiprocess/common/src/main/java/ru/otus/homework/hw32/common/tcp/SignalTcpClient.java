@@ -1,24 +1,21 @@
 package ru.otus.homework.hw32.common.tcp;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import ru.otus.messagesystem.message.Message;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.function.Consumer;
+import java.util.UUID;
 
 @Slf4j
 public class SignalTcpClient implements Runnable {
 
     private final String host;
     private final int port;
-    private final Consumer<Message> handler;
-    private ObjectOutputStream out;
 
-    public SignalTcpClient(String host, int port, Consumer<Message> handler) {
+    public SignalTcpClient(String host, int port) {
         this.host = host;
         this.port = port;
-        this.handler = handler;
     }
 
     @Override
@@ -27,22 +24,15 @@ public class SignalTcpClient implements Runnable {
             try {
                 try (var clientSocket = new Socket(host, port);
                      var bufferedOutputStream = new BufferedOutputStream(clientSocket.getOutputStream());
-                     var objectOutputStream = new ObjectOutputStream(bufferedOutputStream);
                      var bufferedInputStream = new BufferedInputStream(clientSocket.getInputStream());
+                     var dataOutputStream = new DataOutputStream(bufferedOutputStream);
                 ) {
-                    out = objectOutputStream;
-                    sendSignal(new Signal("Hello", null));
-                    log.info("client ok");
-                    try (var objectInputStream = new ObjectInputStream(bufferedInputStream)) {
-                        log.info("client ok2");
-                        Signal hello = (Signal) objectInputStream.readObject();
-                        if (!"Hello".equals(hello.getTag())) {
-                            return;
-                        }
-                        while (true) {
-                            sendSignal(new Signal("Hello", null));
-                            Thread.sleep(1000);
-                        }
+                    for (int i = 0; i < 5; i++) {
+                        byte[] msg = signalToMsg(new Signal("Hello", false, UUID.randomUUID(), null));
+                        dataOutputStream.writeInt(msg.length);
+                        dataOutputStream.write(msg);
+                        dataOutputStream.flush();
+                        Thread.sleep(1000);
                     }
                 }
             } catch (Exception ex) {
@@ -52,26 +42,13 @@ public class SignalTcpClient implements Runnable {
                 } catch (InterruptedException e) {
                     break;
                 }
-            } finally {
-                out = null;
             }
         }
-        log.info("exit from MessageSystemTcpClient");
+        log.info("exit from SignalTcpClient");
     }
 
-    private synchronized void sendSignal(Signal signal) throws IOException {
-        out.writeObject(signal);
-        out.flush();
-    }
-
-    private void process(Signal signal) {
-        switch (signal.getTag()) {
-            case "msg":
-                handler.accept((Message) signal.getBody());
-                break;
-            default:
-                log.info("Unknown signal with tag {}", signal.getTag());
-                break;
-        }
+    @SneakyThrows
+    private byte[] signalToMsg(Signal signal) {
+        return null;
     }
 }

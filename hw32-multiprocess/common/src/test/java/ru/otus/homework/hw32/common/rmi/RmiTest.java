@@ -2,7 +2,7 @@ package ru.otus.homework.hw32.common.rmi;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import ru.otus.homework.hw32.common.CallbackRequestHandler;
+import ru.otus.homework.hw32.common.ms.CallbackRequestHandler;
 import ru.otus.messagesystem.HandlersStore;
 import ru.otus.messagesystem.HandlersStoreImpl;
 import ru.otus.messagesystem.MessageSystemImpl;

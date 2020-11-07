@@ -2,7 +2,7 @@ package ru.otus.homework.hw32.common.rmi;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import ru.otus.homework.hw32.common.HandlersStoreSingleHandler;
+import ru.otus.homework.hw32.common.ms.HandlersStoreSingleHandler;
 import ru.otus.messagesystem.MessageSystem;
 import ru.otus.messagesystem.RequestHandler;
 import ru.otus.messagesystem.client.CallbackRegistry;
