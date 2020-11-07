@@ -1,5 +1,6 @@
 package ru.otus.homework.hw32.front.message;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,9 @@ import ru.otus.messagesystem.client.MsClient;
 import ru.otus.messagesystem.client.ResultDataType;
 import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageType;
+
+import java.util.concurrent.Exchanger;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -52,5 +56,22 @@ public class FrontendServiceImpl implements FrontendService {
                     }
                 });
         msClient.sendMessage(outMsg);
+    }
+
+    @Override
+    @SneakyThrows
+    public UserCollectionDto getAllUsers() {
+        final var exchanger = new Exchanger<UserCollectionDto>();
+        getAllUsers(x -> {
+            try {
+                exchanger.exchange(x, 3, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                log.error("", e);
+                if (e instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }, x -> log.error(x.getText()));
+        return exchanger.exchange(null, 10, TimeUnit.SECONDS);
     }
 }

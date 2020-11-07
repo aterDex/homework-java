@@ -10,4 +10,6 @@ public interface FrontendService {
     void saveUser(UserDto user, MessageCallback<UserDto> dataConsumer, MessageCallback<ErrorDto> errorConsumer);
 
     void getAllUsers(MessageCallback<UserCollectionDto> dataConsumer, MessageCallback<ErrorDto> errorConsumer);
+
+    UserCollectionDto getAllUsers();
 }

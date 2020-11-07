@@ -23,15 +23,7 @@ public class UserController {
 
     @GetMapping({"/users"})
     public String users(Model model) throws Exception {
-        ArrayBlockingQueue<Collection<UserDto>> blockingQueue = new ArrayBlockingQueue<>(1);
-        frontendService.getAllUsers(x -> blockingQueue.add(x.getUsers()), x -> log.error(x.getText()));
-
-        Collection<UserDto> users = blockingQueue.poll(5, TimeUnit.SECONDS);
-
-        if (users == null) {
-            throw new RuntimeException("Не получи данных.");
-        }
-        model.addAttribute("users", users);
+        model.addAttribute("users", frontendService.getAllUsers());
         return "users";
     }
 }
