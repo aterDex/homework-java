@@ -1,4 +1,4 @@
-package ru.otus.homework.hw32.common.ms;
+package ru.otus.homework.hw32.common.message;
 
 import ru.otus.messagesystem.HandlersStore;
 import ru.otus.messagesystem.RequestHandler;

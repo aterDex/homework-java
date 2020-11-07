@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ru.otus.homework.hw32.common.helper.HelperHw32;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -13,21 +14,26 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Exchanger;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 public class SignalTcpServer implements Runnable {
 
     private final String host;
     private final int port;
-    private final ByteBuffer readByteBuffer;
+    private final ByteBuffer generalReadyBuffer;
     private final SignalServerListener listener;
-    private final Map<UUID, SocketChannel> binding = new HashMap<>();
+    private final Map<UUID, SocketChannel> binding = new ConcurrentHashMap<>();
+    private final Map<UUID, Exchanger<Signal>> waitAnswer = new ConcurrentHashMap<>();
 
     public SignalTcpServer(String host, int port, int bufferSize, SignalServerListener listener) {
         this.host = host;
         this.port = port;
         this.listener = listener;
-        this.readByteBuffer = ByteBuffer.allocateDirect(bufferSize);
+        this.generalReadyBuffer = ByteBuffer.allocateDirect(bufferSize);
     }
 
     @Override
@@ -46,6 +52,37 @@ public class SignalTcpServer implements Runnable {
         log.info("SignalTcpServer stopped.");
     }
 
+    public void send(UUID channelName, Signal signal) throws IOException {
+        // Без блокировок т.к. "Socket channels are safe for use by multiple concurrent threads."
+        var channel = binding.get(channelName);
+        byte[] body = HelperHw32.objectToByte(signal);
+        var bodyB = ByteBuffer.allocate(body.length + 4);
+        bodyB.putInt(body.length);
+        bodyB.put(body);
+        bodyB.flip();
+        channel.write(bodyB);
+    }
+
+    public Signal sendAndGetAnswer(UUID channelName, Signal signal) throws IOException, TimeoutException, InterruptedException {
+        try {
+            Exchanger<Signal> exchanger = registerAnswer(signal.getUuid());
+            send(channelName, signal);
+            return exchanger.exchange(null, 5, TimeUnit.SECONDS);
+        } finally {
+            unregisterAnswer(signal.getUuid());
+        }
+    }
+
+    private void unregisterAnswer(UUID uuid) {
+        waitAnswer.remove(uuid);
+    }
+
+    private Exchanger<Signal> registerAnswer(UUID uuid) {
+        Exchanger<Signal> exchanger = new Exchanger<>();
+        waitAnswer.put(uuid, exchanger);
+        return exchanger;
+    }
+
     @SneakyThrows
     private void listenTo(Selector selector) {
         while (!Thread.currentThread().isInterrupted()) {
@@ -61,15 +98,27 @@ public class SignalTcpServer implements Runnable {
                     if (key.isAcceptable()) {
                         acceptConnect(selector, (ServerSocketChannel) key.channel());
                     } else if (key.isReadable()) {
-                        readFrom((SocketChannel) key.channel(), (ConnectionInfo) key.attachment());
+                        readFromChannel((SocketChannel) key.channel(), (ConnectionInfo) key.attachment());
                     }
                 }
             }
         }
     }
 
+    /**
+     * Боремся с возможной фрагментацией пакета.
+     * Если все в порядке то вся посылка помещается в общий буфер.
+     * Если нет, то для этого есть два дополнительных буфера.
+     * Один маленький и существет всегда для того чтобы считать размер следущего пакета (если фрагментация в друг придется имеено на эту часть)
+     * Второй создается по необходимости в двух случаях:
+     * 1) если объект которые мы ожидаем больше чем общий буфер.
+     * 2) если мы получили объект не полность и должны сохранить уже полученные данные.
+     *
+     * @param channel
+     * @param info
+     */
     @SneakyThrows
-    private void readFrom(SocketChannel channel, ConnectionInfo info) {
+    private void readFromChannel(SocketChannel channel, ConnectionInfo info) {
         try {
             var altBuffer = info.getAlternativeBuffer();
             if (altBuffer != null) {
@@ -78,43 +127,42 @@ public class SignalTcpServer implements Runnable {
                     return;
                 }
                 info.setAlternativeBuffer(null);
-                altBuffer.flip();
-                processBuffersWithObject(channel, info, altBuffer);
+                processBuffersWithObject(channel, info, altBuffer.flip());
             }
 
-            int read = channel.read(readByteBuffer);
+            int read = channel.read(generalReadyBuffer);
             if (read < 0) {
                 closeChanel(channel, info);
                 return;
             }
-            readByteBuffer.flip();
+            generalReadyBuffer.flip();
 
-            while (readByteBuffer.hasRemaining()) {
-                while (info.getForSize().hasRemaining() && readByteBuffer.hasRemaining()) {
-                    info.getForSize().put(readByteBuffer.get());
+            while (generalReadyBuffer.hasRemaining()) {
+                var sizeBuffer = info.getForSize();
+                while (sizeBuffer.hasRemaining() && generalReadyBuffer.hasRemaining()) {
+                    sizeBuffer.put(generalReadyBuffer.get());
                 }
-                if (info.getForSize().hasRemaining()) {
+                if (sizeBuffer.hasRemaining()) {
                     return;
                 }
-                info.getForSize().flip();
-                int size = info.getForSize().getInt();
-                info.getForSize().clear();
+                int size = sizeBuffer.flip().getInt();
+                sizeBuffer.clear();
+
                 if (size < 0) {
                     closeChanel(channel, info);
                 }
-                if (size > readByteBuffer.remaining()) {
-                    ByteBuffer alt = ByteBuffer.allocateDirect(size);
-                    alt.put(readByteBuffer);
-                    info.setAlternativeBuffer(alt);
+                if (size > generalReadyBuffer.remaining()) {
+                    info.setAlternativeBuffer(
+                            ByteBuffer.allocateDirect(size).put(generalReadyBuffer));
                     return;
                 }
-                processBuffersWithObject(channel, info, readByteBuffer);
+                processBuffersWithObject(channel, info, generalReadyBuffer);
             }
         } catch (Exception e) {
             log.info("", e);
             closeChanel(channel, info);
         } finally {
-            readByteBuffer.clear();
+            generalReadyBuffer.clear();
         }
     }
 
@@ -126,16 +174,24 @@ public class SignalTcpServer implements Runnable {
         if (!(obj instanceof Signal)) {
             throw new UnsupportedOperationException("Unsupported object " + obj.getClass().getCanonicalName());
         }
-        Signal signal = (Signal) obj;
-        fireSignal(channel, info, signal);
+        fireSignal(channel, info, (Signal) obj);
     }
 
     private void fireSignal(SocketChannel channel, ConnectionInfo info, Signal signal) {
-        if (signal.isAnswer()) {
-
-        } else {
-            listener.event(info.getUuid(), signal);
+        Exchanger<Signal> exchanger = waitAnswer.remove(signal.getUuid());
+        if (exchanger != null) {
+            try {
+                exchanger.exchange(signal, 1, TimeUnit.SECONDS);
+                return;
+            } catch (InterruptedException e) {
+                log.error("", e);
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                log.error("", e);
+            }
         }
+
+        listener.event(info.getUuid(), signal, this);
     }
 
     @SneakyThrows
@@ -151,7 +207,7 @@ public class SignalTcpServer implements Runnable {
     private void closeChanel(SocketChannel channel, ConnectionInfo info) {
         channel.close();
         binding.remove(info.getUuid());
-        listener.closeConnect(info.getUuid());
+        listener.closeConnect(info.getUuid(), this);
     }
 
     private class ConnectionInfo {

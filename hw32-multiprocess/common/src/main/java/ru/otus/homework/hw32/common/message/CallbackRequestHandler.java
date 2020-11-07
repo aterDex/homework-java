@@ -1,4 +1,4 @@
-package ru.otus.homework.hw32.common.ms;
+package ru.otus.homework.hw32.common.message;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.otus.messagesystem.RequestHandler;

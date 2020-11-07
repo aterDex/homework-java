@@ -4,7 +4,14 @@ import java.util.UUID;
 
 public interface SignalServerListener {
 
-    void event(UUID connectIdentifier, Signal signal);
+    /**
+     * Attention! It should be fast!
+     *
+     * @param connectIdentifier
+     * @param signal
+     * @param server
+     */
+    void event(UUID connectIdentifier, Signal signal, SignalTcpServer server);
 
-    void closeConnect(UUID connectWitchClose);
+    void closeConnect(UUID connectWitchClose, SignalTcpServer server);
 }
