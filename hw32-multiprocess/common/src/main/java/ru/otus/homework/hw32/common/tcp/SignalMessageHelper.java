@@ -1,8 +1,11 @@
 package ru.otus.homework.hw32.common.tcp;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.Serializable;
 import java.util.function.Function;
 
+@Slf4j
 class SignalMessageHelper {
 
     private SignalMessageHelper() {
@@ -15,7 +18,7 @@ class SignalMessageHelper {
         }
         if (signal.getTag().equals(answer.getTag())) {
             if (converter != null) {
-                return converter.apply(signal);
+                return converter.apply(answer);
             }
             return null;
         }
@@ -27,10 +30,14 @@ class SignalMessageHelper {
     }
 
     static Signal answerOk(Signal signal, Serializable body) {
-        return new Signal(signal.getTag(), signal.getUuid(), body);
+        Signal answer = new Signal(signal.getTag(), signal.getUuid(), body);
+        log.debug("signal: '{}' answer: '{}'", signal, answer);
+        return answer;
     }
 
     static Signal answerError(Signal signal, String error) {
-        return new Signal("error", signal.getUuid(), error);
+        Signal answer = new Signal("error", signal.getUuid(), error);
+        log.debug("signal: '{}' answer: '{}'", signal, answer);
+        return answer;
     }
 }

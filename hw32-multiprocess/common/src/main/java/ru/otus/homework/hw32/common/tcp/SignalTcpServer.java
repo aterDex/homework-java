@@ -13,7 +13,10 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +56,7 @@ public class SignalTcpServer implements Runnable {
     }
 
     public void send(UUID channelName, Signal signal) throws IOException {
+        log.debug("<====== server send to '{}' signal: {}", channelName, signal);
         // Без блокировок т.к. "Socket channels are safe for use by multiple concurrent threads."
         var channel = binding.get(channelName);
         byte[] body = HelperHw32.objectToByte(signal);
@@ -67,7 +71,10 @@ public class SignalTcpServer implements Runnable {
         try {
             Exchanger<Signal> exchanger = registerAnswer(signal.getUuid());
             send(channelName, signal);
-            return exchanger.exchange(null, 5, TimeUnit.SECONDS);
+            return exchanger.exchange(null, 10, TimeUnit.SECONDS);
+        } catch (Throwable t) {
+            log.warn("Answer was lost for channelName: '{}' and signal: {}", channelName, signal);
+            throw t;
         } finally {
             unregisterAnswer(signal.getUuid());
         }
@@ -178,6 +185,8 @@ public class SignalTcpServer implements Runnable {
     }
 
     private void fireSignal(SocketChannel channel, ConnectionInfo info, Signal signal) {
+        log.debug("======> Server get signal: {}", signal);
+        long time = System.currentTimeMillis();
         Exchanger<Signal> exchanger = waitAnswer.remove(signal.getUuid());
         if (exchanger != null) {
             try {
@@ -192,6 +201,9 @@ public class SignalTcpServer implements Runnable {
         }
 
         listener.event(info.getUuid(), signal, this);
+        if (log.isDebugEnabled()) {
+            log.debug("====== process time by {}s for {}", (System.currentTimeMillis() - time) / 1000.0, signal.getUuid());
+        }
     }
 
     @SneakyThrows

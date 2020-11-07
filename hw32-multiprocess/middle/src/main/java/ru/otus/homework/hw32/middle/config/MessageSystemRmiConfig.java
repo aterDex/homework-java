@@ -3,6 +3,7 @@ package ru.otus.homework.hw32.middle.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmi;
 import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmiAdapter;
 import ru.otus.homework.hw32.middle.RmiRegistration;
@@ -13,6 +14,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 @Configuration
+@Profile("RMI")
 public class MessageSystemRmiConfig {
 
     @Value("${middle.rmi.registry-port}")

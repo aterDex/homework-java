@@ -10,3 +10,20 @@ rmi:
   registry-port: 15000
   message-system:
     name: messageSystem
+
+signal-tcp:
+  host: 127.0.0.1
+  port: 15005
+
+spring:
+  profiles:
+    active: SignalTcp
+
+logging:
+  level:
+    ru:
+      otus:
+        homework:
+          hw32:
+            common:
+              tcp: info

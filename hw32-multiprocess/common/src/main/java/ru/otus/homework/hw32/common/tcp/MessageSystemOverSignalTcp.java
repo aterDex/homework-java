@@ -19,12 +19,14 @@ public class MessageSystemOverSignalTcp implements MessageSystem {
 
     private final SignalTcpClient client;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorForClients;
     private final Future<?> clientFuture;
     private final Map<String, MsClient> localBindings = new ConcurrentHashMap<>();
 
-    public MessageSystemOverSignalTcp(String host, int port) {
+    public MessageSystemOverSignalTcp(String host, int port, ExecutorService executorForClients) {
         client = new SignalTcpClient(host, port, new SignalClientListenerImpl());
         clientFuture = executor.submit(client);
+        this.executorForClients = executorForClients;
     }
 
     @Override
@@ -35,6 +37,7 @@ public class MessageSystemOverSignalTcp implements MessageSystem {
         }
         try {
             sendSignalAndProcessAnswer(new Signal("addClient", UUID.randomUUID(), msClient.getName()), null);
+            localBindings.put(msClient.getName(), msClient);
         } catch (Exception e) {
             throw e;
         }
@@ -47,6 +50,7 @@ public class MessageSystemOverSignalTcp implements MessageSystem {
             throw new RuntimeException("msClient's name " + clientId + "haven't been exist yet");
         }
         sendSignalAndProcessAnswer(new Signal("removeClient", UUID.randomUUID(), clientId), null);
+        localBindings.remove(clientId);
     }
 
     @Override
@@ -97,6 +101,14 @@ public class MessageSystemOverSignalTcp implements MessageSystem {
 
         @Override
         public void event(Signal signal, SignalTcpClient client) {
+            if (executorForClients == null) {
+                handle(signal, client);
+            } else {
+                executorForClients.submit(() -> handle(signal, client));
+            }
+        }
+
+        private void handle(Signal signal, SignalTcpClient client) {
             try {
                 switch (signal.getTag()) {
                     case "handle":

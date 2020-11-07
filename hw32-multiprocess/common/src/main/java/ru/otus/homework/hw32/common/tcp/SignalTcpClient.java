@@ -66,6 +66,7 @@ public class SignalTcpClient implements Runnable {
     }
 
     public synchronized void send(Signal signal) throws IOException {
+        log.debug("<------ Client send signal: {}", signal);
         byte[] body = HelperHw32.objectToByte(signal);
         outStream.writeInt(body.length);
         outStream.write(body);
@@ -76,13 +77,18 @@ public class SignalTcpClient implements Runnable {
         try {
             Exchanger<Signal> exchanger = registerAnswer(signal.getUuid());
             send(signal);
-            return exchanger.exchange(null, 5, TimeUnit.SECONDS);
+            return exchanger.exchange(null, 10, TimeUnit.SECONDS);
+        } catch (Throwable t) {
+            log.warn("Answer was lost for signal: {}", signal);
+            throw t;
         } finally {
             unregisterAnswer(signal.getUuid());
         }
     }
 
     private void process(Signal signal) {
+        log.debug("------> Client get signal: {}", signal);
+        long time = System.currentTimeMillis();
         Exchanger<Signal> exchanger = waitAnswer.remove(signal.getUuid());
         if (exchanger != null) {
             try {
@@ -96,6 +102,9 @@ public class SignalTcpClient implements Runnable {
             }
         }
         listener.event(signal, this);
+        if (log.isDebugEnabled()) {
+            log.debug("------ process time by {}s for {}", (System.currentTimeMillis() - time)/1000.0, signal.getUuid());
+        }
     }
 
     private void unregisterAnswer(UUID uuid) {

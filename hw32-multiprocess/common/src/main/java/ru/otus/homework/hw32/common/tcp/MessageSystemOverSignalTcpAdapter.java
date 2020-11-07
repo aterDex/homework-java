@@ -12,7 +12,7 @@ import ru.otus.messagesystem.message.Message;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.function.Function;
 
 import static ru.otus.homework.hw32.common.tcp.SignalMessageHelper.*;
@@ -23,12 +23,19 @@ public class MessageSystemOverSignalTcpAdapter {
     private final SignalTcpServer server;
     private final MessageSystem messageSystem;
     private final CallbackRegistry callbackRegistry;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Map<UUID, Set<String>> clients = new HashMap<>();
+    private final Future<?> futureServer;
 
     public MessageSystemOverSignalTcpAdapter(String host, int port, MessageSystem messageSystem, CallbackRegistry callbackRegistry) {
         this.server = new SignalTcpServer(host, port, 10000, new SignalServerListenerImpl());
         this.messageSystem = messageSystem;
         this.callbackRegistry = callbackRegistry;
+        futureServer = executor.submit(server);
+    }
+
+    public void stop() {
+        futureServer.cancel(true);
     }
 
     private <R> R sendSignalAndProcessAnswer(UUID uuid, Signal signal, Function<Signal, R> converter) throws InterruptedException, TimeoutException, IOException {

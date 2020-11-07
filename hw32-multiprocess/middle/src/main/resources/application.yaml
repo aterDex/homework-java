@@ -4,3 +4,18 @@ middle:
     registry-port: 15000
     message-system:
       name: messageSystem
+  signal-tcp:
+    host: 0.0.0.0
+    port: 15005
+
+spring:
+  profiles:
+    active: RMI, SignalTcp
+logging:
+  level:
+    ru:
+      otus:
+        homework:
+          hw32:
+            common:
+              tcp: debug
