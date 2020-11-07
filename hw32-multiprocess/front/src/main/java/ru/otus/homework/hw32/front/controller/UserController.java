@@ -23,7 +23,7 @@ public class UserController {
 
     @GetMapping({"/users"})
     public String users(Model model) throws Exception {
-        model.addAttribute("users", frontendService.getAllUsers());
+        model.addAttribute("users", frontendService.getAllUsers().getUsers());
         return "users";
     }
 }

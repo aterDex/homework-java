@@ -14,24 +14,22 @@ import java.rmi.RemoteException;
 import java.util.Optional;
 
 @Slf4j
-public class MessageSystemRegisterByRmiServer implements MessageSystemRegisterByRmi {
+public class MessageSystemRegisterByRmiAdapter implements MessageSystemRegisterByRmi {
 
     private final MessageSystem messageSystem;
     private final CallbackRegistry callbackRegistry;
 
-    public MessageSystemRegisterByRmiServer(MessageSystem messageSystem, CallbackRegistry callbackRegistry) {
+    public MessageSystemRegisterByRmiAdapter(MessageSystem messageSystem, CallbackRegistry callbackRegistry) {
         this.messageSystem = messageSystem;
         this.callbackRegistry = callbackRegistry;
     }
 
     @Override
     public void addClient(String clientId, HandleMessageByRmi handler) throws RemoteException {
-        log.info("AddClient by rmi {}", clientId);
         MsClientImpl msClient = new MsClientImpl(clientId, messageSystem, new HandlersStoreSingleHandler(new RequestHandler<ResultDataType>() {
             @Override
             @SneakyThrows
             public Optional<Message> handle(Message msg) {
-                log.info("invoice before rmi handler");
                 handler.handle(msg);
                 return Optional.empty();
             }

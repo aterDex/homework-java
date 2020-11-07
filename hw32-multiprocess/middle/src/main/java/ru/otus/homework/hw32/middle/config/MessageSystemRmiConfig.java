@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmi;
-import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmiServer;
+import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmiAdapter;
 import ru.otus.homework.hw32.middle.RmiRegistration;
 import ru.otus.messagesystem.MessageSystem;
 
@@ -28,7 +28,7 @@ public class MessageSystemRmiConfig {
 
     @Bean
     public MessageSystemRegisterByRmi messageSystemRegisterByRmi(MessageSystem messageSystem) {
-        return new MessageSystemRegisterByRmiServer(messageSystem, null);
+        return new MessageSystemRegisterByRmiAdapter(messageSystem, null);
     }
 
     @Bean(initMethod = "register", destroyMethod = "unregister")

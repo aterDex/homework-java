@@ -11,12 +11,13 @@ import ru.otus.messagesystem.message.Message;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class MessageSystemRmi implements MessageSystem {
 
     private final MessageSystemRegisterByRmi register;
-    private final Map<String, Binding> localBindings = new HashMap<>();
+    private final Map<String, Binding> localBindings = new ConcurrentHashMap<>();
 
     public MessageSystemRmi(MessageSystemRegisterByRmi register) {
         this.register = register;

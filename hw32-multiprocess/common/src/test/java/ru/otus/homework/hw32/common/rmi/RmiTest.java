@@ -35,7 +35,7 @@ public class RmiTest {
         var messageSystem = new MessageSystemImpl(true);
         var callbackRegistry = new CallbackRegistryImpl();
 
-        var messageSystemRegisterRmi = new MessageSystemRegisterByRmiServer(messageSystem, callbackRegistry);
+        var messageSystemRegisterRmi = new MessageSystemRegisterByRmiAdapter(messageSystem, callbackRegistry);
         var messageSystemRegisterRmiStub = (MessageSystemRegisterByRmi) UnicastRemoteObject.exportObject(messageSystemRegisterRmi, 0);
 
         var messageSystemRmi = new MessageSystemRmi(messageSystemRegisterRmiStub);
