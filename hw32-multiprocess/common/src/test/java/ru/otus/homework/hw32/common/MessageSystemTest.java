@@ -93,10 +93,10 @@ public class MessageSystemTest {
         try {
             Function<Box, Box> handler1 = x -> new Box(x.getText() + "-" + x.getText());
             Function<Box, Box> handler2 = x -> new Box(x.getText() + "=" + x.getText());
-            MsClient msClientSender1 = initMsClientSender("sender1", stand.getRemoteMessageSystems().get(1));
+            MsClient msClientSender1 = initMsClientSender("sender1", stand.getRemoteMessageSystems().get(0));
             MsClient msClientSender2 = initMsClientSender("sender2", stand.getRemoteMessageSystems().get(1));
-            MsClient msClientHandler1 = initMsClientHandler("handler1", stand.getRemoteMessageSystems().get(0), handler1);
-            MsClient msClientHandler2 = initMsClientHandler("handler2", stand.getRemoteMessageSystems().get(0), handler2);
+            MsClient msClientHandler1 = initMsClientHandler("handler1", stand.getRemoteMessageSystems().get(2), handler1);
+            MsClient msClientHandler2 = initMsClientHandler("handler2", stand.getRemoteMessageSystems().get(3), handler2);
 
             int countThread = 2;
             int countMessage = 100;
