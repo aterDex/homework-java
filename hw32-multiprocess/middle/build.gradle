@@ -27,3 +27,17 @@ application {
 test {
     useJUnitPlatform()
 }
+
+task copyBackAndFront(type: Copy) {
+    dependsOn ':hw32-multiprocess:front:build'
+    dependsOn ':hw32-multiprocess:back:build'
+    def bk = project(":hw32-multiprocess:back").jar
+    def fr = project(":hw32-multiprocess:front").jar
+    from bk.destinationDirectory.file(bk.archiveFileName), fr.destinationDirectory.file(fr.archiveFileName)
+    into jar.destinationDirectory
+}
+
+task tesss(type: JavaExec) {
+    dependsOn 'copyBackAndFront'
+    dependsOn 'build'
+}

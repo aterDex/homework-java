@@ -23,7 +23,7 @@ public class MessageSystemConfig {
     @Bean
     public HandlersStore requestHandlerFrontendStore(CallbackRegistry callbackRegistry) {
         HandlersStore requestHandlerFrontendStore = new HandlersStoreImpl();
-        requestHandlerFrontendStore.addHandler(MessageType.USER_DATA, new CallbackRequestHandler(callbackRegistry));
+        requestHandlerFrontendStore.addHandler(MessageType.USER_DATA, new CallbackRequestHandler<>(callbackRegistry));
         return requestHandlerFrontendStore;
     }
 
