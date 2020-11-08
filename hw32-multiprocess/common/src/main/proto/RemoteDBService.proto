@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+package ru.otus.homework.hw32.common.protobuf.generated;
+
+option java_multiple_files = true;
+
+message Int {
+  int32 value = 1;
+}
+
+message MsClientMeta {
+  string name = 1;
+}
+
+message MessageProto {
+  MessageProtoId id = 1;
+  string from = 2;
+  string to = 3;
+  MessageProtoId sourceMessageId = 4;
+  string type = 5;
+  bytes payload = 6;
+  CallbackProtoId callbackId = 7;
+}
+
+message CallbackProtoId {
+  string id = 1;
+}
+
+message MessageProtoId {
+  string id = 1;
+}
+
+service MessageSystemProtobuf {
+  rpc addClient(MsClientMeta) returns (stream MessageProto);
+  rpc newMessage(MessageProto) returns (google.protobuf.Empty);
+  rpc removeClient(MsClientMeta) returns (google.protobuf.Empty);
+  rpc currentQueueSize(google.protobuf.Empty) returns(google.protobuf.Int32Value);
+}
+

@@ -17,10 +17,10 @@ import java.rmi.registry.Registry;
 @Profile("RMI")
 public class MessageSystemRmiConfig {
 
-    @Value("${middle.rmi.registry-port}")
+    @Value("${rmi.registry-port}")
     private int registryPort;
 
-    @Value("${middle.rmi.message-system.name}")
+    @Value("${rmi.message-system.name}")
     private String messageSystemName;
 
     @Bean

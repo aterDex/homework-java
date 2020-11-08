@@ -35,14 +35,17 @@ public class MessageSystemTest {
         var providers = List.of(
                 new MessageSystemProviderDirect(),
                 new MessageSystemProviderRmi(),
-                new MessageSystemProviderSignalTcp("127.0.0.1", 0, Executors.newSingleThreadExecutor()));
+                new MessageSystemProviderSignalTcp("127.0.0.1", 0, Executors.newSingleThreadExecutor()),
+                new MessageSystemProviderGRPC("127.0.0.1", 0));
         var crossAll = new ArrayList<MessageSystemStand>(providers.size() * providers.size());
         for (int i = 0; i < providers.size(); i++) {
             for (int j = i; j < providers.size(); j++) {
+
                 crossAll.add(new MessageSystemStand("(sender, handler)", List.of(
                         providers.get(i),
                         providers.get(j)
                 )));
+
             }
         }
         return crossAll;
@@ -55,7 +58,7 @@ public class MessageSystemTest {
                         new MessageSystemProviderDirect(),
                         new MessageSystemProviderRmi(),
                         new MessageSystemProviderSignalTcp("127.0.0.1", 0, Executors.newSingleThreadExecutor()),
-                        new MessageSystemProviderDirect()
+                        new MessageSystemProviderGRPC("127.0.0.1", 15011)
                 ))
         );
     }

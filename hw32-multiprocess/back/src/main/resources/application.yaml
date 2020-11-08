@@ -1,7 +1,7 @@
 ---
 spring:
   profiles:
-    active: SignalTcp
+    active: gRPC
   datasource:
     url: jdbc:h2:mem:OtusExamplesDB;DB_CLOSE_DELAY=-1
     username: sa
@@ -17,6 +17,9 @@ rmi:
 signal-tcp:
   host: 127.0.0.1
   port: 15005
+gRPC:
+  host: 127.0.0.1
+  port: 15010
 
 logging:
   level:

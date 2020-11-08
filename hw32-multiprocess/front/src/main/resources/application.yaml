@@ -2,6 +2,10 @@
 server:
   port: 8080
 
+spring:
+  profiles:
+    active: gRPC
+
 message-system:
   database-service-client-name: databaseService
   frontend-service-client-name: frontendService
@@ -14,10 +18,9 @@ rmi:
 signal-tcp:
   host: 127.0.0.1
   port: 15005
-
-spring:
-  profiles:
-    active: SignalTcp
+gRPC:
+  host: 127.0.0.1
+  port: 15010
 
 logging:
   level:

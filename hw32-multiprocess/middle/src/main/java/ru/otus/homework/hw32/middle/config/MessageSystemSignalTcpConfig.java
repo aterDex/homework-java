@@ -11,10 +11,10 @@ import ru.otus.messagesystem.MessageSystem;
 @Profile("SignalTcp")
 public class MessageSystemSignalTcpConfig {
 
-    @Value("${middle.signal-tcp.port}")
+    @Value("${signal-tcp.port}")
     private int port;
 
-    @Value("${middle.signal-tcp.host}")
+    @Value("${signal-tcp.host}")
     private String host;
 
     @Bean(destroyMethod = "stop")
