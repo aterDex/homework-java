@@ -1,4 +1,4 @@
-package ru.otus.homework.hw32.common.rmi;
+package ru.otus.homework.hw32.common;
 
 import ru.otus.messagesystem.client.ResultDataType;
 

@@ -9,7 +9,6 @@ import ru.otus.messagesystem.client.MsClient;
 import ru.otus.messagesystem.message.Message;
 
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -84,8 +83,8 @@ public class MessageSystemRmi implements MessageSystem {
     private void unregisterBinding(String name) {
         Binding binding = localBindings.get(name);
         if (binding != null) {
-            UnicastRemoteObject.unexportObject(binding.getStub(), false);
             localBindings.remove(name);
+            UnicastRemoteObject.unexportObject(binding.getHandler(), false);
         }
     }
 
