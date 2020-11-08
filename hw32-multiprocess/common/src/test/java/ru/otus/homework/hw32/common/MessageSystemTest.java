@@ -4,10 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.otus.homework.hw32.common.message.CallbackRequestHandler;
-import ru.otus.messagesystem.HandlersStore;
 import ru.otus.messagesystem.HandlersStoreImpl;
-import ru.otus.messagesystem.RequestHandler;
-import ru.otus.messagesystem.client.*;
+import ru.otus.messagesystem.MessageSystem;
+import ru.otus.messagesystem.client.CallbackRegistryImpl;
+import ru.otus.messagesystem.client.MessageCallback;
+import ru.otus.messagesystem.client.MsClient;
+import ru.otus.messagesystem.client.MsClientImpl;
 import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageBuilder;
 import ru.otus.messagesystem.message.MessageHelper;
@@ -21,6 +23,7 @@ import java.util.concurrent.Exchanger;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -28,69 +31,52 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @Slf4j
 public class MessageSystemTest {
 
-    private static final String FRONTEND_SERVICE_CLIENT_NAME = "front1";
-    private static final String DATABASE_SERVICE_CLIENT_NAME = "back1";
-
-    static Collection<MessageSystemStand> getStands() {
-        List<MessageSystemProvider> providers = List.of(
+    static Collection<MessageSystemStand> getStandsOneSenderOneHandler() {
+        var providers = List.of(
                 new MessageSystemProviderDirect(),
                 new MessageSystemProviderRmi(),
-                new MessageSystemProviderSignalTcp("127.0.0.1", 12000, Executors.newSingleThreadExecutor()));
-        List<MessageSystemStand> crossAll = new ArrayList<>(providers.size() * providers.size() - providers.size());
+                new MessageSystemProviderSignalTcp("127.0.0.1", 0, Executors.newSingleThreadExecutor()));
+        var crossAll = new ArrayList<MessageSystemStand>(providers.size() * providers.size());
         for (int i = 0; i < providers.size(); i++) {
             for (int j = i; j < providers.size(); j++) {
-                if (i == j) {
-                    continue;
-                }
-                crossAll.add(new MessageSystemStand("=", List.of(
+                crossAll.add(new MessageSystemStand("(sender, handler)", List.of(
                         providers.get(i),
                         providers.get(j)
                 )));
-                crossAll.add(new MessageSystemStand("=", List.of(
-                        providers.get(j),
-                        providers.get(i)
-                )));
             }
         }
-
         return crossAll;
     }
 
+    static Collection<MessageSystemStand> getStandsTwoSenderTwoHandler() {
+        String desc = "(sender1, sender2, handler1, handler2)";
+        return List.of(
+                new MessageSystemStand(desc, List.of(
+                        new MessageSystemProviderDirect(),
+                        new MessageSystemProviderRmi(),
+                        new MessageSystemProviderSignalTcp("127.0.0.1", 0, Executors.newSingleThreadExecutor()),
+                        new MessageSystemProviderDirect()
+                ))
+        );
+    }
+
     @ParameterizedTest
-    @MethodSource("getStands")
-    void CheckMessageSystemIntegrationTest(MessageSystemStand stand) throws Exception {
-
+    @MethodSource("getStandsOneSenderOneHandler")
+    void CheckMessageSystemIntegrationOneSenderOneHandler(MessageSystemStand stand) throws Exception {
         stand.init();
-
-        var messageSystemFirst = stand.getRemoteMessageSystems().get(0);
-        var messageSystemSecond = stand.getRemoteMessageSystems().get(1);
-
         try {
-            HandlersStore requestHandlerDatabaseStore = new HandlersStoreImpl();
-            requestHandlerDatabaseStore.addHandler(MessageType.USER_DATA, new RequestHandler<ResultDataType>() {
-                @Override
-                public Optional<Message> handle(Message msg) {
-                    Box box = MessageHelper.getPayload(msg);
-                    return Optional.of(MessageBuilder.buildReplyMessage(msg, new Box(box.getText() + " " + box.getText())));
-                }
-            });
 
-            MsClientImpl databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystemFirst, requestHandlerDatabaseStore, null);
-            messageSystemFirst.addClient(databaseMsClient);
-
-            var callbackRegistry = new CallbackRegistryImpl();
-
-            HandlersStoreImpl handler2 = new HandlersStoreImpl();
-            handler2.addHandler(MessageType.USER_DATA, new CallbackRequestHandler<>(callbackRegistry));
-            MsClientImpl frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, messageSystemSecond, handler2, callbackRegistry);
-            messageSystemSecond.addClient(frontendMsClient);
-
+            Function<Box, Box> handler = x -> new Box(x.getText() + " " + x.getText());
+            MsClient msClientSender = initMsClientSender("sender1", stand.getRemoteMessageSystems().get(0));
+            MsClient msClientHandler = initMsClientHandler("handler1", stand.getRemoteMessageSystems().get(1), handler);
 
             int countThread = 5;
+            int countMessage = 10;
+
             var executors = Executors.newFixedThreadPool(countThread);
-            List<Future<Throwable>> future = new ArrayList<>(countThread);
+            var future = new ArrayList<Future<Throwable>>(countThread);
             for (int i = 0; i < countThread; i++) {
-                future.add(executors.submit(() -> sendMessages(10, frontendMsClient)));
+                future.add(executors.submit(() -> sendMessages(countMessage, msClientSender, "handler1", handler)));
             }
             for (Future<Throwable> waiter : future) {
                 assertNull(waiter.get());
@@ -100,12 +86,69 @@ public class MessageSystemTest {
         }
     }
 
-    private Throwable sendMessages(int count, MsClient client) {
+    @ParameterizedTest
+    @MethodSource("getStandsTwoSenderTwoHandler")
+    void CheckMessageSystemIntegrationTwoSenderTwoHandler(MessageSystemStand stand) throws Exception {
+        stand.init();
+        try {
+            Function<Box, Box> handler1 = x -> new Box(x.getText() + "-" + x.getText());
+            Function<Box, Box> handler2 = x -> new Box(x.getText() + "=" + x.getText());
+            MsClient msClientSender1 = initMsClientSender("sender1", stand.getRemoteMessageSystems().get(1));
+            MsClient msClientSender2 = initMsClientSender("sender2", stand.getRemoteMessageSystems().get(1));
+            MsClient msClientHandler1 = initMsClientHandler("handler1", stand.getRemoteMessageSystems().get(0), handler1);
+            MsClient msClientHandler2 = initMsClientHandler("handler2", stand.getRemoteMessageSystems().get(0), handler2);
+
+            int countThread = 2;
+            int countMessage = 100;
+
+            var executors = Executors.newFixedThreadPool(countThread * 4);
+            var future = new ArrayList<Future<Throwable>>(countThread);
+            for (int i = 0; i < countThread; i++) {
+                future.add(executors.submit(() -> sendMessages(countMessage, msClientSender1, "handler1", handler1)));
+            }
+            for (int i = 0; i < countThread; i++) {
+                future.add(executors.submit(() -> sendMessages(countMessage, msClientSender1, "handler2", handler2)));
+            }
+            for (int i = 0; i < countThread; i++) {
+                future.add(executors.submit(() -> sendMessages(countMessage, msClientSender2, "handler1", handler1)));
+            }
+            for (int i = 0; i < countThread; i++) {
+                future.add(executors.submit(() -> sendMessages(countMessage, msClientSender2, "handler2", handler2)));
+            }
+            for (Future<Throwable> waiter : future) {
+                assertNull(waiter.get());
+            }
+        } finally {
+            stand.disposeAll();
+        }
+    }
+
+    private MsClient initMsClientSender(String name, MessageSystem messageSystem) {
+        var callbackRegistry = new CallbackRegistryImpl();
+        var handler = new HandlersStoreImpl();
+        handler.addHandler(MessageType.USER_DATA, new CallbackRequestHandler<>(callbackRegistry));
+        var client = new MsClientImpl(name, messageSystem, handler, callbackRegistry);
+        messageSystem.addClient(client);
+        return client;
+    }
+
+    private MsClient initMsClientHandler(String name, MessageSystem messageSystem, Function<Box, Box> handler) {
+        var requestHandlerDatabaseStore = new HandlersStoreImpl();
+        requestHandlerDatabaseStore.addHandler(MessageType.USER_DATA, msg -> {
+            Box box = MessageHelper.getPayload(msg);
+            return Optional.of(MessageBuilder.buildReplyMessage(msg, handler.apply(box)));
+        });
+        var client = new MsClientImpl(name, messageSystem, requestHandlerDatabaseStore, null);
+        messageSystem.addClient(client);
+        return client;
+    }
+
+    private Throwable sendMessages(int count, MsClient client, String name, Function<Box, Box> handler) {
         try {
             Exchanger<Box> exchanger = new Exchanger<>();
             for (int i = 0; i < count; i++) {
                 Box original = new Box(String.valueOf(i));
-                Message outMsg = client.produceMessage(DATABASE_SERVICE_CLIENT_NAME, original,
+                Message outMsg = client.produceMessage(name, original,
                         MessageType.USER_DATA, new MessageCallback<Box>() {
                             @Override
                             public void accept(Box box) {
@@ -119,7 +162,7 @@ public class MessageSystemTest {
 
                 client.sendMessage(outMsg);
                 Box box = exchanger.exchange(null, 5, TimeUnit.SECONDS);
-                assertEquals(original.getText() + " " + original.getText(), box.getText());
+                assertEquals(handler.apply(original).getText(), box.getText());
             }
             return null;
         } catch (Throwable t) {

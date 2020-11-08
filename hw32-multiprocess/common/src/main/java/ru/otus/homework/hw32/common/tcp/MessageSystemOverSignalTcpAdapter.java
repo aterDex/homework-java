@@ -1,5 +1,6 @@
 package ru.otus.homework.hw32.common.tcp;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ru.otus.homework.hw32.common.message.HandlersStoreSingleHandler;
@@ -12,7 +13,10 @@ import ru.otus.messagesystem.message.Message;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
 import static ru.otus.homework.hw32.common.tcp.SignalMessageHelper.*;
@@ -20,6 +24,7 @@ import static ru.otus.homework.hw32.common.tcp.SignalMessageHelper.*;
 @Slf4j
 public class MessageSystemOverSignalTcpAdapter {
 
+    @Getter
     private final SignalTcpServer server;
     private final MessageSystem messageSystem;
     private final CallbackRegistry callbackRegistry;

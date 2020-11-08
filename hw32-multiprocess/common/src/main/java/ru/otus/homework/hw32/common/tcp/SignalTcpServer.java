@@ -8,6 +8,7 @@ import ru.otus.homework.hw32.common.helper.HelperHw32;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -31,6 +32,7 @@ public class SignalTcpServer implements Runnable {
     private final SignalServerListener listener;
     private final Map<UUID, SocketChannel> binding = new ConcurrentHashMap<>();
     private final Map<UUID, Exchanger<Signal>> waitAnswer = new ConcurrentHashMap<>();
+    private volatile ServerSocketChannel serverSocketChanel;
 
     public SignalTcpServer(String host, int port, int bufferSize, SignalServerListener listener) {
         this.host = host;
@@ -39,18 +41,30 @@ public class SignalTcpServer implements Runnable {
         this.generalReadyBuffer = ByteBuffer.allocateDirect(bufferSize);
     }
 
+    public SocketAddress getLocalAddress() throws IOException {
+        var localFix = serverSocketChanel;
+        if (localFix != null) {
+            return localFix.getLocalAddress();
+        }
+        throw new IOException("Server is closed");
+    }
+
     @Override
     public void run() {
         try (var serverSocketChannel = ServerSocketChannel
-                .open()
-                .bind(new InetSocketAddress(host, port))
-                .configureBlocking(false);
+                .open();
              var selector = Selector.open()
         ) {
+            serverSocketChannel
+                    .bind(new InetSocketAddress(host, port))
+                    .configureBlocking(false);
+            this.serverSocketChanel = serverSocketChannel;
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             listenTo(selector);
         } catch (Exception e) {
             log.error("", e);
+        } finally {
+            this.serverSocketChanel = null;
         }
         log.info("SignalTcpServer stopped.");
     }
