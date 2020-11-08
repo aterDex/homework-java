@@ -105,14 +105,8 @@ public class MessageSystemTest {
             var future = new ArrayList<Future<Throwable>>(countThread);
             for (int i = 0; i < countThread; i++) {
                 future.add(executors.submit(() -> sendMessages(countMessage, msClientSender1, "handler1", handler1)));
-            }
-            for (int i = 0; i < countThread; i++) {
                 future.add(executors.submit(() -> sendMessages(countMessage, msClientSender1, "handler2", handler2)));
-            }
-            for (int i = 0; i < countThread; i++) {
                 future.add(executors.submit(() -> sendMessages(countMessage, msClientSender2, "handler1", handler1)));
-            }
-            for (int i = 0; i < countThread; i++) {
                 future.add(executors.submit(() -> sendMessages(countMessage, msClientSender2, "handler2", handler2)));
             }
             for (Future<Throwable> waiter : future) {
