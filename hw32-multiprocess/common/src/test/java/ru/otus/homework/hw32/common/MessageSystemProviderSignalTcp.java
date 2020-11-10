@@ -30,7 +30,8 @@ public class MessageSystemProviderSignalTcp implements MessageSystemProvider {
             localPort = ((InetSocketAddress) adapter.getServer().getLocalAddress()).getPort();
         }
         var messageSystem = new MessageSystemOverSignalTcp(host, localPort, executorService);
-        return new DisposableMessageSystem(description, core, new Runnable() {
+        messageSystem.start();
+        return new DisposableMessageSystem(description, messageSystem, new Runnable() {
             @Override
             @SneakyThrows
             public void run() {

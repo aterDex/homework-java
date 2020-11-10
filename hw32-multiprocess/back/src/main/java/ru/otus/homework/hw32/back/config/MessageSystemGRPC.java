@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import ru.otus.homework.hw32.common.protobuf.MessageSystemProtobuf;
-import ru.otus.homework.hw32.common.protobuf.generated.MessageSystemProtobufGrpc;
+import ru.otus.homework.hw32.common.message.MessageSystemRemote;
+import ru.otus.homework.hw32.common.message.TransportForMessageSystem;
+import ru.otus.homework.hw32.common.protobuf.TransportByGRPC;
 import ru.otus.messagesystem.message.MessageProtobufConverter;
 
 @Configuration
@@ -30,12 +31,13 @@ public class MessageSystemGRPC {
         return new MessageProtobufConverter();
     }
 
-    @Bean()
-    public MessageSystemProtobuf messageSystem(MessageProtobufConverter converter, ManagedChannel channel) {
-        return new MessageSystemProtobuf(
-                MessageSystemProtobufGrpc.newStub(channel),
-                MessageSystemProtobufGrpc.newBlockingStub(channel),
-                converter
-        );
+    @Bean(destroyMethod = "dispose")
+    public TransportByGRPC transportForMessageSystem(MessageProtobufConverter converter, ManagedChannel channel) {
+        return new TransportByGRPC(channel, converter);
+    }
+
+    @Bean(initMethod = "start")
+    public MessageSystemRemote messageSystem(TransportForMessageSystem transport) {
+        return new MessageSystemRemote(transport, null);
     }
 }

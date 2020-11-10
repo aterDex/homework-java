@@ -1,6 +1,7 @@
 package ru.otus.homework.hw32.common;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.otus.homework.hw32.common.message.CallbackRequestHandler;
@@ -66,6 +67,7 @@ public class MessageSystemTest {
     @ParameterizedTest
     @MethodSource("getStandsOneSenderOneHandler")
     void CheckMessageSystemIntegrationOneSenderOneHandler(MessageSystemStand stand) throws Exception {
+
         stand.init();
         try {
 
@@ -156,7 +158,6 @@ public class MessageSystemTest {
                                 }
                             }
                         });
-
                 client.sendMessage(outMsg);
                 Box box = exchanger.exchange(null, 5, TimeUnit.SECONDS);
                 assertEquals(handler.apply(original).getText(), box.getText());

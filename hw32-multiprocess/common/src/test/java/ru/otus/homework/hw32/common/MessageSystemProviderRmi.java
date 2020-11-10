@@ -18,6 +18,7 @@ public class MessageSystemProviderRmi implements MessageSystemProvider {
         var messageSystemRegisterRmiStub = (MessageSystemRegisterByRmi) UnicastRemoteObject.exportObject(messageSystemRegisterRmi, 0);
 
         var messageSystemRmi = new MessageSystemRmi(messageSystemRegisterRmiStub);
+        messageSystemRmi.start();
         return new DisposableMessageSystem(description, messageSystemRmi, new Runnable() {
             @Override
             @SneakyThrows

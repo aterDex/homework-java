@@ -13,6 +13,11 @@ message Int {
 
 message MsClientMeta {
   string name = 1;
+  Session session = 2;
+}
+
+message Session {
+  string uuid = 1;
 }
 
 message MessageProto {
@@ -34,7 +39,9 @@ message MessageProtoId {
 }
 
 service MessageSystemProtobuf {
-  rpc addClient(MsClientMeta) returns (stream MessageProto);
+  rpc getHandler(Session) returns (stream MessageProto);
+  rpc releaseHandler(Session) returns (google.protobuf.Empty);
+  rpc addClient(MsClientMeta) returns (google.protobuf.Empty);
   rpc newMessage(MessageProto) returns (google.protobuf.Empty);
   rpc removeClient(MsClientMeta) returns (google.protobuf.Empty);
   rpc currentQueueSize(google.protobuf.Empty) returns(google.protobuf.Int32Value);

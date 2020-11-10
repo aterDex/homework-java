@@ -5,11 +5,13 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import lombok.SneakyThrows;
-import ru.otus.homework.hw32.common.protobuf.MessageSystemProtobuf;
+import ru.otus.homework.hw32.common.message.MessageSystemRemote;
 import ru.otus.homework.hw32.common.protobuf.MessageSystemProtobufServices;
-import ru.otus.homework.hw32.common.protobuf.generated.MessageSystemProtobufGrpc;
+import ru.otus.homework.hw32.common.protobuf.TransportByGRPC;
 import ru.otus.messagesystem.MessageSystem;
 import ru.otus.messagesystem.message.MessageProtobufConverter;
+
+import java.util.concurrent.Executors;
 
 public class MessageSystemProviderGRPC implements MessageSystemProvider {
 
@@ -32,16 +34,15 @@ public class MessageSystemProviderGRPC implements MessageSystemProvider {
         ManagedChannel channel = ManagedChannelBuilder.forAddress(host, server.getPort())
                 .usePlaintext().build();
 
-        var messageSystem = new MessageSystemProtobuf(
-                MessageSystemProtobufGrpc.newStub(channel),
-                MessageSystemProtobufGrpc.newBlockingStub(channel),
-                converter
-        );
-        return new DisposableMessageSystem(description, core, new Runnable() {
+        var transport = new TransportByGRPC(channel, converter);
+        var messageSystem = new MessageSystemRemote(transport, null);
+        messageSystem.start();
+        return new DisposableMessageSystem(description, messageSystem, new Runnable() {
             @Override
             @SneakyThrows
             public void run() {
                 messageSystem.dispose();
+                transport.dispose();
                 channel.shutdownNow();
                 server.shutdownNow();
             }

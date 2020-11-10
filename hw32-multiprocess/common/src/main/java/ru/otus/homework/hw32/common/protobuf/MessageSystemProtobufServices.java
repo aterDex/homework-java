@@ -5,14 +5,21 @@ import com.google.protobuf.Int32Value;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import ru.otus.homework.hw32.common.message.HandlersStoreSingleHandler;
-import ru.otus.homework.hw32.common.protobuf.generated.*;
+import ru.otus.homework.hw32.common.protobuf.generated.MessageProto;
+import ru.otus.homework.hw32.common.protobuf.generated.MessageSystemProtobufGrpc;
+import ru.otus.homework.hw32.common.protobuf.generated.MsClientMeta;
+import ru.otus.homework.hw32.common.protobuf.generated.Session;
 import ru.otus.messagesystem.MessageSystem;
+import ru.otus.messagesystem.RequestHandler;
 import ru.otus.messagesystem.client.CallbackRegistry;
 import ru.otus.messagesystem.client.MsClientImpl;
+import ru.otus.messagesystem.client.ResultDataType;
+import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.MessageProtobufConverter;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -21,7 +28,7 @@ public class MessageSystemProtobufServices extends MessageSystemProtobufGrpc.Mes
     private final MessageSystem messageSystem;
     private final CallbackRegistry callbackRegistry;
     private final MessageProtobufConverter converter;
-    private final Map<String, StreamObserver<MessageProto>> binding = new ConcurrentHashMap<>();
+    private final Map<UUID, StreamObserver<MessageProto>> bindings = new ConcurrentHashMap<>();
 
     public MessageSystemProtobufServices(MessageSystem messageSystem, CallbackRegistry callbackRegistry, MessageProtobufConverter converter) {
         this.messageSystem = messageSystem;
@@ -30,60 +37,63 @@ public class MessageSystemProtobufServices extends MessageSystemProtobufGrpc.Mes
     }
 
     @Override
-    public void addClient(MsClientMeta request, StreamObserver<MessageProto> responseObserver) {
-        if (binding.containsKey(request.getName())) {
-            responseObserver.onError(new RuntimeException("Already exist " + request.getName()));
-        }
+    public void getHandler(Session session, StreamObserver<MessageProto> responseObserver) {
+        bindings.put(getInd(session), responseObserver);
+    }
+
+    @Override
+    public void releaseHandler(Session request, StreamObserver<Empty> responseObserver) {
         try {
-            var client = new MsClientImpl(request.getName(), messageSystem, new HandlersStoreSingleHandler(msg -> {
-                responseObserver.onNext(converter.convert(msg));
-                return Optional.empty();
-            }), callbackRegistry);
-            messageSystem.addClient(client);
-            binding.put(request.getName(), responseObserver);
+            var obs = bindings.remove(getInd(request));
+            obs.onCompleted();
         } catch (Exception e) {
             log.error("", e);
-            responseObserver.onError(e);
-            binding.remove(request.getName());
         }
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void addClient(MsClientMeta request, StreamObserver<Empty> responseObserver) {
+        final UUID sessionId = getInd(request.getSession());
+        var client = new MsClientImpl(request.getName(), messageSystem, new HandlersStoreSingleHandler(new RequestHandler<ResultDataType>() {
+            @Override
+            public Optional<Message> handle(Message msg) {
+                // Если какие ошибки и произойдут обрабатываем их ниже по стэку
+                // c StreamObserver нельзя работать асинхронно
+                var obs = bindings.get(sessionId);
+                var body = converter.convert(msg);
+                synchronized (sessionId) {
+                    obs.onNext(body);
+                }
+                return Optional.empty();
+            }
+        }), callbackRegistry);
+        messageSystem.addClient(client);
+        responseObserver.onNext(Empty.newBuilder().build());
+        responseObserver.onCompleted();
     }
 
     @Override
     public void newMessage(MessageProto request, StreamObserver<Empty> responseObserver) {
-        try {
-            messageSystem.newMessage(converter.convert(request));
-        } catch (Exception e) {
-            responseObserver.onError(e);
-            return;
-        }
+        messageSystem.newMessage(converter.convert(request));
         responseObserver.onNext(Empty.newBuilder().build());
         responseObserver.onCompleted();
     }
 
     @Override
     public void removeClient(MsClientMeta request, StreamObserver<Empty> responseObserver) {
-        try {
-            var observer = binding.remove(request.getName());
-            if (observer == null) {
-                throw new RuntimeException("Not found: " + request.getName());
-            }
-            observer.onCompleted();
-            messageSystem.removeClient(request.getName());
-            responseObserver.onNext(Empty.newBuilder().build());
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onError(e);
-        }
+        messageSystem.removeClient(request.getName());
+        responseObserver.onNext(Empty.newBuilder().build());
+        responseObserver.onCompleted();
     }
 
     @Override
     public void currentQueueSize(Empty request, StreamObserver<Int32Value> responseObserver) {
-        try {
-            responseObserver.onNext(Int32Value.newBuilder().setValue(messageSystem.currentQueueSize()).build());
-        } catch (Exception e) {
-            responseObserver.onError(e);
-
-        }
+        responseObserver.onNext(Int32Value.newBuilder().setValue(messageSystem.currentQueueSize()).build());
         responseObserver.onCompleted();
+    }
+
+    private UUID getInd(Session session) {
+        return UUID.fromString(session.getUuid());
     }
 }
