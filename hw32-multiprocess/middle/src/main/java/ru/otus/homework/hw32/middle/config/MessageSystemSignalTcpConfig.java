@@ -8,6 +8,7 @@ import ru.otus.homework.hw32.common.tcp.MessageSystemOverSignalTcpAdapter;
 import ru.otus.homework.hw32.common.tcp.SignalTcpServer;
 import ru.otus.messagesystem.MessageSystem;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Configuration
@@ -20,10 +21,15 @@ public class MessageSystemSignalTcpConfig {
     @Value("${signal-tcp.host}")
     private String host;
 
+    @Bean(destroyMethod = "shutdownNow")
+    public ExecutorService executorServiceForSignalTcpServer() {
+        return Executors.newSingleThreadExecutor();
+    }
+
     @Bean
-    public SignalTcpServer signalTcpServer() {
+    public SignalTcpServer signalTcpServer(ExecutorService executorServiceForSignalTcpServer) {
         var server = new SignalTcpServer(host, port, 10000);
-        Executors.newSingleThreadExecutor().submit(server);
+        executorServiceForSignalTcpServer.submit(server);
         return server;
     }
 

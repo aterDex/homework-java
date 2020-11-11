@@ -20,18 +20,23 @@ public class MessageSystemSignalTcpConfig {
     @Value("${signal-tcp.host}")
     private String host;
 
+    @Bean(destroyMethod = "shutdownNow")
+    public ExecutorService executorServiceForSignalTcpClient() {
+        return Executors.newSingleThreadExecutor();
+    }
+
     @Bean
-    public SignalTcpClient signalClient() {
+    public SignalTcpClient signalClient(ExecutorService executorServiceForSignalTcpClient) throws Exception {
         var signalClient = new SignalTcpClient(host, port);
-        Executors.newSingleThreadExecutor().submit(signalClient);
+        executorServiceForSignalTcpClient.submit(signalClient);
+        Thread.sleep(1000);
         return signalClient;
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutdownNow")
     public ExecutorService messageClientExecutorServices() {
         return Executors.newFixedThreadPool(3);
     }
-
 
     @Bean
     public TransportBySignalTcp transport(SignalTcpClient client) {
