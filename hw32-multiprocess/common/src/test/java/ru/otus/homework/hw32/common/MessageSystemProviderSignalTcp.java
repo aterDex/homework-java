@@ -1,12 +1,16 @@
 package ru.otus.homework.hw32.common;
 
 import lombok.SneakyThrows;
-import ru.otus.homework.hw32.common.tcp.MessageSystemOverSignalTcp;
+import ru.otus.homework.hw32.common.message.MessageSystemRemote;
 import ru.otus.homework.hw32.common.tcp.MessageSystemOverSignalTcpAdapter;
+import ru.otus.homework.hw32.common.tcp.SignalTcpClient;
+import ru.otus.homework.hw32.common.tcp.SignalTcpServer;
+import ru.otus.homework.hw32.common.tcp.TransportBySignalTcp;
 import ru.otus.messagesystem.MessageSystem;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MessageSystemProviderSignalTcp implements MessageSystemProvider {
 
@@ -23,20 +27,31 @@ public class MessageSystemProviderSignalTcp implements MessageSystemProvider {
 
     @Override
     public DisposableMessageSystem init(MessageSystem core) throws Exception {
-        var adapter = new MessageSystemOverSignalTcpAdapter(host, port, core, null);
+        SignalTcpServer server = new SignalTcpServer(host, port, 10000);
+        ExecutorService executorServer = Executors.newSingleThreadExecutor();
+        var futureServer = executorServer.submit(server);
+
+        new MessageSystemOverSignalTcpAdapter(server, core, null);
         Thread.sleep(1000);
         int localPort = port;
         if (localPort == 0) {
-            localPort = ((InetSocketAddress) adapter.getServer().getLocalAddress()).getPort();
+            localPort = ((InetSocketAddress) server.getLocalAddress()).getPort();
         }
-        var messageSystem = new MessageSystemOverSignalTcp(host, localPort, executorService);
+        var client = new SignalTcpClient(host, localPort);
+        var executor = Executors.newFixedThreadPool(1);
+        var futureClient = executor.submit(client);
+
+        TransportBySignalTcp transportBySignalTcp = new TransportBySignalTcp(client);
+
+        var messageSystem = new MessageSystemRemote(transportBySignalTcp, executorService);
         messageSystem.start();
         return new DisposableMessageSystem(description, messageSystem, new Runnable() {
             @Override
             @SneakyThrows
             public void run() {
                 messageSystem.dispose();
-                adapter.stop();
+                futureClient.cancel(true);
+                futureServer.cancel(true);
             }
         });
     }

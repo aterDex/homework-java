@@ -35,9 +35,4 @@ public class MessageSystemGRPC {
     public TransportByGRPC transportForMessageSystem(MessageProtobufConverter converter, ManagedChannel channel) {
         return new TransportByGRPC(channel, converter);
     }
-
-    @Bean(initMethod = "start")
-    public MessageSystemRemote messageSystem(TransportForMessageSystem transport) {
-        return new MessageSystemRemote(transport, null);
-    }
 }

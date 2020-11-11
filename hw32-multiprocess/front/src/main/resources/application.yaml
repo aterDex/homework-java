@@ -4,7 +4,7 @@ server:
 
 spring:
   profiles:
-    active: gRPC
+    active: SignalTcp
 
 message-system:
   database-service-client-name: databaseService

@@ -13,5 +13,5 @@ public interface SignalServerListener {
      */
     void event(UUID connectIdentifier, Signal signal, SignalTcpServer server);
 
-    void closeConnect(UUID connectWitchClose, SignalTcpServer server);
+    void disconnect(UUID connectWitchClose, SignalTcpServer server);
 }

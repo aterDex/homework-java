@@ -13,44 +13,72 @@ import ru.otus.messagesystem.message.Message;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Function;
 
-import static ru.otus.homework.hw32.common.tcp.SignalMessageHelper.*;
+import static ru.otus.homework.hw32.common.tcp.SignalForMessageSystemHelper.*;
+import static ru.otus.homework.hw32.common.tcp.SignalTypeForMessageSystem.ERROR;
+import static ru.otus.homework.hw32.common.tcp.SignalTypeForMessageSystem.HANDLE;
 
 @Slf4j
 public class MessageSystemOverSignalTcpAdapter {
 
-    @Getter
     private final SignalTcpServer server;
     private final MessageSystem messageSystem;
     private final CallbackRegistry callbackRegistry;
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Map<UUID, Set<String>> clients = new HashMap<>();
-    private final Future<?> futureServer;
 
-    public MessageSystemOverSignalTcpAdapter(String host, int port, MessageSystem messageSystem, CallbackRegistry callbackRegistry) {
-        this.server = new SignalTcpServer(host, port, 10000, new SignalServerListenerImpl());
+    public MessageSystemOverSignalTcpAdapter(SignalTcpServer server, MessageSystem messageSystem, CallbackRegistry callbackRegistry) {
+        this.server = server;
+        this.server.addListener(new SignalServerListenerImpl());
         this.messageSystem = messageSystem;
         this.callbackRegistry = callbackRegistry;
-        futureServer = executor.submit(server);
     }
 
-    public void stop() {
-        futureServer.cancel(true);
+    private void addClient(UUID connectIdentifier, Signal signal, SignalTcpServer server) throws IOException {
+        try {
+            String name = (String) signal.getBody();
+            messageSystem.addClient(new MsClientImpl(name, messageSystem, new HandlersStoreSingleHandler(new RequestHandler<ResultDataType>() {
+                @Override
+                @SneakyThrows
+                public Optional<Message> handle(Message msg) {
+                    processAnswerServer(new Signal(HANDLE.name(), UUID.randomUUID(), msg), connectIdentifier, server, null);
+                    return Optional.empty();
+                }
+            }), callbackRegistry));
+            clients.computeIfAbsent(connectIdentifier, x -> new HashSet<>());
+            clients.get(connectIdentifier).add(name);
+            server.send(connectIdentifier, answerOk(signal));
+        } catch (Exception e) {
+            server.send(connectIdentifier, answerError(signal, e.getMessage()));
+        }
     }
 
-    private <R> R sendSignalAndProcessAnswer(UUID uuid, Signal signal, Function<Signal, R> converter) throws InterruptedException, TimeoutException, IOException {
-        return processAnswer(signal, x -> {
-            try {
-                return server.sendAndGetAnswer(uuid, signal);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }, converter);
+    private void removeClient(UUID connectIdentifier, Signal signal, SignalTcpServer server) throws IOException {
+        try {
+            String name = (String) signal.getBody();
+            messageSystem.removeClient(name);
+            clients.get(connectIdentifier).remove(name);
+            server.send(connectIdentifier, answerOk(signal));
+        } catch (Exception e) {
+            server.send(connectIdentifier, answerError(signal, e.getMessage()));
+        }
+    }
+
+    private void currentQueueSize(UUID connectIdentifier, Signal signal, SignalTcpServer server) throws IOException {
+        try {
+            Message name = (Message) signal.getBody();
+            server.send(connectIdentifier, answerOk(signal, messageSystem.currentQueueSize()));
+        } catch (Exception e) {
+            server.send(connectIdentifier, answerError(signal, e.getMessage()));
+        }
+    }
+
+    private void newMessage(UUID connectIdentifier, Signal signal, SignalTcpServer server) throws IOException {
+        try {
+            Message name = (Message) signal.getBody();
+            server.send(connectIdentifier, answerOk(signal, messageSystem.newMessage(name)));
+        } catch (Exception e) {
+            server.send(connectIdentifier, answerError(signal, e.getMessage()));
+        }
     }
 
     private class SignalServerListenerImpl implements SignalServerListener {
@@ -58,56 +86,24 @@ public class MessageSystemOverSignalTcpAdapter {
         @Override
         public void event(UUID connectIdentifier, Signal signal, SignalTcpServer server) {
             try {
-                switch (signal.getTag()) {
-                    case "addClient":
-                        try {
-                            String name = (String) signal.getBody();
-                            messageSystem.addClient(new MsClientImpl(name, messageSystem, new HandlersStoreSingleHandler(new RequestHandler<ResultDataType>() {
-                                @Override
-                                @SneakyThrows
-                                public Optional<Message> handle(Message msg) {
-                                    sendSignalAndProcessAnswer(connectIdentifier, new Signal("handle", UUID.randomUUID(), msg), null);
-                                    return Optional.empty();
-                                }
-                            }), callbackRegistry));
-                            clients.computeIfAbsent(connectIdentifier, x -> new HashSet<>());
-                            clients.get(connectIdentifier).add(name);
-                            server.send(connectIdentifier, answerOk(signal));
-                        } catch (Exception e) {
-                            server.send(connectIdentifier, answerError(signal, e.getMessage()));
-                        }
+                switch (SignalTypeForMessageSystem.valueOfOrUnknown(signal.getTag())) {
+                    case ADD_CLIENT:
+                        addClient(connectIdentifier, signal, server);
                         break;
-                    case "removeClient":
-                        try {
-                            String name = (String) signal.getBody();
-                            messageSystem.removeClient(name);
-                            clients.get(connectIdentifier).remove(name);
-                            server.send(connectIdentifier, answerOk(signal));
-                        } catch (Exception e) {
-                            server.send(connectIdentifier, answerError(signal, e.getMessage()));
-                        }
+                    case REMOVE_CLIENT:
+                        removeClient(connectIdentifier, signal, server);
                         break;
-                    case "newMessage":
-                        try {
-                            Message name = (Message) signal.getBody();
-                            server.send(connectIdentifier, answerOk(signal, messageSystem.newMessage(name)));
-                        } catch (Exception e) {
-                            server.send(connectIdentifier, answerError(signal, e.getMessage()));
-                        }
+                    case NEW_MESSAGE:
+                        newMessage(connectIdentifier, signal, server);
                         break;
-                    case "currentQueueSize":
-                        try {
-                            Message name = (Message) signal.getBody();
-                            server.send(connectIdentifier, answerOk(signal, messageSystem.currentQueueSize()));
-                        } catch (Exception e) {
-                            server.send(connectIdentifier, answerError(signal, e.getMessage()));
-                        }
+                    case CURRENT_QUEUE_SIZE:
+                        currentQueueSize(connectIdentifier, signal, server);
                         break;
-                    case "error":
+                    case ERROR:
                         log.error("Error signal get: " + signal);
                         break;
                     default:
-                        server.send(connectIdentifier, new Signal("error", signal.getUuid(), String.format("Unknown signal %s", signal.getTag())));
+                        server.send(connectIdentifier, new Signal(ERROR.name(), signal.getUuid(), String.format("Unknown signal %s", signal.getTag())));
                         break;
                 }
             } catch (Exception e) {
@@ -116,7 +112,7 @@ public class MessageSystemOverSignalTcpAdapter {
         }
 
         @Override
-        public void closeConnect(UUID connectWitchClose, SignalTcpServer server) {
+        public void disconnect(UUID connectWitchClose, SignalTcpServer server) {
             if (!clients.containsKey(connectWitchClose)) {
                 return;
             }

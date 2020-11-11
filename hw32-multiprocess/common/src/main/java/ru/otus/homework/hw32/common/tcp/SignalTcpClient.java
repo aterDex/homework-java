@@ -6,26 +6,24 @@ import ru.otus.homework.hw32.common.helper.NonCloseableStream;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Exchanger;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 @Slf4j
 public class SignalTcpClient implements Runnable {
 
     private final String host;
     private final int port;
-    private final SignalClientListener listener;
+    private final List<SignalClientListener> listeners = new CopyOnWriteArrayList<>();
     private final Map<UUID, Exchanger<Signal>> waitAnswer = new ConcurrentHashMap<>();
     private DataOutputStream outStream;
+    private volatile boolean isConnected = false;
 
-    public SignalTcpClient(String host, int port, SignalClientListener listener) {
+    public SignalTcpClient(String host, int port) {
         this.host = host;
         this.port = port;
-        this.listener = listener;
     }
 
     @Override
@@ -36,6 +34,7 @@ public class SignalTcpClient implements Runnable {
                  var bufferedInputStream = new BufferedInputStream(clientSocket.getInputStream());
                  var dataOutputStream = new DataOutputStream(bufferedOutputStream);
             ) {
+                isConnected = true;
                 outStream = dataOutputStream;
                 var forSize = new byte[4];
                 while (!Thread.currentThread().isInterrupted()) {
@@ -53,8 +52,9 @@ public class SignalTcpClient implements Runnable {
             } catch (Exception ex) {
                 log.error("", ex);
             } finally {
+                isConnected = false;
                 outStream = null;
-                listener.closeConnect(this);
+                fireCloseConnect();
             }
             try {
                 Thread.sleep(5000);
@@ -63,6 +63,10 @@ public class SignalTcpClient implements Runnable {
             }
         }
         log.info("exit from SignalTcpClient");
+    }
+
+    public boolean isConnected() {
+        return isConnected;
     }
 
     public synchronized void send(Signal signal) throws IOException {
@@ -86,6 +90,14 @@ public class SignalTcpClient implements Runnable {
         }
     }
 
+    public void addListener(SignalClientListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(SignalClientListener listener) {
+        listeners.remove(listener);
+    }
+
     private void process(Signal signal) {
         log.debug("------> Client get signal: {}", signal);
         long time = System.currentTimeMillis();
@@ -101,9 +113,29 @@ public class SignalTcpClient implements Runnable {
                 log.error("", e);
             }
         }
-        listener.event(signal, this);
+        fireEvent(signal);
         if (log.isDebugEnabled()) {
-            log.debug("------ process time by {}s for {}", (System.currentTimeMillis() - time)/1000.0, signal.getUuid());
+            log.debug("------ process time by {}s for {}", (System.currentTimeMillis() - time) / 1000.0, signal.getUuid());
+        }
+    }
+
+    private void fireEvent(Signal signal) {
+        for (SignalClientListener listener : listeners) {
+            try {
+                listener.event(signal, this);
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        }
+    }
+
+    private void fireCloseConnect() {
+        for (SignalClientListener listener : listeners) {
+            try {
+                listener.closeConnect(this);
+            } catch (Exception e) {
+                log.error("", e);
+            }
         }
     }
 

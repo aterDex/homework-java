@@ -73,7 +73,7 @@ public class TransportByGRPC implements TransportForMessageSystem {
     }
 
     @Override
-    public boolean isConnect() {
+    public boolean isConnected() {
         switch (managedChannel.getState(false)) {
             case READY:
             case IDLE:

@@ -52,14 +52,15 @@ public class SignalTcpServerTest {
         var waitLatch = new CountDownLatch(task.countEvent);
 
         var executor = Executors.newSingleThreadExecutor();
-        var sts = new SignalTcpServer(HOST, PORT, task.bufferSize, new SignalServerListener() {
+        var sts = new SignalTcpServer(HOST, PORT, task.bufferSize);
+        sts.addListener(new SignalServerListener() {
             @Override
             public void event(UUID connectIdentifier, Signal signal, SignalTcpServer server) {
                 waitLatch.countDown();
             }
 
             @Override
-            public void closeConnect(UUID connectWitchClose, SignalTcpServer server) {
+            public void disconnect(UUID connectWitchClose, SignalTcpServer server) {
                 waitLatch.countDown();
             }
         });
@@ -91,7 +92,8 @@ public class SignalTcpServerTest {
     void testServerForSend() throws Exception {
 
         final Exchanger<UUID> exchanger = new Exchanger<>();
-        var server = new SignalTcpServer(HOST, PORT, 10000, new SignalServerListener() {
+        var server = new SignalTcpServer(HOST, PORT, 10000);
+        server.addListener(new SignalServerListener() {
             @Override
             public void event(UUID connectIdentifier, Signal signal, SignalTcpServer server) {
                 try {
@@ -102,7 +104,7 @@ public class SignalTcpServerTest {
             }
 
             @Override
-            public void closeConnect(UUID connectWitchClose, SignalTcpServer server) {
+            public void disconnect(UUID connectWitchClose, SignalTcpServer server) {
             }
         });
         var executor = Executors.newSingleThreadExecutor();
@@ -140,7 +142,8 @@ public class SignalTcpServerTest {
     void testServerForSendAndGetAnswer() throws Exception {
 
         final Exchanger<UUID> exchanger = new Exchanger<>();
-        var server = new SignalTcpServer(HOST, PORT, 10000, new SignalServerListener() {
+        var server = new SignalTcpServer(HOST, PORT, 10000);
+        server.addListener(new SignalServerListener() {
             @Override
             public void event(UUID connectIdentifier, Signal signal, SignalTcpServer server) {
                 try {
@@ -151,7 +154,7 @@ public class SignalTcpServerTest {
             }
 
             @Override
-            public void closeConnect(UUID connectWitchClose, SignalTcpServer server) {
+            public void disconnect(UUID connectWitchClose, SignalTcpServer server) {
             }
         });
         var executor = Executors.newFixedThreadPool(2);

@@ -15,5 +15,5 @@ public interface TransportForMessageSystem {
 
     void sendAddClient(String name);
 
-    boolean isConnect();
+    boolean isConnected();
 }

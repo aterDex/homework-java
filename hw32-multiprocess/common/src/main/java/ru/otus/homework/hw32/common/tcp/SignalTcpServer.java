@@ -14,14 +14,10 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Exchanger;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 @Slf4j
 public class SignalTcpServer implements Runnable {
@@ -29,15 +25,14 @@ public class SignalTcpServer implements Runnable {
     private final String host;
     private final int port;
     private final ByteBuffer generalReadyBuffer;
-    private final SignalServerListener listener;
+    private final List<SignalServerListener> listeners = new CopyOnWriteArrayList<>();
     private final Map<UUID, SocketChannel> binding = new ConcurrentHashMap<>();
     private final Map<UUID, Exchanger<Signal>> waitAnswer = new ConcurrentHashMap<>();
     private volatile ServerSocketChannel serverSocketChanel;
 
-    public SignalTcpServer(String host, int port, int bufferSize, SignalServerListener listener) {
+    public SignalTcpServer(String host, int port, int bufferSize) {
         this.host = host;
         this.port = port;
-        this.listener = listener;
         this.generalReadyBuffer = ByteBuffer.allocateDirect(bufferSize);
     }
 
@@ -83,7 +78,7 @@ public class SignalTcpServer implements Runnable {
 
     public Signal sendAndGetAnswer(UUID channelName, Signal signal) throws IOException, TimeoutException, InterruptedException {
         try {
-            Exchanger<Signal> exchanger = registerAnswer(signal.getUuid());
+            var exchanger = registerAnswer(signal.getUuid());
             send(channelName, signal);
             return exchanger.exchange(null, 10, TimeUnit.SECONDS);
         } catch (Throwable t) {
@@ -94,12 +89,20 @@ public class SignalTcpServer implements Runnable {
         }
     }
 
+    public void addListener(SignalServerListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(SignalServerListener listener) {
+        listeners.remove(listener);
+    }
+
     private void unregisterAnswer(UUID uuid) {
         waitAnswer.remove(uuid);
     }
 
     private Exchanger<Signal> registerAnswer(UUID uuid) {
-        Exchanger<Signal> exchanger = new Exchanger<>();
+        var exchanger = new Exchanger<Signal>();
         waitAnswer.put(uuid, exchanger);
         return exchanger;
     }
@@ -108,11 +111,10 @@ public class SignalTcpServer implements Runnable {
     private void listenTo(Selector selector) {
         while (!Thread.currentThread().isInterrupted()) {
             if (selector.select(20000) > 0) {
-                Set<SelectionKey> sk = selector.selectedKeys();
-                Iterator<SelectionKey> iterator = sk.iterator();
-                while (iterator.hasNext()) {
-                    SelectionKey key = iterator.next();
-                    iterator.remove();
+                var keys = selector.selectedKeys().iterator();
+                while (keys.hasNext()) {
+                    var key = keys.next();
+                    keys.remove();
                     if (!key.isValid()) {
                         continue;
                     }
@@ -213,8 +215,7 @@ public class SignalTcpServer implements Runnable {
                 log.error("", e);
             }
         }
-
-        listener.event(info.getUuid(), signal, this);
+        fireEvent(info.getUuid(), signal);
         if (log.isDebugEnabled()) {
             log.debug("====== process time by {}s for {}", (System.currentTimeMillis() - time) / 1000.0, signal.getUuid());
         }
@@ -233,7 +234,27 @@ public class SignalTcpServer implements Runnable {
     private void closeChanel(SocketChannel channel, ConnectionInfo info) {
         channel.close();
         binding.remove(info.getUuid());
-        listener.closeConnect(info.getUuid(), this);
+        fireDisconnect(info.getUuid());
+    }
+
+    private void fireDisconnect(UUID uuid) {
+        for (SignalServerListener listener : listeners) {
+            try {
+                listener.disconnect(uuid, this);
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        }
+    }
+
+    private void fireEvent(UUID uuid, Signal signal) {
+        for (SignalServerListener listener : listeners) {
+            try {
+                listener.event(uuid, signal, this);
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        }
     }
 
     private class ConnectionInfo {

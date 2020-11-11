@@ -113,7 +113,7 @@ public class MessageSystemRemote implements MessageSystem {
         if (!active) {
             throw new RuntimeException("Message system is down.");
         }
-        if (!transport.isConnect()) {
+        if (!transport.isConnected()) {
             throw new RuntimeException("Message system isn't available now.");
         }
     }

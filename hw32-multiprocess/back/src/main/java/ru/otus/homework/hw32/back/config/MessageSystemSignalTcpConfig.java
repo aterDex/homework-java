@@ -4,9 +4,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import ru.otus.homework.hw32.common.tcp.MessageSystemOverSignalTcp;
-import ru.otus.messagesystem.MessageSystem;
+import ru.otus.homework.hw32.common.tcp.SignalTcpClient;
+import ru.otus.homework.hw32.common.tcp.TransportBySignalTcp;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Configuration
@@ -19,8 +20,21 @@ public class MessageSystemSignalTcpConfig {
     @Value("${signal-tcp.host}")
     private String host;
 
-    @Bean(destroyMethod = "dispose")
-    public MessageSystem messageSystem() {
-        return new MessageSystemOverSignalTcp(host, port, Executors.newCachedThreadPool());
+    @Bean
+    public SignalTcpClient signalClient() {
+        var signalClient = new SignalTcpClient(host, port);
+        Executors.newSingleThreadExecutor().submit(signalClient);
+        return signalClient;
+    }
+
+    @Bean
+    public ExecutorService messageClientExecutorServices() {
+        return Executors.newFixedThreadPool(3);
+    }
+
+
+    @Bean
+    public TransportBySignalTcp transport(SignalTcpClient client) {
+        return new TransportBySignalTcp(client);
     }
 }
