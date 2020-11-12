@@ -21,6 +21,10 @@ gRPC:
   host: 127.0.0.1
   port: 15010
 
+server:
+  db:
+    port: 9123
+
 logging:
   level:
     ru:

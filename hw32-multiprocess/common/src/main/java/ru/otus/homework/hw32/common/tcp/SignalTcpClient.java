@@ -28,7 +28,7 @@ public class SignalTcpClient implements Runnable {
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
+//        while (!Thread.currentThread().isInterrupted()) {
             try (var clientSocket = new Socket(host, port);
                  var bufferedOutputStream = new BufferedOutputStream(clientSocket.getOutputStream());
                  var bufferedInputStream = new BufferedInputStream(clientSocket.getInputStream());
@@ -59,9 +59,9 @@ public class SignalTcpClient implements Runnable {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                break;
+//                break;
             }
-        }
+//        }
         log.info("exit from SignalTcpClient");
     }
 

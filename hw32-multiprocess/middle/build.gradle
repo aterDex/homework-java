@@ -29,11 +29,13 @@ test {
 }
 
 run {
-    dependsOn 'copyBackAndFront'
-    args '--start-example', "--work-directory=${jar.destinationDirectory.get()}",
-            "--java=${org.gradle.internal.jvm.Jvm.current().getJavaExecutable()}",
-            "--front=${project(":hw32-multiprocess:front").jar.archiveFileName.get()}",
-            "--back=${project(":hw32-multiprocess:back").jar.archiveFileName.get()}"
+    if (project.hasProperty('example')) {
+        dependsOn 'copyBackAndFront'
+        args '--start-example', "--work-directory=${jar.destinationDirectory.get()}",
+                "--java=${org.gradle.internal.jvm.Jvm.current().getJavaExecutable()}",
+                "--front=${project(":hw32-multiprocess:front").jar.archiveFileName.get()}",
+                "--back=${project(":hw32-multiprocess:back").jar.archiveFileName.get()}"
+    }
 }
 
 task copyBackAndFront(type: Copy) {
@@ -45,8 +47,3 @@ task copyBackAndFront(type: Copy) {
     from bk.destinationDirectory.file(bk.archiveFileName), fr.destinationDirectory.file(fr.archiveFileName)
     into jar.destinationDirectory
 }
-
-//task tesss(type: JavaExec) {
-//    dependsOn 'copyBackAndFront'
-//    dependsOn 'build'
-//}
