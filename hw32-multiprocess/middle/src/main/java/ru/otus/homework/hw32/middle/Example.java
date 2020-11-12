@@ -35,7 +35,7 @@ public class Example {
                     .start();
 
             Process frontPr0 = new ProcessBuilder(java, "-jar", front,
-                    "--spring.profiles.active=RMI")
+                    "--spring.profiles.active=SignalTcp")
                     .directory(new File(workDirectory))
                     .redirectOutput(new File(workDirectory, "front0.log"))
                     .redirectErrorStream(true)
@@ -45,7 +45,7 @@ public class Example {
                     "--server.port=8081",
                     "--message-system.frontend-service-client-name=frontend2",
                     "--message-system.database-service-client-name=back2",
-                    "--spring.profiles.active=SignalTcp")
+                    "--spring.profiles.active=RMI")
                     .directory(new File(workDirectory))
                     .redirectOutput(new File(workDirectory, "front1.log"))
                     .redirectErrorStream(true)
