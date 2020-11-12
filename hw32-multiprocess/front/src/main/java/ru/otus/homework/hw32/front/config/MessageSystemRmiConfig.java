@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import ru.otus.homework.hw32.common.message.TransportForMessageSystem;
 import ru.otus.homework.hw32.common.rmi.MessageSystemRegisterByRmi;
-import ru.otus.homework.hw32.common.rmi.MessageSystemRmi;
+import ru.otus.homework.hw32.common.rmi.TransportByRmi;
 import ru.otus.messagesystem.MessageSystem;
 
 import java.rmi.RemoteException;
@@ -32,8 +33,8 @@ public class MessageSystemRmiConfig {
         return (MessageSystemRegisterByRmi) registry.lookup(messageSystemName);
     }
 
-    @Bean
-    public MessageSystem messageSystem(MessageSystemRegisterByRmi messageSystemRegister) {
-        return new MessageSystemRmi(messageSystemRegister);
+    @Bean(destroyMethod = "dispose")
+    public TransportByRmi transportForMessageSystem(MessageSystemRegisterByRmi messageSystemRegister) throws Exception {
+        return new TransportByRmi(messageSystemRegister);
     }
 }

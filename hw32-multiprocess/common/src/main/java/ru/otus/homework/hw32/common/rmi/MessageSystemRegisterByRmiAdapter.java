@@ -25,7 +25,7 @@ public class MessageSystemRegisterByRmiAdapter implements MessageSystemRegisterB
     }
 
     @Override
-    public void addClient(String clientId, HandleMessageByRmi handler) throws RemoteException {
+    public void addClient(String clientId, HandlerMessageByRmi handler) throws RemoteException {
         MsClientImpl msClient = new MsClientImpl(clientId, messageSystem, new HandlersStoreSingleHandler(new RequestHandler<ResultDataType>() {
             @Override
             @SneakyThrows

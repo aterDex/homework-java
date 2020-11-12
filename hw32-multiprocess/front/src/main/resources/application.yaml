@@ -4,7 +4,7 @@ server:
 
 spring:
   profiles:
-    active: SignalTcp
+    active: RMI
 
 message-system:
   database-service-client-name: databaseService

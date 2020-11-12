@@ -29,6 +29,7 @@ public class MessageSystemSignalTcpConfig {
     public SignalTcpClient signalClient(ExecutorService executorServiceForSignalTcpClient) throws Exception {
         var signalClient = new SignalTcpClient(host, port);
         executorServiceForSignalTcpClient.submit(signalClient);
+        // так как переподключений нет, даем время чтобы запустился tcpClient
         Thread.sleep(1000);
         return signalClient;
     }

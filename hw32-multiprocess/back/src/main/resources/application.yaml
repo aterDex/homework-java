@@ -1,7 +1,7 @@
 ---
 spring:
   profiles:
-    active: SignalTcp
+    active: RMI
   datasource:
     url: jdbc:h2:mem:OtusExamplesDB;DB_CLOSE_DELAY=-1
     username: sa

@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 
 public interface MessageSystemRegisterByRmi extends Remote {
 
-    void addClient(String clientId, HandleMessageByRmi handlerInfo) throws RemoteException;
+    void addClient(String clientId, HandlerMessageByRmi handlerInfo) throws RemoteException;
 
     void removeClient(String clientId) throws RemoteException;
 
