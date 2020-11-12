@@ -28,40 +28,33 @@ public class SignalTcpClient implements Runnable {
 
     @Override
     public void run() {
-//        while (!Thread.currentThread().isInterrupted()) {
-            try (var clientSocket = new Socket(host, port);
-                 var bufferedOutputStream = new BufferedOutputStream(clientSocket.getOutputStream());
-                 var bufferedInputStream = new BufferedInputStream(clientSocket.getInputStream());
-                 var dataOutputStream = new DataOutputStream(bufferedOutputStream);
-            ) {
-                isConnected = true;
-                outStream = dataOutputStream;
-                var forSize = new byte[4];
-                while (!Thread.currentThread().isInterrupted()) {
-                    bufferedInputStream.read(forSize);
-                    try (var objectInputStream = new ObjectInputStream(new NonCloseableStream(bufferedInputStream))) {
-                        var obj = objectInputStream.readObject();
-                        if (obj == null) continue;
-                        if (!(obj instanceof Signal)) {
-                            log.warn("Unknown type '{}'. Stop client.", obj.getClass().getCanonicalName());
-                            return;
-                        }
-                        process((Signal) obj);
+        try (var clientSocket = new Socket(host, port);
+             var bufferedOutputStream = new BufferedOutputStream(clientSocket.getOutputStream());
+             var bufferedInputStream = new BufferedInputStream(clientSocket.getInputStream());
+             var dataOutputStream = new DataOutputStream(bufferedOutputStream);
+        ) {
+            isConnected = true;
+            outStream = dataOutputStream;
+            var forSize = new byte[4];
+            while (!Thread.currentThread().isInterrupted()) {
+                bufferedInputStream.read(forSize);
+                try (var objectInputStream = new ObjectInputStream(new NonCloseableStream(bufferedInputStream))) {
+                    var obj = objectInputStream.readObject();
+                    if (obj == null) continue;
+                    if (!(obj instanceof Signal)) {
+                        log.warn("Unknown type '{}'. Stop client.", obj.getClass().getCanonicalName());
+                        return;
                     }
+                    process((Signal) obj);
                 }
-            } catch (Exception ex) {
-                log.error("", ex);
-            } finally {
-                isConnected = false;
-                outStream = null;
-                fireCloseConnect();
             }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-//                break;
-            }
-//        }
+        } catch (Exception ex) {
+            log.error("", ex);
+        } finally {
+            isConnected = false;
+            outStream = null;
+            fireCloseConnect();
+        }
         log.info("exit from SignalTcpClient");
     }
 

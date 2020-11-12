@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import ru.otus.homework.hw32.common.message.MessageSystemRemote;
-import ru.otus.homework.hw32.common.message.TransportForMessageSystem;
 import ru.otus.homework.hw32.common.protobuf.TransportByGRPC;
 import ru.otus.messagesystem.message.MessageProtobufConverter;
 

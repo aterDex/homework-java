@@ -27,7 +27,7 @@ public class AppBack implements CommandLineRunner {
                 }
             }
         } catch (NoSuchElementException e) {
-            log.error("" , e);
+            log.error("", e);
             System.exit(0);
         }
     }

@@ -7,7 +7,7 @@ import ru.otus.messagesystem.client.ResultDataType;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class UserCollectionDto extends ResultDataType {
 
     private List<UserDto> users;

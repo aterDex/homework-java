@@ -7,7 +7,7 @@ import ru.otus.messagesystem.client.ResultDataType;
 
 @Data
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class ErrorDto extends ResultDataType {
 
     private String text;

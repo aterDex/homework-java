@@ -11,8 +11,6 @@ import ru.otus.homework.hw32.common.protobuf.TransportByGRPC;
 import ru.otus.messagesystem.MessageSystem;
 import ru.otus.messagesystem.message.MessageProtobufConverter;
 
-import java.util.concurrent.Executors;
-
 public class MessageSystemProviderGRPC implements MessageSystemProvider {
 
     private static final String description = "gRPC";

@@ -4,12 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.otus.homework.hw32.common.dto.UserDto;
 import ru.otus.homework.hw32.front.message.FrontendService;
-
-import java.util.Collection;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Controller

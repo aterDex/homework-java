@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import ru.otus.messagesystem.client.ResultDataType;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class UserDto extends ResultDataType {
 
     private long id;

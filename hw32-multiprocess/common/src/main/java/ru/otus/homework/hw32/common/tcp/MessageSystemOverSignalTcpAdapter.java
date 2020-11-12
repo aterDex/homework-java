@@ -1,6 +1,5 @@
 package ru.otus.homework.hw32.common.tcp;
 
-import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ru.otus.homework.hw32.common.message.HandlersStoreSingleHandler;
