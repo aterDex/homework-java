@@ -198,7 +198,6 @@ class SignalTcpClientTest {
 
     @Test
     void sendAndGetAnswer() throws Exception {
-//        Exchanger<Signal> exchanger = new Exchanger<>();
         AtomicInteger counter = new AtomicInteger();
 
         var executor = Executors.newFixedThreadPool(2);

@@ -24,7 +24,6 @@ public class Example {
             // Даем время стартонуть первой бд
             Thread.sleep(10000);
             Process backPr1 = new ProcessBuilder(java, "-jar", back,
-                    "--message-system.frontend-service-client-name=frontend2",
                     "--message-system.database-service-client-name=back2",
                     "--spring.datasource.url=jdbc:h2:tcp://localhost:9123/mem:OtusExamplesDB",
                     "--spring.profiles.active=SignalTcp"

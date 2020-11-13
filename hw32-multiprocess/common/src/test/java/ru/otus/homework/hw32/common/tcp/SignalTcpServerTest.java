@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import ru.otus.homework.hw32.common.helper.HelperHw32;
+import ru.otus.homework.hw32.common.helper.HelperSerializeObject;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -27,7 +27,7 @@ public class SignalTcpServerTest {
     private final static int PORT = 12000;
 
     static Collection<TaskForTest> tasks() {
-        byte[] objectByte = HelperHw32.objectToByte(new Signal("Test", UUID.randomUUID(), null));
+        byte[] objectByte = HelperSerializeObject.objectToByte(new Signal("Test", UUID.randomUUID(), null));
         byte[] source = new byte[(objectByte.length + 4) * 2];
         ByteBuffer bb = ByteBuffer.wrap(source);
         bb.putInt(objectByte.length);
@@ -90,7 +90,6 @@ public class SignalTcpServerTest {
 
     @Test
     void testServerForSend() throws Exception {
-
         final Exchanger<UUID> exchanger = new Exchanger<>();
         var server = new SignalTcpServer(HOST, PORT, 10000);
         server.addListener(new SignalServerListener() {
@@ -115,7 +114,7 @@ public class SignalTcpServerTest {
                 ByteBuffer buffer = ByteBuffer.allocate(5000);
 
                 var signal = new Signal("Test", UUID.randomUUID(), null);
-                byte[] body = HelperHw32.objectToByte(signal);
+                byte[] body = HelperSerializeObject.objectToByte(signal);
 
                 buffer.putInt(body.length);
                 buffer.put(body);
@@ -131,7 +130,7 @@ public class SignalTcpServerTest {
                 channel.read(buffer.clear());
                 buffer.flip();
                 buffer.getInt();
-                assertEquals(signalCheck, HelperHw32.readObjectFromByteBuffers(buffer));
+                assertEquals(signalCheck, HelperSerializeObject.readObjectFromByteBuffers(buffer));
             }
         } finally {
             serverFuture.cancel(true);
@@ -140,7 +139,6 @@ public class SignalTcpServerTest {
 
     @Test
     void testServerForSendAndGetAnswer() throws Exception {
-
         final Exchanger<UUID> exchanger = new Exchanger<>();
         var server = new SignalTcpServer(HOST, PORT, 10000);
         server.addListener(new SignalServerListener() {
@@ -169,7 +167,7 @@ public class SignalTcpServerTest {
                         ByteBuffer buffer = ByteBuffer.allocate(5000);
 
                         var signal = new Signal("Test", UUID.randomUUID(), null);
-                        byte[] body = HelperHw32.objectToByte(signal);
+                        byte[] body = HelperSerializeObject.objectToByte(signal);
 
                         buffer.putInt(body.length);
                         buffer.put(body);

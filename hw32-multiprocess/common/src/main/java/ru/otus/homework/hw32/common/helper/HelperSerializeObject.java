@@ -5,9 +5,9 @@ import lombok.SneakyThrows;
 import java.io.*;
 import java.nio.ByteBuffer;
 
-public class HelperHw32 {
+public class HelperSerializeObject {
 
-    private HelperHw32() {
+    private HelperSerializeObject() {
     }
 
     @SneakyThrows

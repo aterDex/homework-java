@@ -33,8 +33,9 @@ public class MessageSystemRemote implements MessageSystem {
         }
         try {
             transport.sendAddClient(msClient.getName());
-        } catch (Exception t) {
+        } catch (Exception e) {
             localClients.remove(msClient.getName());
+            throw e;
         }
     }
 

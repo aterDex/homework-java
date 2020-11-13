@@ -1,7 +1,7 @@
 package ru.otus.homework.hw32.common.tcp;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.otus.homework.hw32.common.helper.HelperHw32;
+import ru.otus.homework.hw32.common.helper.HelperSerializeObject;
 import ru.otus.homework.hw32.common.helper.NonCloseableStream;
 
 import java.io.*;
@@ -18,7 +18,7 @@ public class SignalTcpClient implements Runnable {
     private final int port;
     private final List<SignalClientListener> listeners = new CopyOnWriteArrayList<>();
     private final Map<UUID, Exchanger<Signal>> waitAnswer = new ConcurrentHashMap<>();
-    private DataOutputStream outStream;
+    private volatile DataOutputStream outStream;
     private volatile boolean isConnected = false;
 
     public SignalTcpClient(String host, int port) {
@@ -64,7 +64,7 @@ public class SignalTcpClient implements Runnable {
 
     public synchronized void send(Signal signal) throws IOException {
         log.debug("<------ Client send signal: {}", signal);
-        byte[] body = HelperHw32.objectToByte(signal);
+        byte[] body = HelperSerializeObject.objectToByte(signal);
         outStream.writeInt(body.length);
         outStream.write(body);
         outStream.flush();

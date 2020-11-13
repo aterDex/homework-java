@@ -18,7 +18,7 @@ import javax.persistence.*;
         @NamedQuery(name = "get_user_by_login", query = "select u from User u where login = :login"),
         @NamedQuery(name = "get_all_users", query = "select u from User u")
 })
-public class User extends ResultDataType {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")

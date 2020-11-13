@@ -28,6 +28,6 @@ public class NonCloseableStream extends InputStream {
 
     @Override
     public synchronized void mark(int readlimit) {
-        super.mark(readlimit);
+        is.mark(readlimit);
     }
 }

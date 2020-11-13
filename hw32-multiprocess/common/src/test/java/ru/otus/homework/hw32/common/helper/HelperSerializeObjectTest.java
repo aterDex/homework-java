@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class HelperHw32Test {
+class HelperSerializeObjectTest {
 
     @Test
     void readObjectFromByteBuffers() throws Exception {
@@ -31,9 +31,9 @@ class HelperHw32Test {
             }
             buffer = ByteBuffer.wrap(baos.toByteArray());
         }
-        assertEquals(object1, HelperHw32.readObjectFromByteBuffers(buffer));
-        assertEquals(object2, HelperHw32.readObjectFromByteBuffers(buffer));
-        assertThrows(EOFException.class, () -> HelperHw32.readObjectFromByteBuffers(buffer));
+        assertEquals(object1, HelperSerializeObject.readObjectFromByteBuffers(buffer));
+        assertEquals(object2, HelperSerializeObject.readObjectFromByteBuffers(buffer));
+        assertThrows(EOFException.class, () -> HelperSerializeObject.readObjectFromByteBuffers(buffer));
     }
 
     @Test
@@ -41,8 +41,8 @@ class HelperHw32Test {
         TestObject object1 = new TestObject();
         object1.text = "EXAMPLE";
 
-        byte[] objectBytes = HelperHw32.objectToByte(object1);
-        assertEquals(object1, HelperHw32.readObjectFromByteBuffers(ByteBuffer.wrap(objectBytes)));
+        byte[] objectBytes = HelperSerializeObject.objectToByte(object1);
+        assertEquals(object1, HelperSerializeObject.readObjectFromByteBuffers(ByteBuffer.wrap(objectBytes)));
     }
 
     @EqualsAndHashCode

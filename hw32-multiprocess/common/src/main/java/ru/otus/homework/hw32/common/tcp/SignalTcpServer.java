@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import ru.otus.homework.hw32.common.helper.HelperHw32;
+import ru.otus.homework.hw32.common.helper.HelperSerializeObject;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -68,7 +68,7 @@ public class SignalTcpServer implements Runnable {
         log.debug("<====== server send to '{}' signal: {}", channelName, signal);
         // Без блокировок т.к. "Socket channels are safe for use by multiple concurrent threads."
         var channel = binding.get(channelName);
-        byte[] body = HelperHw32.objectToByte(signal);
+        byte[] body = HelperSerializeObject.objectToByte(signal);
         var bodyB = ByteBuffer.allocate(body.length + 4);
         bodyB.putInt(body.length);
         bodyB.put(body);
@@ -190,7 +190,7 @@ public class SignalTcpServer implements Runnable {
     }
 
     private void processBuffersWithObject(SocketChannel channel, ConnectionInfo info, ByteBuffer buffer) {
-        Object obj = HelperHw32.readObjectFromByteBuffers(buffer);
+        Object obj = HelperSerializeObject.readObjectFromByteBuffers(buffer);
         if (obj == null) {
             return;
         }

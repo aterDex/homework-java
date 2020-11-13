@@ -7,10 +7,6 @@ package ru.otus.homework.hw32.common.protobuf.generated;
 
 option java_multiple_files = true;
 
-message Int {
-  int32 value = 1;
-}
-
 message MsClientMeta {
   string name = 1;
   Session session = 2;
