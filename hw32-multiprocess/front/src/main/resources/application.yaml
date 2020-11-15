@@ -1,0 +1,32 @@
+---
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: RMI
+
+message-system:
+  database-service-client-name: databaseService
+  frontend-service-client-name: frontendService
+
+rmi:
+  registry-port: 15000
+  message-system:
+    name: messageSystem
+
+signal-tcp:
+  host: 127.0.0.1
+  port: 15005
+gRPC:
+  host: 127.0.0.1
+  port: 15010
+
+logging:
+  level:
+    ru:
+      otus:
+        homework:
+          hw32:
+            common:
+              tcp: info

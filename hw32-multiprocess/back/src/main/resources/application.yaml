@@ -1,0 +1,35 @@
+---
+spring:
+  profiles:
+    active: RMI
+  datasource:
+    url: jdbc:h2:mem:OtusExamplesDB;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+
+message-system:
+  database-service-client-name: databaseService
+
+rmi:
+  registry-port: 15000
+  message-system:
+    name: messageSystem
+signal-tcp:
+  host: 127.0.0.1
+  port: 15005
+gRPC:
+  host: 127.0.0.1
+  port: 15010
+
+server:
+  db:
+    port: 9123
+
+logging:
+  level:
+    ru:
+      otus:
+        homework:
+          hw32:
+            common:
+              tcp: debug

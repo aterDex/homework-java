@@ -1,0 +1,49 @@
+plugins {
+    id 'idea'
+    id 'java'
+    id 'io.freefair.lombok'
+    id "com.google.protobuf" version "0.8.12"
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+dependencies {
+    implementation project(':hw31-messagingSystem:MessageSystem')
+
+    compile 'io.grpc:grpc-netty:1.30.2'
+    compile 'io.grpc:grpc-protobuf:1.30.2'
+    compile 'io.grpc:grpc-stub:1.30.2'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+
+    implementation('ch.qos.logback:logback-classic')
+    testImplementation('org.junit.jupiter:junit-jupiter')
+}
+
+def baseDir = "$projectDir/build/generated"
+
+idea {
+    module {
+        sourceDirs += file(baseDir)
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.12.1'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.30.2'
+        }
+    }
+    generatedFilesBaseDir = baseDir
+    generateProtoTasks {
+        ofSourceSet('main')*.plugins { grpc {} }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

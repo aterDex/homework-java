@@ -1,0 +1,25 @@
+---
+
+rmi:
+  registry-port: 15000
+  message-system:
+    name: messageSystem
+signal-tcp:
+  host: 0.0.0.0
+  port: 15005
+gRPC:
+  port: 15010
+
+spring:
+  profiles:
+    active: RMI, SignalTcp, gRPC
+logging:
+  level:
+    io:
+      grpc: info
+    ru:
+      otus:
+        homework:
+          hw32:
+            common:
+              tcp: info

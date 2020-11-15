@@ -1,0 +1,49 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.5.RELEASE'
+    id 'application'
+    id 'io.freefair.lombok'
+}
+
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
+version '0.1'
+
+final MAIN_CLASS_NAME = 'ru.otus.homework.hw32.middle.AppMiddle'
+
+dependencies {
+    implementation project(':hw31-messagingSystem:MessageSystem')
+    implementation project(':hw32-multiprocess:common')
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+application {
+    mainClassName MAIN_CLASS_NAME
+}
+
+test {
+    useJUnitPlatform()
+}
+
+run {
+    if (project.hasProperty('example')) {
+        dependsOn 'copyBackAndFront'
+        args '--start-example', "--work-directory=${jar.destinationDirectory.get()}",
+                "--java=${org.gradle.internal.jvm.Jvm.current().getJavaExecutable()}",
+                "--front=${project(":hw32-multiprocess:front").jar.archiveFileName.get()}",
+                "--back=${project(":hw32-multiprocess:back").jar.archiveFileName.get()}"
+    }
+}
+
+task copyBackAndFront(type: Copy) {
+    dependsOn ':hw32-multiprocess:front:build'
+    dependsOn ':hw32-multiprocess:back:build'
+    dependsOn 'build'
+    def bk = project(":hw32-multiprocess:back").jar
+    def fr = project(":hw32-multiprocess:front").jar
+    from bk.destinationDirectory.file(bk.archiveFileName), fr.destinationDirectory.file(fr.archiveFileName)
+    into jar.destinationDirectory
+}
