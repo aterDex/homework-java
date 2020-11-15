@@ -145,7 +145,11 @@ public class SignalTcpServer implements Runnable {
         try {
             var altBuffer = info.getAlternativeBuffer();
             if (altBuffer != null) {
-                channel.read(altBuffer);
+                int read = channel.read(altBuffer);
+                if (read < 0) {
+                    closeChanel(channel, info);
+                    return;
+                }
                 if (altBuffer.hasRemaining()) {
                     return;
                 }
